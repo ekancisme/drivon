@@ -2,20 +2,24 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { useLocation } from 'react-router-dom';
 
-const ContractForm = () => {
+const CarRentalContractForm = () => {
+    const location = useLocation();
+    const contractData = location.state?.contractData;
+
     const [formData, setFormData] = useState({
-        contractNumber: '',
-        startDate: '',
-        endDate: '',
-        carId: '',
-        customerId: '',
-        deposit: '',
-        totalAmount: '',
-        name: '',
-        phone: '',
-        cccd: '',
-        email: '',
+        contractNumber: contractData?.contractNumber || '',
+        startDate: contractData?.startDate || '',
+        endDate: contractData?.endDate || '',
+        carId: contractData?.carId || '',
+        customerId: contractData?.customerId || '',
+        deposit: contractData?.deposit || '',
+        totalAmount: contractData?.totalAmount || '',
+        name: contractData?.name || '',
+        phone: contractData?.phone || '',
+        cccd: contractData?.cccd || '',
+        email: contractData?.email || '',
         terms: false
     });
 
@@ -25,6 +29,17 @@ const ContractForm = () => {
     const [isCountingDown, setIsCountingDown] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
     const [verificationCode, setVerificationCode] = useState('');
+
+    useEffect(() => {
+        if (contractData) {
+            // Tự động điền thông tin xe vào form
+            setFormData(prev => ({
+                ...prev,
+                carId: contractData.carId,
+                totalAmount: contractData.totalAmount || ''
+            }));
+        }
+    }, [contractData]);
 
     useEffect(() => {
         let timer;
@@ -248,6 +263,48 @@ const ContractForm = () => {
             <h2>Tạo Hợp Đồng</h2>
             {message && <div className={`message ${message.includes('thành công') ? 'success' : 'error'}`}>{message}</div>}
             
+            {contractData?.carData && (
+                <div className="car-info-section">
+                    <h3>Thông Tin Xe</h3>
+                    <div className="info-grid">
+                        <div className="info-item">
+                            <label>Hãng xe:</label>
+                            <span>{contractData.carData.carBrand}</span>
+                        </div>
+                        <div className="info-item">
+                            <label>Model:</label>
+                            <span>{contractData.carData.carModel}</span>
+                        </div>
+                        <div className="info-item">
+                            <label>Năm sản xuất:</label>
+                            <span>{contractData.carData.year}</span>
+                        </div>
+                        <div className="info-item">
+                            <label>Biển số xe:</label>
+                            <span>{contractData.carData.licensePlate}</span>
+                        </div>
+                        <div className="info-item">
+                            <label>Giá thuê/ngày:</label>
+                            <span>{contractData.carData.dailyRate.toLocaleString('vi-VN')} VND</span>
+                        </div>
+                        <div className="info-item">
+                            <label>Địa điểm:</label>
+                            <span>{contractData.carData.location}</span>
+                        </div>
+                    </div>
+                    {contractData.carData.images && contractData.carData.images.length > 0 && (
+                        <div className="car-images">
+                            <h4>Hình ảnh xe:</h4>
+                            <div className="image-grid">
+                                {contractData.carData.images.map((image, index) => (
+                                    <img key={index} src={image} alt={`Car ${index + 1}`} />
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
+
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label>Số hợp đồng:</label>
@@ -445,4 +502,4 @@ const ContractForm = () => {
     );
 };
 
-export default ContractForm; 
+export default CarRentalContractForm; 
