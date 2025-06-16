@@ -4,7 +4,6 @@ import cloudinaryConfig from "../../config/cloudinary"; // Import Cloudinary con
 import "./EditCarForm.css"; // We will create this CSS file next
 
 const EditCarForm = ({ car, onSave, onClose }) => {
-  const modalRef = React.useRef();
   const [formData, setFormData] = useState({
     licensePlate: "",
     brand: "",
@@ -23,7 +22,8 @@ const EditCarForm = ({ car, onSave, onClose }) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [selectedFile, setSelectedFile] = useState(null); // State for selected file object
+  const [selectedMainImageFile, setSelectedMainImageFile] = useState(null); // State for selected main image file object
+  const [selectedOtherImageFiles, setSelectedOtherImageFiles] = useState([]); // State for selected other image files array
   const [uploadingImage, setUploadingImage] = useState(false); // State to indicate image is being uploaded
 
   useEffect(() => {
@@ -52,22 +52,17 @@ const EditCarForm = ({ car, onSave, onClose }) => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  // Effect to handle clicks outside the modal
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
+  const handleMainFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedMainImageFile(e.target.files[0]);
+    }
+  };
 
-    // Attach the event listener to the document
-    document.addEventListener("mousedown", handleClickOutside);
-
-    // Clean up the event listener on component unmount
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [onClose]);
+  const handleOtherFileChange = (e) => {
+    if (e.target.files) {
+      setSelectedOtherImageFiles(Array.from(e.target.files));
+    }
+  };
 
   const handleRemoveImage = (indexToRemove) => {
     setFormData((prevData) => ({
@@ -78,79 +73,81 @@ const EditCarForm = ({ car, onSave, onClose }) => {
     }));
   };
 
-  const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0]);
-    console.log("File selected:", e.target.files[0]);
-  };
-
   const handleImageUpload = async () => {
-    console.log("Attempting to upload file:", selectedFile);
-    if (!selectedFile) {
-      alert("Please select an image file to upload.");
+    // This is for the main image (single file upload)
+    if (!selectedMainImageFile) {
+      alert("Please select a main image file to upload.");
       return;
     }
 
     const formDataUpload = new FormData();
-    formDataUpload.append("file", selectedFile);
+    formDataUpload.append("file", selectedMainImageFile);
     formDataUpload.append("upload_preset", cloudinaryConfig.uploadPreset);
     formDataUpload.append("api_key", cloudinaryConfig.apiKey);
-
-    setUploadingImage(true); // Set uploading state
-    setError(null);
-
-    try {
-      const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/upload`;
-      const uploadResponse = await axios.post(cloudinaryUrl, formDataUpload);
-
-      const uploadedImageUrl = uploadResponse.data.secure_url; // Cloudinary returns secure_url
-
-      setFormData((prevData) => ({
-        ...prevData,
-        mainImage: uploadedImageUrl, // Update mainImage instead of adding to otherImages
-      }));
-      setSelectedFile(null); // Clear selected file
-      alert("Main image uploaded and updated successfully!");
-    } catch (err) {
-      console.error("Error uploading image to Cloudinary:", err);
-      setError(
-        "Failed to upload image. Please check your Cloudinary configuration and network connection."
-      );
-    } finally {
-      setUploadingImage(false); // Reset uploading state
-    }
-  };
-
-  const handleOtherImageUpload = async () => {
-    if (!selectedFile) {
-      alert("Please select an image file to upload for other images.");
-      return;
-    }
-
-    const formDataUploadOther = new FormData();
-    formDataUploadOther.append("file", selectedFile);
-    formDataUploadOther.append("upload_preset", cloudinaryConfig.uploadPreset);
-    formDataUploadOther.append("api_key", cloudinaryConfig.apiKey);
 
     setUploadingImage(true);
     setError(null);
 
     try {
       const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/upload`;
-      const uploadResponse = await axios.post(
-        cloudinaryUrl,
-        formDataUploadOther
-      );
+      const uploadResponse = await axios.post(cloudinaryUrl, formDataUpload);
       const uploadedImageUrl = uploadResponse.data.secure_url;
 
       setFormData((prevData) => ({
         ...prevData,
-        otherImages: [...prevData.otherImages, uploadedImageUrl],
+        mainImage: uploadedImageUrl,
       }));
-      setSelectedFile(null);
-      alert("Other image uploaded and added successfully!");
+      setSelectedMainImageFile(null);
+      alert("Main image uploaded successfully!");
     } catch (err) {
-      console.error("Error uploading other image to Cloudinary:", err);
-      setError("Failed to upload other image. Please try again.");
+      console.error("Error uploading main image to Cloudinary:", err);
+      setError("Failed to upload main image. Please try again.");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleOtherImageUpload = async () => {
+    // This is for other images (multiple file upload)
+    if (selectedOtherImageFiles.length === 0) {
+      alert(
+        "Please select at least one image file to upload for other images."
+      );
+      return;
+    }
+
+    setUploadingImage(true);
+    setError(null);
+    const uploadedUrls = [];
+
+    try {
+      const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/upload`;
+
+      for (const file of selectedOtherImageFiles) {
+        const formDataUploadOther = new FormData();
+        formDataUploadOther.append("file", file);
+        formDataUploadOther.append(
+          "upload_preset",
+          cloudinaryConfig.uploadPreset
+        );
+        formDataUploadOther.append("api_key", cloudinaryConfig.apiKey);
+
+        const uploadResponse = await axios.post(
+          cloudinaryUrl,
+          formDataUploadOther
+        );
+        uploadedUrls.push(uploadResponse.data.secure_url);
+      }
+
+      setFormData((prevData) => ({
+        ...prevData,
+        otherImages: [...prevData.otherImages, ...uploadedUrls],
+      }));
+      setSelectedOtherImageFiles([]); // Clear selected files
+      alert("Other images uploaded and added successfully!");
+    } catch (err) {
+      console.error("Error uploading other images to Cloudinary:", err);
+      setError("Failed to upload other images. Please try again.");
     } finally {
       setUploadingImage(false);
     }
@@ -263,8 +260,8 @@ const EditCarForm = ({ car, onSave, onClose }) => {
   };
 
   return (
-    <div className="edit-car-modal-overlay">
-      <div className="edit-car-modal" ref={modalRef}>
+    <div className="edit-car-modal-overlay" onClick={onClose}>
+      <div className="edit-car-modal" onClick={(e) => e.stopPropagation()}>
         <div className="edit-car-modal-header">
           <h2>Edit Car Information</h2>
         </div>
@@ -316,7 +313,7 @@ const EditCarForm = ({ car, onSave, onClose }) => {
               onChange={handleChange}
             />
           </div>
-          <div className="form-group">
+          <div className="form-group full-width">
             <label htmlFor="description">Description:</label>
             <textarea
               id="description"
@@ -398,7 +395,7 @@ const EditCarForm = ({ car, onSave, onClose }) => {
             </select>
           </div>
 
-          <div className="form-group image-upload-section">
+          <div className="form-group image-upload-section full-width">
             <label>Main Image:</label>
             <div className="main-image-preview">
               {formData.mainImage ? (
@@ -412,7 +409,11 @@ const EditCarForm = ({ car, onSave, onClose }) => {
               )}
             </div>
             <div className="add-image-input-group">
-              <input type="file" accept="image/*" onChange={handleFileChange} />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleMainFileChange}
+              />
               <button
                 type="button"
                 onClick={handleImageUpload}
@@ -424,7 +425,7 @@ const EditCarForm = ({ car, onSave, onClose }) => {
             </div>
           </div>
 
-          <div className="form-group image-upload-section">
+          <div className="form-group image-upload-section full-width">
             <label>Other Images:</label>
             <div className="image-preview-container">
               {formData.otherImages.length > 0 ? (
@@ -445,14 +446,19 @@ const EditCarForm = ({ car, onSave, onClose }) => {
               )}
             </div>
             <div className="add-image-input-group">
-              <input type="file" accept="image/*" onChange={handleFileChange} />
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleOtherFileChange}
+              />
               <button
                 type="button"
                 onClick={handleOtherImageUpload}
                 className="add-image-btn"
                 disabled={uploadingImage || loading}
               >
-                {uploadingImage ? "Uploading..." : "Upload Other Image"}
+                {uploadingImage ? "Uploading..." : "Upload Other Images"}
               </button>
             </div>
           </div>
