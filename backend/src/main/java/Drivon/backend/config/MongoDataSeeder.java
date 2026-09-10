@@ -4,6 +4,7 @@ import Drivon.backend.model.*;
 import Drivon.backend.model.Car.FuelType;
 import Drivon.backend.model.Car.Transmission;
 import Drivon.backend.repository.*;
+import Drivon.backend.service.SequenceGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,6 +35,9 @@ public class MongoDataSeeder implements CommandLineRunner {
     @Autowired
     private OwnerWalletRepository ownerWalletRepository;
 
+    @Autowired
+    private SequenceGeneratorService sequenceGeneratorService;
+
     @Autowired(required = false)
     private PasswordEncoder passwordEncoder;
 
@@ -41,6 +45,17 @@ public class MongoDataSeeder implements CommandLineRunner {
     public void run(String... args) {
         try {
             seedData();
+            sequenceGeneratorService.initSequenceIfLess("users_sequence", 20L);
+            sequenceGeneratorService.initSequenceIfLess("bookings_sequence", 20L);
+            sequenceGeneratorService.initSequenceIfLess("contracts_sequence", 20L);
+            sequenceGeneratorService.initSequenceIfLess("reviews_sequence", 20L);
+            sequenceGeneratorService.initSequenceIfLess("payments_sequence", 20L);
+            sequenceGeneratorService.initSequenceIfLess("promotions_sequence", 20L);
+            sequenceGeneratorService.initSequenceIfLess("notifications_sequence", 20L);
+            sequenceGeneratorService.initSequenceIfLess("messages_sequence", 20L);
+            sequenceGeneratorService.initSequenceIfLess("conversations_sequence", 20L);
+            sequenceGeneratorService.initSequenceIfLess("user_images_sequence", 20L);
+            sequenceGeneratorService.initSequenceIfLess("car_images_sequence", 100L);
         } catch (Exception e) {
             System.err.println("Error during MongoDB data seeding: " + e.getMessage());
             e.printStackTrace();
