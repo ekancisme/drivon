@@ -1,6 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from 'axios';
+import {
+  FiUser,
+  FiMessageSquare,
+  FiTruck,
+  FiLogOut,
+  FiShield,
+  FiSettings,
+  FiChevronDown,
+  FiMenu,
+  FiX,
+  FiGrid,
+  FiHome,
+} from 'react-icons/fi';
 import Login from '../auth/Login';
 import Signup from '../auth/Signup';
 import ForgotPasswordPage from '../auth/ForgotPasswordPage';
@@ -11,6 +24,15 @@ import webSocketService from '../../services/WebSocketService';
 import './MainLayout.css';
 import { API_URL } from '../../api/configApi';
 import { showErrorToast } from '../notification/notification';
+
+const NAV_LINKS = [
+  { to: '/', label: 'Home', match: (p) => p === '/' },
+  { to: '/rent-car', label: 'Rent car', match: (p) => p.startsWith('/rent-car') },
+  { to: '/contracts', label: 'Partner Applications', match: (p) => p.startsWith('/contracts') },
+  { to: '/rent-your-car', label: 'Become a Partner', match: (p) => p.startsWith('/rent-your-car') },
+  { to: '/contact', label: 'Contact', match: (p) => p === '/contact' },
+];
+
 const MainLayout = ({ user, handleLogout, children }) => {
   const [authMode, setAuthMode] = useState("login"); // 'login', 'signup', or 'forgot'
   const [userRole, setUserRole] = useState(null);
@@ -18,6 +40,7 @@ const MainLayout = ({ user, handleLogout, children }) => {
   const [roleCheckLoading, setRoleCheckLoading] = useState(false);
   const [roleCheckError, setRoleCheckError] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const avatarUrl =
@@ -65,7 +88,7 @@ const MainLayout = ({ user, handleLogout, children }) => {
       // Set timeout for role check (10 seconds)
       const timeoutDuration = 10000;
       let timeoutId;
-      
+
       const timeoutPromise = new Promise((_, reject) => {
         timeoutId = setTimeout(() => {
           reject(new Error('Role check timeout'));
@@ -74,28 +97,28 @@ const MainLayout = ({ user, handleLogout, children }) => {
 
       try {
         const roleCheckPromise = axios.get(`${API_URL}/admin/check-role/${user.userId}`);
-        
+
         // Race between role check and timeout
         const response = await Promise.race([roleCheckPromise, timeoutPromise]);
-        
+
         // Clear timeout if role check completes successfully
         clearTimeout(timeoutId);
-        
+
         const { role, status } = response.data;
-        
+
         if (status?.toLowerCase() === 'active') {
           setUserRole(role?.toLowerCase());
         } else {
           setUserRole(null);
         }
-        
+
         setRoleCheckComplete(true);
       } catch (error) {
         // Clear timeout if it was set
         if (timeoutId) {
           clearTimeout(timeoutId);
         }
-        
+
         console.error('Error checking user role:', error);
         setUserRole(null);
         setRoleCheckComplete(true);
@@ -108,7 +131,7 @@ const MainLayout = ({ user, handleLogout, children }) => {
     checkUserRole();
   }, [user]);
 
-  // Close menu when clicking outside
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -125,6 +148,31 @@ const MainLayout = ({ user, handleLogout, children }) => {
     };
   }, [menuOpen]);
 
+  // Header elevation on scroll + close overlays on route change
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    setMenuOpen(false);
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  // Escape closes overlays
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        setMenuOpen(false);
+        setMobileMenuOpen(false);
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, []);
+
   const handleAuthSuccess = (userData) => {
     if (userData) {
       localStorage.setItem("user", JSON.stringify(userData));
@@ -139,6 +187,10 @@ const MainLayout = ({ user, handleLogout, children }) => {
     navigate("/"); // Go back to previous page when closing modal
   };
 
+  const isAdmin = userRole === "admin";
+  const isOwner = userRole === "owner" || userRole === "verify_owner";
+  const roleLabel = isAdmin ? 'Admin' : isOwner ? 'Partner' : null;
+
   // Show loader while checking role
   if (roleCheckLoading) {
     return <div className="loading"><Loader /></div>;
@@ -146,120 +198,269 @@ const MainLayout = ({ user, handleLogout, children }) => {
 
   return (
     <div className="HomeLayout">
-      <header className="main-header">
-        {/* Mobile Menu Button */}
-        <button 
-          className="mobile-menu-btn"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          <i className="bi bi-list"></i>
-        </button>
+      <header
+        className={`dv-header backdrop-blur-xl bg-[#0B0F19]/80 border-b border-white/10${scrolled ? ' dv-header--scrolled' : ''}`}
+      >
+        <div className="dv-header__inner">
+          {/* Mobile Menu Button */}
+          <button
+            className="dv-burger"
+            onClick={() => setMobileMenuOpen(true)}
+            aria-label="Open menu"
+          >
+            <FiMenu />
+          </button>
 
-        {/* Logo */}
-        <div className="logo" style={{cursor: 'pointer'}} onClick={() => navigate('/') }>
-          DRI<span>VON</span>
-        </div>
-
-        {/* Desktop Navigation */}
-        <nav className="desktop-nav">
-          <Link to="/" className={location.pathname === "/" ? "active" : ""}>Home</Link>
-          <Link to="/rent-car" className={location.pathname.startsWith("/rent-car") ? "active" : ""}>Rent car</Link>
-          <Link to="/contracts" className={location.pathname.startsWith("/contracts") ? "active" : ""}>Partner Applications</Link>
-          <Link to="/rent-your-car" className={location.pathname.startsWith("/rent-your-car") ? "active" : ""}>Become a Partner</Link>
-          <Link to="/contact" className={location.pathname === "/contact" ? "active" : ""}>Contact</Link>
-        </nav>
-
-        {/* Right Side - User Menu & Notifications */}
-        <div className="header-right">
-          <div className="user-menu-container" ref={menuRef}>
-            {user ? (
-              <>
-                <div className="user-menu-trigger" onClick={() => setMenuOpen((open) => !open)}>
-                  <img
-                    src={avatarUrl}
-                    alt="avatar"
-                    className="user-avatar-header"
-                  />
-                  <span className="user-name">{user.fullName || user.email || "User"}</span>
-                </div>
-                {menuOpen && (
-                  <div className="user-dropdown-menu">
-                    <Link to="/profile" className="dropdown-item">
-                      <i className="bi bi-person"></i>
-                      Profile
-                    </Link>
-                    <Link to="/messages" className="dropdown-item">
-                      <i className="bi bi-chat-dots"></i>
-                      Messages
-                    </Link>
-                    <Link to="/my-rentals" className="dropdown-item">
-                      <i className="bi bi-car-front"></i>
-                      My Rentals
-                    </Link>
-                    {/* <Link to="/payment" className="dropdown-item">
-                      <i className="bi bi-credit-card"></i>
-                      Payment
-                    </Link> */}
-                    
-                    {/* Admin Dashboard Button */}
-                    {userRole === "admin" && (
-                      <Link to="/adminSecret" className="dropdown-item">
-                        <i className="bi bi-speedometer2"></i>
-                        Admin Dashboard
-                      </Link>
-                    )}
-                    
-                    {/* Owner Dashboard Button */}
-                    {(userRole === "owner" ||userRole === "verify_owner") && (
-                      <Link to="/owner" className="dropdown-item">
-                        <i className="bi bi-gear"></i>
-                        Owner Dashboard
-                      </Link>
-                    )}
-                    
-                    <button onClick={handleLogout} className="dropdown-item logout-button">Logout</button>
-                  </div>
-                )}
-              </>
-            ) : (
-              <button 
-                className="login-btn"
-                onClick={() => navigate('/auth')}
-              >
-                Login / Signup
-              </button>
-            )}
+          {/* Logo */}
+          <div className="dv-logo" onClick={() => navigate('/')}>
+            DRI<span>VON</span>
           </div>
-          <NotificationBell />
-        </div>
 
-        {/* Mobile Navigation Overlay */}
-        {mobileMenuOpen && (
-          <div className="mobile-nav-overlay" onClick={() => setMobileMenuOpen(false)}>
-            <div className="mobile-nav-content" onClick={(e) => e.stopPropagation()}>
-              <div className="mobile-nav-header">
-                <div className="logo" style={{cursor: 'pointer'}} onClick={() => { setMobileMenuOpen(false); navigate('/'); }}>DRI<span>VON</span></div>
-                <button 
-                  className="close-mobile-menu"
-                  onClick={() => setMobileMenuOpen(false)}
+          {/* Desktop Navigation */}
+          <nav className="dv-nav">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`dv-nav-link${link.match(location.pathname) ? ' is-active' : ''}`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Right Side - User Menu & Notifications */}
+          <div className="dv-header__right">
+            <div className="dv-umenu" ref={menuRef}>
+              {user ? (
+                <>
+                  <div
+                    className={`dv-umenu__trigger${menuOpen ? ' is-open' : ''}`}
+                    onClick={() => setMenuOpen((open) => !open)}
+                    role="button"
+                    tabIndex={0}
+                    aria-haspopup="menu"
+                    aria-expanded={menuOpen}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setMenuOpen((open) => !open);
+                      }
+                    }}
+                  >
+                    <img src={avatarUrl} alt="avatar" className="dv-umenu__avatar" />
+                    <span className="dv-umenu__name">
+                      {user.fullName || user.email || "User"}
+                    </span>
+                    <FiChevronDown className="dv-umenu__caret" />
+                  </div>
+
+                  {menuOpen && (
+                    <div className="dv-dropdown" role="menu">
+                      <div className="dv-dropdown__head">
+                        <img src={avatarUrl} alt="avatar" />
+                        <div className="dv-dropdown__meta">
+                          <p className="dv-dropdown__name">
+                            {user.fullName || "User"}
+                          </p>
+                          <p className="dv-dropdown__email">
+                            {user.email || ""}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="dv-dropdown__label">Account</div>
+                      <Link to="/profile" className="dv-dropdown__item">
+                        <FiUser />
+                        Profile
+                      </Link>
+                      <Link to="/messages" className="dv-dropdown__item">
+                        <FiMessageSquare />
+                        Messages
+                      </Link>
+                      <Link to="/my-rentals" className="dv-dropdown__item">
+                        <FiTruck />
+                        My Rentals
+                      </Link>
+
+                      {(isOwner || isAdmin) && <div className="dv-dropdown__divider" />}
+
+                      {isOwner && (
+                        <>
+                          <div className="dv-dropdown__label">Workspace</div>
+                          <Link to="/owner" className="dv-dropdown__item">
+                            <FiSettings />
+                            Owner Portal
+                            <span className="dv-dropdown__badge">Owner</span>
+                          </Link>
+                        </>
+                      )}
+
+                      {isAdmin && (
+                        <>
+                          {!isOwner && <div className="dv-dropdown__label">Workspace</div>}
+                          <Link to="/adminSecret" className="dv-dropdown__item">
+                            <FiShield />
+                            Admin Dashboard
+                            <span className="dv-dropdown__badge dv-dropdown__badge--admin">Admin</span>
+                          </Link>
+                        </>
+                      )}
+
+                      <div className="dv-dropdown__divider" />
+
+                      <button
+                        onClick={handleLogout}
+                        className="dv-dropdown__item dv-dropdown__item--logout"
+                      >
+                        <FiLogOut />
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <button
+                  className="dv-login-btn"
+                  onClick={() => navigate('/auth')}
                 >
-                  <i className="bi bi-x"></i>
+                  Login / Signup
                 </button>
+              )}
+            </div>
+            <NotificationBell />
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Navigation Overlay */}
+      {mobileMenuOpen && (
+        <div className="dv-mobile-overlay" onClick={() => setMobileMenuOpen(false)}>
+          <div className="dv-mobile-panel" onClick={(e) => e.stopPropagation()}>
+            <div className="dv-mobile-head">
+              <div className="dv-logo" onClick={() => { setMobileMenuOpen(false); navigate('/'); }}>
+                DRI<span>VON</span>
               </div>
-              <nav className="mobile-nav">
-                <Link to="/" className={location.pathname === "/" ? "active" : ""} onClick={() => setMobileMenuOpen(false)}>Home</Link>
-                <Link to="/rent-car" className={location.pathname.startsWith("/rent-car") ? "active" : ""} onClick={() => setMobileMenuOpen(false)}>Rent car</Link>
-                <Link to="/contracts" className={location.pathname.startsWith("/contracts") ? "active" : ""} onClick={() => setMobileMenuOpen(false)}>Partner Applications</Link>
-                <Link to="/rent-your-car" className={location.pathname.startsWith("/rent-your-car") ? "active" : ""} onClick={() => setMobileMenuOpen(false)}>Become a Partner</Link>
-                <Link to="/contact" className={location.pathname === "/contact" ? "active" : ""} onClick={() => setMobileMenuOpen(false)}>Contact</Link>
-                <div className="mobile-search-box">
-                  <input type="text" placeholder="Search..." />
+              <button
+                className="dv-mobile-close"
+                onClick={() => setMobileMenuOpen(false)}
+                aria-label="Close menu"
+              >
+                <FiX />
+              </button>
+            </div>
+
+            {user && (
+              <div className="dv-mobile-user">
+                <img src={avatarUrl} alt="avatar" />
+                <div className="dv-dropdown__meta">
+                  <p className="dv-mobile-user__name">{user.fullName || "User"}</p>
+                  <p className="dv-mobile-user__email">{user.email || ""}</p>
                 </div>
-              </nav>
+              </div>
+            )}
+
+            <nav>
+              <Link
+                to="/"
+                className={`dv-mobile-link${location.pathname === "/" ? ' is-active' : ''}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <FiHome />
+                Home
+              </Link>
+              <Link
+                to="/rent-car"
+                className={`dv-mobile-link${location.pathname.startsWith("/rent-car") ? ' is-active' : ''}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <FiTruck />
+                Rent car
+              </Link>
+              <Link
+                to="/contracts"
+                className={`dv-mobile-link${location.pathname.startsWith("/contracts") ? ' is-active' : ''}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <FiGrid />
+                Partner Applications
+              </Link>
+              <Link
+                to="/rent-your-car"
+                className={`dv-mobile-link${location.pathname.startsWith("/rent-your-car") ? ' is-active' : ''}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <FiSettings />
+                Become a Partner
+              </Link>
+              <Link
+                to="/contact"
+                className={`dv-mobile-link${location.pathname === "/contact" ? ' is-active' : ''}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <FiMessageSquare />
+                Contact
+              </Link>
+            </nav>
+
+            {user && (
+              <div className="dv-mobile-section">
+                <div className="dv-mobile-section__title">Account</div>
+                <Link to="/profile" className="dv-mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                  <FiUser />
+                  Profile
+                </Link>
+                <Link to="/my-rentals" className="dv-mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                  <FiTruck />
+                  My Rentals
+                </Link>
+                <Link to="/messages" className="dv-mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                  <FiMessageSquare />
+                  Messages
+                </Link>
+              </div>
+            )}
+
+            {(isOwner || isAdmin) && (
+              <div className="dv-mobile-section">
+                <div className="dv-mobile-section__title">Workspace</div>
+                {isOwner && (
+                  <Link to="/owner" className="dv-mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                    <FiSettings />
+                    Owner Portal
+                  </Link>
+                )}
+                {isAdmin && (
+                  <Link to="/adminSecret" className="dv-mobile-link" onClick={() => setMobileMenuOpen(false)}>
+                    <FiShield />
+                    Admin Dashboard
+                  </Link>
+                )}
+              </div>
+            )}
+
+            <div className="dv-mobile-cta">
+              {user ? (
+                <button
+                  className="dv-dropdown__item dv-dropdown__item--logout"
+                  onClick={() => { setMobileMenuOpen(false); handleLogout(); }}
+                >
+                  <FiLogOut />
+                  Logout
+                </button>
+              ) : (
+                <button
+                  className="dv-login-btn"
+                  style={{ width: '100%' }}
+                  onClick={() => { setMobileMenuOpen(false); navigate('/auth'); }}
+                >
+                  Login / Signup
+                </button>
+              )}
             </div>
           </div>
-        )}
-      </header>
+        </div>
+      )}
 
       {showAuthForm && (
         <div className="auth-modal">
@@ -273,8 +474,7 @@ const MainLayout = ({ user, handleLogout, children }) => {
                   Login
                 </button>
                 <button
-                  className={`auth-tab ${authMode === "signup" ? "active" : ""
-                    }`}
+                  className={`auth-tab ${authMode === "signup" ? "active" : ""}`}
                   onClick={() => setAuthMode("signup")}
                 >
                   Signup
@@ -284,13 +484,8 @@ const MainLayout = ({ user, handleLogout, children }) => {
 
             {authMode === "login" && (
               <>
-                <Login onLoginSuccess={handleAuthSuccess} />
-                <div
-                  style={{
-                    textAlign: "center",
-                    marginTop: "10px",
-                  }}
-                >
+                <Login onLoginSuccess={handleAuthSuccess} embedded />
+                <div style={{ textAlign: "center", marginTop: "14px" }}>
                   <button
                     onClick={() => setAuthMode("forgot")}
                     className="link-button"
@@ -302,12 +497,12 @@ const MainLayout = ({ user, handleLogout, children }) => {
               </>
             )}
             {authMode === "signup" && (
-              <Signup onSignupSuccess={handleAuthSuccess} />
+              <Signup onSignupSuccess={handleAuthSuccess} embedded />
             )}
             {authMode === "forgot" && (
               <>
-                <ForgotPasswordPage />
-                <div style={{ textAlign: "center", marginTop: "10px" }}>
+                <ForgotPasswordPage embedded />
+                <div style={{ textAlign: "center", marginTop: "14px" }}>
                   <button
                     onClick={() => setAuthMode("login")}
                     className="link-button"
@@ -317,7 +512,7 @@ const MainLayout = ({ user, handleLogout, children }) => {
                 </div>
               </>
             )}
-            <button className="close-modal" onClick={handleCloseModal}>
+            <button className="close-modal" onClick={handleCloseModal} aria-label="Close">
               ×
             </button>
           </div>
@@ -326,26 +521,6 @@ const MainLayout = ({ user, handleLogout, children }) => {
 
       <div className="page-content">{children}</div>
       <Footer />
-      <style>{`
-        .user-dropdown-menu .dropdown-item:hover, .user-dropdown-menu .dropdown-item:focus {
-          background: #f5f5f5;
-          color: #1a73e8;
-          outline: none;
-        }
-        .mobile-nav a:hover {
-          color: #FFD700 !important;
-          background-color: #f5f5f5 !important;
-        }
-        .mobile-nav a {
-          color: #222 !important;
-          background: none !important;
-        }
-        .mobile-nav a.active {
-          color: #FFD700 !important;
-          background-color: #fffbe7 !important;
-          border-left: 3px solid #FFD700;
-        }
-      `}</style>
     </div>
   );
 };
