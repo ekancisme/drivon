@@ -1,697 +1,130 @@
-/* ============================================================
-   DRIVON — MY RENTALS (Dark Tech)
-   Depends on the design tokens declared in src/index.css
-   ============================================================ */
+.my-rentals-container {
+  min-height: calc(
+    100vh - 64px - 300px
+  ); /* Trừ đi chiều cao của header và footer */
+  padding: 40px 0;
+  background-color: #f5f5f5;
+}
 
-.mr-page {
-  max-width: 1240px;
+.my-rentals-content {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 24px 72px;
+  padding: 0 24px;
 }
 
-/* ---------------- Head ---------------- */
-.mr-head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 18px;
-  flex-wrap: wrap;
-  margin-bottom: 24px;
-}
-
-.mr-title {
-  margin: 0;
-  font-size: 1.85rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--text);
-}
-
-.mr-sub {
-  margin: 8px 0 0;
-  font-size: 0.86rem;
-  color: var(--text-muted);
-}
-
-/* ---------------- Tabs ---------------- */
-.mr-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 6px;
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  background: rgba(11, 15, 25, 0.55);
-  margin-bottom: 24px;
-}
-
-.mr-tab {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  font-size: 0.83rem;
-  font-weight: 600;
-  font-family: inherit;
-  color: var(--text-muted);
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: var(--r-md);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease,
-    transform 0.16s ease;
-}
-
-.mr-tab:hover {
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.mr-tab--active {
-  color: #fff;
-  background: var(--grad-primary);
-  border-color: transparent;
-  box-shadow: 0 14px 30px -18px var(--primary-glow);
-}
-
-.mr-tab-count {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 22px;
-  height: 20px;
-  padding: 0 6px;
-  border-radius: 999px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.mr-tab--active .mr-tab-count {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.22);
-}
-
-/* ---------------- Loading / Empty ---------------- */
-.mr-loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 40vh;
-}
-
-.mr-loader {
-  width: 34px;
-  height: 34px;
-  border: 3px solid rgba(255, 255, 255, 0.14);
-  border-top-color: var(--primary);
-  border-radius: 50%;
-  animation: dv-spin 0.8s linear infinite;
-}
-
-.mr-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding: 72px 24px;
+.page-title {
   text-align: center;
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--r-lg);
-  background: rgba(11, 15, 25, 0.4);
+  margin-bottom: 40px !important;
+  color: #333;
 }
 
-.mr-empty svg {
-  font-size: 2rem;
-  color: var(--text-dim);
+.rentals-grid {
+  margin-top: 24px;
 }
 
-.mr-empty-title {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.mr-empty-text {
-  margin: 0;
-  font-size: 0.84rem;
-  color: var(--text-muted);
-}
-
-/* ---------------- Grid ---------------- */
-.mr-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 22px;
-}
-
-/* ---------------- Trip card ---------------- */
-.mr-card {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: linear-gradient(160deg, rgba(19, 27, 46, 0.92) 0%, rgba(11, 15, 25, 0.92) 100%);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  box-shadow: 0 24px 60px -34px rgba(0, 0, 0, 0.9);
-  transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
-}
-
-.mr-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--border-strong);
-  box-shadow:
-    0 30px 70px -36px rgba(0, 0, 0, 0.95),
-    0 0 60px -40px var(--primary-glow);
-}
-
-.mr-card-media {
-  position: relative;
-  height: 168px;
-  background: rgba(11, 15, 25, 0.9);
-  overflow: hidden;
-}
-
-.mr-card-img {
-  width: 100%;
+.rental-card {
   height: 100%;
-  object-fit: cover;
-  display: block;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.mr-card-media-fallback {
-  width: 100%;
-  height: 100%;
+.rental-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.rental-header {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-dim);
-  font-size: 2.1rem;
-  background: linear-gradient(150deg, rgba(124, 58, 237, 0.14), rgba(34, 211, 238, 0.08));
-}
-
-.mr-card-plate {
-  position: absolute;
-  left: 12px;
-  bottom: 12px;
-  padding: 5px 11px;
-  border-radius: var(--r-md);
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: #fff;
-  background: rgba(11, 15, 25, 0.78);
-  border: 1px solid var(--border-strong);
-  backdrop-filter: blur(8px);
-}
-
-.mr-card-badges {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-}
-
-.mr-card-body {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 18px;
-  flex: 1;
-}
-
-.mr-card-name {
-  margin: 0;
-  font-size: 1.02rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--text);
-}
-
-.mr-card-order {
-  margin: 4px 0 0;
-  font-size: 0.74rem;
-  color: var(--text-dim);
-  letter-spacing: 0.04em;
-}
-
-/* ---------------- Badges ---------------- */
-.mr-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  border: 1px solid transparent;
-  white-space: nowrap;
-}
-
-.mr-badge--ok {
-  color: #BBF7D0;
-  background: rgba(34, 197, 94, 0.12);
-  border-color: rgba(34, 197, 94, 0.32);
-}
-
-.mr-badge--warn {
-  color: #FDE68A;
-  background: rgba(245, 158, 11, 0.12);
-  border-color: rgba(245, 158, 11, 0.32);
-}
-
-.mr-badge--info {
-  color: #A5F3FC;
-  background: rgba(34, 211, 238, 0.12);
-  border-color: rgba(34, 211, 238, 0.32);
-}
-
-.mr-badge--danger {
-  color: #FECDD3;
-  background: rgba(244, 63, 94, 0.12);
-  border-color: rgba(244, 63, 94, 0.32);
-}
-
-.mr-badge--muted {
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.04);
-  border-color: var(--border);
-}
-
-/* ---------------- Meta rows ---------------- */
-.mr-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 11px;
-}
-
-.mr-meta-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 11px;
-  font-size: 0.84rem;
-  color: var(--text);
-}
-
-.mr-meta-row > svg {
-  flex-shrink: 0;
-  margin-top: 2px;
-  font-size: 0.98rem;
-  color: var(--cyan);
-}
-
-.mr-meta-label {
-  display: block;
-  font-size: 0.68rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-dim);
-  margin-bottom: 2px;
-}
-
-.mr-meta-value {
-  color: var(--text);
-}
-
-.mr-meta-value--muted {
-  color: var(--text-muted);
-}
-
-.mr-time-range {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.mr-time-arrow {
-  color: var(--text-dim);
-}
-
-/* ---------------- Cancel note ---------------- */
-.mr-note {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 10px 12px;
-  border-radius: var(--r-md);
-  font-size: 0.76rem;
-  line-height: 1.5;
-  color: #FDE68A;
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.28);
-}
-
-.mr-note svg {
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-/* ---------------- Footer ---------------- */
-.mr-card-foot {
-  display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.rental-header h4 {
+  margin: 0;
+  color: #333;
+}
+
+.rental-info {
+  display: flex;
+  flex-direction: column;
   gap: 12px;
-  flex-wrap: wrap;
-  margin-top: auto;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
+  margin-bottom: 24px;
 }
 
-.mr-total-label {
-  display: block;
-  font-size: 0.68rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-dim);
+.rental-info .ant-typography {
+  color: #666;
+  font-size: 14px;
 }
 
-.mr-total-value {
-  font-size: 1.06rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  background: var(--grad-primary);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+.rental-actions {
+  margin-top: 16px;
+  text-align: right;
 }
 
-.mr-actions {
+.loading-container {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-/* ---------------- Buttons ---------------- */
-.mr-btn {
-  display: inline-flex;
-  align-items: center;
   justify-content: center;
-  gap: 7px;
-  padding: 9px 14px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  font-family: inherit;
-  border-radius: var(--r-md);
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: transform 0.16s ease, box-shadow 0.24s ease, background 0.24s ease,
-    border-color 0.24s ease;
-}
-
-.mr-btn--icon {
-  width: 38px;
-  height: 38px;
-  padding: 0;
-  font-size: 0.95rem;
-}
-
-.mr-btn--primary {
-  color: #fff;
-  background: var(--grad-primary);
-  box-shadow: 0 14px 32px -18px var(--primary-glow);
-}
-
-.mr-btn--primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 18px 42px -18px var(--primary-glow), 0 0 22px -10px var(--cyan-glow);
-}
-
-.mr-btn--ghost {
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.04);
-  border-color: var(--border);
-}
-
-.mr-btn--ghost:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--border-strong);
-  transform: translateY(-1px);
-}
-
-.mr-btn--success {
-  color: #BBF7D0;
-  background: rgba(34, 197, 94, 0.14);
-  border-color: rgba(34, 197, 94, 0.34);
-}
-
-.mr-btn--success:hover {
-  background: rgba(34, 197, 94, 0.22);
-  transform: translateY(-1px);
-}
-
-.mr-btn--warn {
-  color: #FDE68A;
-  background: rgba(245, 158, 11, 0.14);
-  border-color: rgba(245, 158, 11, 0.34);
-}
-
-.mr-btn--warn:hover {
-  background: rgba(245, 158, 11, 0.22);
-  transform: translateY(-1px);
-}
-
-.mr-btn--danger {
-  color: #FECDD3;
-  background: rgba(244, 63, 94, 0.12);
-  border-color: rgba(244, 63, 94, 0.32);
-}
-
-.mr-btn--danger:hover {
-  background: rgba(244, 63, 94, 0.2);
-  transform: translateY(-1px);
-}
-
-/* ---------------- Pagination ---------------- */
-.mr-pagination {
-  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 32px;
+  min-height: 300px;
 }
 
-.mr-page-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 38px;
-  height: 38px;
-  padding: 0 10px;
-  font-size: 0.84rem;
-  font-weight: 600;
-  font-family: inherit;
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  cursor: pointer;
-  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+.empty-state {
+  margin: 60px 0;
 }
 
-.mr-page-btn:hover:not(:disabled) {
-  color: var(--text);
-  border-color: var(--border-strong);
+/* Custom styles for Rating Modal Tooltip */
+.rating-modal .ant-tooltip {
+  animation: fadeOut 1s forwards;
 }
 
-.mr-page-btn--active {
-  color: #fff;
-  background: var(--grad-primary);
-  border-color: transparent;
-  box-shadow: 0 12px 26px -16px var(--primary-glow);
+/* Keyframes để giảm độ mờ từ 1 → 0 */
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
 }
 
-.mr-page-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-/* ---------------- Ant Design modal (dark) ---------------- */
-.mr-modal .ant-modal-content {
-  background: linear-gradient(160deg, rgba(19, 27, 46, 0.98) 0%, rgba(11, 15, 25, 0.98) 100%);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.95);
-}
-
-.mr-modal .ant-modal-header {
-  background: transparent;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 18px;
-  padding-bottom: 14px;
-}
-
-.mr-modal .ant-modal-title {
-  color: var(--text);
-  font-weight: 700;
-}
-
-.mr-modal .ant-modal-close {
-  color: var(--text-muted);
-}
-
-.mr-modal .ant-modal-close:hover {
-  color: var(--text);
-}
-
-.mr-modal .ant-modal-footer {
-  border-top: 1px solid var(--border);
-  margin-top: 18px;
-  padding-top: 14px;
-}
-
-.mr-modal .ant-btn {
-  border-radius: var(--r-md);
-  font-weight: 600;
-}
-
-.mr-modal .ant-btn-default {
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.04);
-  border-color: var(--border);
-}
-
-.mr-modal .ant-btn-default:hover {
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--border-strong);
-}
-
-.mr-modal .ant-btn-primary {
-  background: var(--grad-primary);
-  border-color: transparent;
-}
-
-.mr-modal .ant-input,
-.mr-modal .ant-input-affix-wrapper,
-.mr-modal textarea.ant-input {
-  color: var(--text);
-  background: rgba(11, 15, 25, 0.66);
-  border-color: var(--border);
-}
-
-.mr-modal .ant-input::placeholder {
-  color: var(--text-dim);
-}
-
-.mr-modal .ant-input:hover,
-.mr-modal .ant-input:focus {
-  border-color: var(--primary);
-  background: rgba(11, 15, 25, 0.9);
-  box-shadow: none;
-}
-
-.mr-modal .ant-result-title {
-  color: var(--text);
-}
-
-.mr-modal .ant-rate {
-  color: var(--primary);
-}
-
-/* ---------------- Descriptions (details) ---------------- */
-.rental-details .ant-descriptions-view {
-  border-color: var(--border) !important;
-}
-
-.rental-details .ant-descriptions-item-label {
-  color: var(--text-muted) !important;
-  background: rgba(255, 255, 255, 0.03) !important;
-  border-color: var(--border) !important;
-  font-size: 0.78rem;
-  font-weight: 600;
-}
-
-.rental-details .ant-descriptions-item-content {
-  color: var(--text) !important;
-  background: transparent !important;
-  border-color: var(--border) !important;
-}
-
-.mr-strong {
-  color: var(--text);
-  font-weight: 700;
-}
-
-.mr-modal-summary {
-  padding: 12px;
-  border-radius: var(--r-md);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border);
-  margin-bottom: 16px;
-  font-size: 0.84rem;
-  color: var(--text);
-  line-height: 1.7;
-}
-
-.mr-modal-text {
-  font-size: 0.95rem;
-  color: var(--text);
-  margin-bottom: 16px;
-}
-
-.mr-modal-hint {
-  font-size: 0.8rem;
-  line-height: 1.6;
-}
-
-.mr-modal-hint--danger {
-  color: #FECDD3;
-}
-
-.mr-modal-hint--warn {
-  color: #FDE68A;
-}
-
-.mr-modal-hint--info {
-  color: #A5F3FC;
-}
-
-.mr-modal-center {
-  text-align: center;
-  padding: 12px 0;
-}
-
-/* ---------------- Responsive ---------------- */
+/* Responsive styles */
 @media (max-width: 768px) {
-  .mr-page {
-    padding: 24px 16px 56px;
+  .my-rentals-container {
+    padding: 24px 0;
   }
 
-  .mr-title {
-    font-size: 1.5rem;
+  .my-rentals-content {
+    padding: 0 16px;
   }
 
-  .mr-grid {
-    grid-template-columns: minmax(0, 1fr);
+  .page-title {
+    font-size: 24px !important;
+    margin-bottom: 24px !important;
   }
 
-  .mr-tabs {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-  }
-
-  .mr-card-foot {
-    align-items: flex-start;
+  .rental-card {
+    margin-bottom: 16px;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .mr-card:hover,
-  .mr-btn:hover,
-  .mr-tab:hover {
-    transform: none;
+@media (max-width: 480px) {
+  .rental-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .rental-info {
+    gap: 8px;
+  }
+
+  .rental-actions {
+    justify-content: center;
   }
 }

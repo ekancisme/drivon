@@ -1,15 +1,15 @@
-/* BookingManager Dark Tech */
+/* RentalHistoryPage.module.css */
 .mainContent {
-  background: var(--bg);
+  background: #fafbfc;
   min-height: 100vh;
-  color: var(--text);
 }
 
 .ownerContentPage {
   width: 100%;
+  /* max-width: 1100px; */
   min-height: 100vh;
   margin: 0;
-  padding: var(--space-6) 0 0 0;
+  padding: 24px 0 0 0;
   background: transparent;
   box-shadow: none;
   border-radius: 0;
@@ -20,106 +20,94 @@
   display: flex;
   justify-content: flex-start;
   align-items: flex-end;
-  margin-bottom: var(--space-6);
+  margin-bottom: 24px;
   flex-wrap: wrap;
-  gap: var(--space-6);
+  gap: 24px;
 }
 
 .h2Title {
-  font-size: var(--text-2xl);
-  font-weight: 700;
-  margin-bottom: var(--space-1);
-  color: var(--text);
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.2em;
 }
 
 .subtitle {
-  color: var(--text-muted);
-  margin-bottom: var(--space-4);
-  font-size: var(--text-sm);
+  color: #888;
+  margin-bottom: 1.5em;
 }
 
 .statsGrid {
   display: flex;
-  gap: var(--space-5);
-  margin-bottom: var(--space-8);
-  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 32px;
 }
 
 .statCard {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-xl);
-  box-shadow: var(--shadow-md);
-  padding: var(--space-5) var(--space-6);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 24px 32px;
   display: flex;
   align-items: center;
-  gap: var(--space-4);
-  min-width: 200px;
+  gap: 16px;
+  min-width: 180px;
   flex: 1;
 }
 
 .statIcon {
-  font-size: 1.8rem;
-  color: var(--primary-light);
-  background: rgba(124, 58, 237, 0.15);
-  border: 1px solid rgba(124, 58, 237, 0.3);
-  border-radius: var(--r-lg);
-  padding: var(--space-3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 2.2rem;
+  color: #6c63ff;
+  background: #f3f4ff;
+  border-radius: 50%;
+  padding: 12px;
+  margin-right: 8px;
 }
 
 .statValue {
-  font-size: var(--text-2xl);
-  font-weight: 700;
-  color: var(--text);
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 .statLabel {
-  color: var(--text-muted);
-  font-size: var(--text-sm);
+  color: #888;
+  font-size: 1rem;
 }
 
 .filtersBar {
   display: flex;
-  gap: var(--space-4);
-  margin-bottom: var(--space-6);
+  gap: 16px;
+  margin-bottom: 24px;
   align-items: center;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: var(--space-4) var(--space-5);
-  border-radius: var(--r-lg);
-  box-shadow: var(--shadow-sm);
-  flex-wrap: wrap;
+  background: #fff;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
 }
 
 .searchInput,
 .statusSelect,
 .dateInput {
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--r-md);
-  border: 1px solid var(--border);
-  background: var(--surface-card);
-  color: var(--text);
-  font-size: var(--text-sm);
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  font-size: 1rem;
 }
 
 .filterBtn,
 .exportBtn {
-  background: var(--primary);
+  background: #6c63ff;
   color: #fff;
   border: none;
-  border-radius: var(--r-md);
-  padding: var(--space-2) var(--space-4);
-  font-weight: 600;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all var(--t-fast);
+  transition: background 0.2s;
 }
 
 .exportBtn {
-  background: #eab308;
-  color: #0f172a;
+  background: #f1c40f;
+  color: #222;
 }
 
 .filterBtn:hover,
@@ -128,113 +116,122 @@
 }
 
 .downloadBtn {
-  background: var(--cyan);
-  color: #0f172a;
+  background: #3498db;
+  color: #fff;
   border: none;
-  border-radius: var(--r-md);
-  padding: var(--space-2) var(--space-4);
-  font-weight: 600;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-weight: 500;
   cursor: pointer;
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  transition: all var(--t-fast);
+  gap: 8px;
+  transition: background 0.2s;
 }
 .downloadBtn:hover {
-  opacity: 0.9;
+  background: #217dbb;
+  opacity: 0.95;
 }
 
 .rentalList {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-xl);
-  box-shadow: var(--shadow-md);
-  padding: var(--space-6);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 24px;
 }
 
 .rentalTable {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0 var(--space-2);
+  border-spacing: 0 8px;
 }
 
 .rentalTable th {
-  background: var(--surface-card);
-  color: var(--text-muted);
+  background: #f3f4ff;
+  color: #333;
   font-weight: 600;
-  font-size: var(--text-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--r-md);
+  padding: 12px;
+  border-radius: 8px 8px 0 0;
 }
 
 .rentalTable td {
-  background: var(--surface-card);
-  color: var(--text);
-  padding: var(--space-3-5) var(--space-4);
-  border-radius: var(--r-md);
+  background: #fff;
+  padding: 12px;
+  border-radius: 8px;
   vertical-align: middle;
-  font-size: var(--text-sm);
 }
 
 .licensePlate {
-  color: var(--cyan);
-  font-weight: 600;
+  color: #888;
+  font-size: 0.95em;
 }
 
 .locationTag {
-  background: rgba(124, 58, 237, 0.15);
-  color: var(--primary-light);
-  border-radius: var(--r-sm);
-  padding: 2px 8px;
-  font-size: var(--text-xs);
+  background: #f3f4ff;
+  color: #6c63ff;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 0.95em;
 }
 
 .statusBadge {
-  padding: 4px 10px;
-  border-radius: var(--r-full);
+  padding: 6px 14px;
+  border-radius: 12px;
   font-weight: 600;
-  font-size: var(--text-xs);
+  font-size: 0.95em;
   display: inline-block;
 }
 
 .statusBadge.completed {
-  background: rgba(34, 197, 94, 0.15);
-  color: #22c55e;
+  background: #eafaf1;
+  color: #27ae60;
 }
 .statusBadge.pending {
-  background: rgba(234, 179, 8, 0.15);
-  color: #eab308;
+  background: #fff6e0;
+  color: #f1c40f;
 }
 .statusBadge.cancelled {
-  background: rgba(239, 68, 68, 0.15);
-  color: #ef4444;
+  background: #fdeaea;
+  color: #e74c3c;
 }
 .statusBadge.ongoing {
-  background: rgba(34, 211, 238, 0.15);
-  color: var(--cyan);
+  background: #eaf4fb;
+  color: #3498db;
 }
 .statusBadge.approved {
-  background: rgba(34, 197, 94, 0.15);
-  color: #22c55e;
+  background: #eafaf1;
+  color: #27ae60;
 }
 
 .statusBadge option {
-  background: var(--surface);
-  color: var(--text);
+  color: #222;
+}
+.statusBadge option[value="completed"] {
+  color: #27ae60;
+}
+.statusBadge option[value="cancelled"] {
+  color: #e74c3c;
+}
+.statusBadge option[value="pending"] {
+  color: #f1c40f;
+}
+.statusBadge option[value="ongoing"] {
+  color: #3498db;
+}
+.statusBadge option[value="approved"] {
+  color: #27ae60;
 }
 
 .actionIcon {
   font-size: 1.2em;
   cursor: pointer;
-  color: var(--primary-light);
-  transition: color var(--t-fast);
+  color: #6c63ff;
+  transition: color 0.2s;
 }
 
 .actionIcon:hover {
-  color: var(--cyan);
+  color: #4834d4;
 }
 
 .chatIconBtn {
@@ -243,12 +240,12 @@
   margin-left: 8px;
   cursor: pointer;
   vertical-align: middle;
-  font-size: 18px;
-  color: var(--primary-light);
-  transition: color var(--t-fast);
+  font-size: 20px;
+  color: #6c63ff;
+  transition: color 0.2s;
 }
 .chatIconBtn:hover {
-  color: var(--cyan);
+  color: #4834d4;
 }
 
 @media (max-width: 900px) {
