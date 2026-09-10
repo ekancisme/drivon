@@ -25,10 +25,10 @@
     </g>
     <path d="M65 245C180 190 210 290 330 238S530 178 650 230 820 270 940 205" stroke="url(#neon)" stroke-width="2" opacity=".35" stroke-dasharray="8 12"><animate attributeName="stroke-dashoffset" values="0;-200" dur="10s" repeatCount="indefinite"/></path>
     <g font-family="'Segoe UI',Arial,sans-serif" text-anchor="middle">
-      <text x="500" y="104" fill="#94A3B8" font-size="15" letter-spacing="6">HELLO WORLD, I AM</text>
-      <text x="500" y="170" fill="url(#neon)" font-size="54" font-weight="800" filter="url(#glow)">LÃŠ THáº¾ CÆ¯á»œNG</text>
-      <text x="500" y="214" fill="#E2E8F0" font-size="21" letter-spacing="2">FULL-STACK DEVELOPER  â€¢  AI EXPLORER</text>
-      <text x="500" y="259" fill="#67E8F9" font-family="monospace" font-size="15">&lt;code&gt; ideas â†’ interfaces â†’ intelligent products &lt;/code&gt;<animate attributeName="opacity" values="1;.35;1" dur="1.8s" repeatCount="indefinite"/></text>
+      <text x="500" y="104" fill="#94A3B8" font-size="14" letter-spacing="6">NEXT-GENERATION CAR RENTAL &amp; FLEET MANAGEMENT</text>
+      <text x="500" y="170" fill="url(#neon)" font-size="54" font-weight="800" filter="url(#glow)">?? DRIVON</text>
+      <text x="500" y="214" fill="#E2E8F0" font-size="19" letter-spacing="2">SPRING BOOT 3  •  MONGODB  •  REACT 18  •  PAYOS  •  WEBSOCKET</text>
+      <text x="500" y="259" fill="#67E8F9" font-family="monospace" font-size="15">&lt;code&gt; search ? instant booking ? automated payment ? digital contract &lt;/code&gt;<animate attributeName="opacity" values="1;.35;1" dur="1.8s" repeatCount="indefinite"/></text>
     </g>
     <rect x="14" y="14" width="972" height="292" rx="18" stroke="url(#neon)" stroke-opacity=".55" stroke-width="2" stroke-dasharray="120 28"><animate attributeName="stroke-dashoffset" values="0;-296" dur="8s" repeatCount="indefinite"/></rect>
   </g>

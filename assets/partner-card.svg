@@ -1,0 +1,19 @@
+<svg width="450" height="170" viewBox="0 0 450 170" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="450" y2="170"><stop stop-color="#0D1117"/><stop offset="1" stop-color="#15283A"/></linearGradient>
+    <linearGradient id="edge"><stop stop-color="#22D3EE"/><stop offset=".5" stop-color="#A78BFA"/><stop offset="1" stop-color="#34D399"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect x="2" y="2" width="446" height="166" rx="14" fill="url(#bg)" stroke="url(#edge)" stroke-width="2" stroke-dasharray="80 18"><animate attributeName="stroke-dashoffset" values="0;-196" dur="8s" repeatCount="indefinite"/></rect>
+  <circle cx="398" cy="34" r="38" fill="#22D3EE" opacity=".1"><animate attributeName="r" values="30;43;30" dur="4.5s" repeatCount="indefinite"/></circle>
+  <text x="24" y="43" fill="#22D3EE" font-family="Segoe UI,Arial" font-size="22" font-weight="700">?? Partner Fleet Portal</text>
+  <text x="24" y="70" fill="#94A3B8" font-family="Segoe UI,Arial" font-size="13">Fleet listing, profit wallet &amp; signed payout</text>
+  <g font-family="monospace" font-size="12">
+    <rect x="24" y="92" width="96" height="24" rx="6" fill="#1E293B"/><text x="35" y="108" fill="#FDE68A">Spring Boot</text>
+    <rect x="127" y="92" width="86" height="24" rx="6" fill="#1E293B"/><text x="138" y="108" fill="#86EFAC">Cloudinary</text>
+    <rect x="220" y="92" width="86" height="24" rx="6" fill="#1E293B"/><text x="231" y="108" fill="#67E8F9">WebSocket</text>
+    <rect x="313" y="92" width="70" height="24" rx="6" fill="#1E293B"/><text x="324" y="108" fill="#C4B5FD">Wallet</text>
+  </g>
+  <text x="24" y="145" fill="#E2E8F0" font-family="Segoe UI,Arial" font-size="13">Manage vehicle fleet  ?</text>
+  <circle cx="414" cy="138" r="5" fill="#22D3EE" filter="url(#glow)"><animate attributeName="opacity" values="1;.25;1" dur="1.5s" repeatCount="indefinite"/></circle>
+</svg>
