@@ -85,7 +85,7 @@ function App() {
   };
 
   return (
-    <GoogleOAuthProvider clientId="966794015874-5g0iktfn8junh19ctfuoua6bh9m815er.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId="245524079924-pj4ikg76qetb1lbn0jar6n23pecr2jhu.apps.googleusercontent.com">
       <div id="toast"></div>
       <CarDataProvider>
         <RentalHistoryProvider>
