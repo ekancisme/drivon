@@ -8,21 +8,21 @@
   <g font-family="Segoe UI,Arial" text-anchor="middle">
     <g transform="translate(150 0)">
       <circle cx="0" cy="65" r="35" fill="#8B5CF6" opacity=".14"><animate attributeName="r" values="31;38;31" dur="4s" repeatCount="indefinite"/></circle>
-      <text x="0" y="76" font-size="35">💼</text>
-      <text x="0" y="126" fill="#C4B5FD" font-size="17" font-weight="700">FPT Software</text>
-      <text x="0" y="150" fill="#94A3B8" font-size="13">Frontend Internship</text>
+      <text x="0" y="76" font-size="35">??</text>
+      <text x="0" y="126" fill="#C4B5FD" font-size="17" font-weight="700">Real-time STOMP</text>
+      <text x="0" y="150" fill="#94A3B8" font-size="13">Peer Chat &amp; Live Alerts</text>
     </g>
     <g transform="translate(450 0)">
       <circle cx="0" cy="65" r="35" fill="#22D3EE" opacity=".13"><animate attributeName="r" values="38;31;38" dur="4.5s" repeatCount="indefinite"/></circle>
-      <text x="0" y="76" font-size="35">🚀</text>
-      <text x="0" y="126" fill="#67E8F9" font-size="17" font-weight="700">2 Flagship Builds</text>
-      <text x="0" y="150" fill="#94A3B8" font-size="13">LexiGrow + Drivon</text>
+      <text x="0" y="76" font-size="35">??</text>
+      <text x="0" y="126" fill="#67E8F9" font-size="17" font-weight="700">PayOS Automation</text>
+      <text x="0" y="150" fill="#94A3B8" font-size="13">QR Banking &amp; Contracts</text>
     </g>
     <g transform="translate(750 0)">
       <circle cx="0" cy="65" r="35" fill="#F472B6" opacity=".12"><animate attributeName="r" values="31;38;31" dur="5s" repeatCount="indefinite"/></circle>
-      <text x="0" y="76" font-size="35">🎓</text>
-      <text x="0" y="126" fill="#F9A8D4" font-size="17" font-weight="700">2 Certifications</text>
-      <text x="0" y="150" fill="#94A3B8" font-size="13">Web Design + SDLC</text>
+      <text x="0" y="76" font-size="35">??</text>
+      <text x="0" y="126" fill="#F9A8D4" font-size="17" font-weight="700">MongoDB Engine</text>
+      <text x="0" y="150" fill="#94A3B8" font-size="13">20+ Documents &amp; Seeder</text>
     </g>
   </g>
   <circle cx="27" cy="25" r="3" fill="#22D3EE" filter="url(#glow)"><animate attributeName="opacity" values="1;.2;1" dur="1.4s" repeatCount="indefinite"/></circle>

@@ -13,7 +13,7 @@
 
 <img align="right" width="380" src="./assets/coding.svg" alt="Animated developer workspace" />
 
-### `> whoami`
+### `> project_spec`
 
 ```yaml
 project: Drivon (Car Rental & Fleet Management Ecosystem)
@@ -69,7 +69,7 @@ Seamless PayOS QR banking checkout and digital contracts.
 `React 18` `Tailwind` `PayOS`<br />
 `MongoDB` `Google OAuth` `Email OTP`
 
-<a href="https://youngltc.id.vn"><img width="100%" src="./assets/drivon-card.svg" alt="Drivon customer portal" /></a>
+<a href="https://youngltc.id.vn"><img width="100%" src="./assets/renter-card.svg" alt="Drivon customer portal" /></a>
 
 </td>
 <td width="50%" valign="top">
@@ -83,7 +83,7 @@ Withdrawal requests with digital signature validation.
 `Spring Boot 3` `Spring Security` `Cloudinary`<br />
 `STOMP WebSocket` `Digital Signature` `JWT`
 
-<a href="https://youngltc.id.vn"><img width="100%" src="./assets/drivon-card.svg" alt="Drivon partner portal" /></a>
+<a href="https://youngltc.id.vn"><img width="100%" src="./assets/partner-card.svg" alt="Drivon partner portal" /></a>
 
 </td>
 </tr>
