@@ -23,12 +23,12 @@ const HomeContent = () => {
   useEffect(() => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-      tl.from('.intro-header h1', { opacity: 0, y: 35, duration: 0.8 })
-        .from('.intro-header h2', { opacity: 0, y: 25, duration: 0.6 }, '-=0.5')
-        .from('.intro-header .lead', { opacity: 0, y: 20, duration: 0.5 }, '-=0.4')
-        .from('.feature-item', { opacity: 0, y: 25, stagger: 0.12, duration: 0.6 }, '-=0.3')
-        .from('.intro-buttons', { opacity: 0, scale: 0.95, duration: 0.4 }, '-=0.2')
-        .from('.booking-card', { opacity: 0, x: 40, duration: 0.8, ease: 'power2.out' }, '-=0.8');
+      tl.fromTo('.intro-header h1', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, clearProps: 'all' })
+        .fromTo('.intro-header h2', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, clearProps: 'all' }, '-=0.4')
+        .fromTo('.intro-header .lead', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5, clearProps: 'all' }, '-=0.3')
+        .fromTo('.feature-item', { opacity: 0, y: 20 }, { opacity: 1, y: 0, stagger: 0.1, duration: 0.5, clearProps: 'all' }, '-=0.2')
+        .fromTo('.intro-buttons', { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.4, clearProps: 'all' }, '-=0.2')
+        .fromTo('.booking-card', { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: 0.7, ease: 'power2.out', clearProps: 'all' }, '-=0.6');
     }, containerRef);
 
     return () => ctx.revert();
@@ -128,24 +128,24 @@ const HomeContent = () => {
                   </div>
                 </div>
               </div>
+
+              <div className="intro-buttons">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  onClick={() => navigate('/rent-car')}
+                >
+                  Rent a Car
+                </Button>
+              </div>
             </div>
-            <div className="intro-buttons">
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    className="me-3"
-                    onClick={() => navigate('/rent-car')}
-                  >
-                    Rent a Car
-                  </Button>
-                </div>
           </Col>
 
           {/* Booking Form */}
           <Col lg={5}>
             <Card className="booking-card">
-              <Card.Body className="p-4">
-                <h2 className="text-center mb-4">Want to Rent a Car?</h2>
+              <Card.Body>
+                <h2>Want to Rent a Car?</h2>
                 <Form onSubmit={handleSubmit}>
                   <Form.Group className="mb-3">
                     <Form.Label>Location</Form.Label>
@@ -170,18 +170,18 @@ const HomeContent = () => {
                       step={100000}
                       defaultValue={[form.minPrice, form.maxPrice]}
                       onChange={handleSliderChange}
-                      handleStyle={[{ borderColor: '#0d6efd' }, { borderColor: '#0d6efd' }]}
-                      trackStyle={[{ backgroundColor: '#0d6efd' }]}
+                      handleStyle={[{ borderColor: '#2563eb' }, { borderColor: '#2563eb' }]}
+                      trackStyle={[{ backgroundColor: '#2563eb' }]}
                     />
-                    <div className="d-flex justify-content-between mt-2">
+                    <div className="price-display">
                       <span>{form.minPrice.toLocaleString()} đ</span>
                       <span>{form.maxPrice.toLocaleString()} đ</span>
                     </div>
                   </Form.Group>
 
-                  <Button variant="primary" type="submit" className="w-100 py-2">
+                  <button type="submit" className="btn-submit-search">
                     Find Best Price
-                  </Button>
+                  </button>
                 </Form>
               </Card.Body>
             </Card>
