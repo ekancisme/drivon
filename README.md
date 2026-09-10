@@ -1,6 +1,5 @@
 <div align="center">
 
-![Animated introduction](./assets/hero.svg)
 
 [![Typing SVG](https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=24&duration=2500&pause=650&color=7C3AED&center=true&vCenter=true&repeat=true&width=760&lines=DRIVON+-+Next-Gen+Car+Rental+Platform;Java+17+%2B+Spring+Boot+3+%2B+MongoDB+%2B+React;Real-time+STOMP+Chat+%26+Live+Notifications;Automated+PayOS+Payment+%26+Digital+Contracts;Multi-Role%3A+Customer+%2B+Owner+%2B+Admin)](https://git.io/typing-svg)
 
