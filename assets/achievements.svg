@@ -1,0 +1,30 @@
+<svg width="900" height="190" viewBox="0 0 900 190" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="900" y2="190"><stop stop-color="#0D1117"/><stop offset=".5" stop-color="#17133A"/><stop offset="1" stop-color="#082F3A"/></linearGradient>
+    <linearGradient id="line"><stop stop-color="#8B5CF6"/><stop offset=".5" stop-color="#22D3EE"/><stop offset="1" stop-color="#F472B6"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect x="2" y="2" width="896" height="186" rx="18" fill="url(#bg)" stroke="url(#line)" stroke-width="2" stroke-dasharray="120 20"><animate attributeName="stroke-dashoffset" values="0;-280" dur="10s" repeatCount="indefinite"/></rect>
+  <g font-family="Segoe UI,Arial" text-anchor="middle">
+    <g transform="translate(150 0)">
+      <circle cx="0" cy="65" r="35" fill="#8B5CF6" opacity=".14"><animate attributeName="r" values="31;38;31" dur="4s" repeatCount="indefinite"/></circle>
+      <text x="0" y="76" font-size="35">💼</text>
+      <text x="0" y="126" fill="#C4B5FD" font-size="17" font-weight="700">FPT Software</text>
+      <text x="0" y="150" fill="#94A3B8" font-size="13">Frontend Internship</text>
+    </g>
+    <g transform="translate(450 0)">
+      <circle cx="0" cy="65" r="35" fill="#22D3EE" opacity=".13"><animate attributeName="r" values="38;31;38" dur="4.5s" repeatCount="indefinite"/></circle>
+      <text x="0" y="76" font-size="35">🚀</text>
+      <text x="0" y="126" fill="#67E8F9" font-size="17" font-weight="700">2 Flagship Builds</text>
+      <text x="0" y="150" fill="#94A3B8" font-size="13">LexiGrow + Drivon</text>
+    </g>
+    <g transform="translate(750 0)">
+      <circle cx="0" cy="65" r="35" fill="#F472B6" opacity=".12"><animate attributeName="r" values="31;38;31" dur="5s" repeatCount="indefinite"/></circle>
+      <text x="0" y="76" font-size="35">🎓</text>
+      <text x="0" y="126" fill="#F9A8D4" font-size="17" font-weight="700">2 Certifications</text>
+      <text x="0" y="150" fill="#94A3B8" font-size="13">Web Design + SDLC</text>
+    </g>
+  </g>
+  <circle cx="27" cy="25" r="3" fill="#22D3EE" filter="url(#glow)"><animate attributeName="opacity" values="1;.2;1" dur="1.4s" repeatCount="indefinite"/></circle>
+  <circle cx="873" cy="165" r="3" fill="#F472B6" filter="url(#glow)"><animate attributeName="opacity" values=".2;1;.2" dur="1.7s" repeatCount="indefinite"/></circle>
+</svg>
