@@ -63,3 +63,6 @@ yarn-error.log*
 .windsurf/
 .mcp.json
 .ignore
+AGENTS.md
+GEMINI.md
+test_diagrams.md
