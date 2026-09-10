@@ -1,29 +1,33 @@
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  Row,
-  Col,
-  Typography,
-  Button,
-  Spin,
-  Empty,
-  Tag,
-  Modal,
-  Descriptions,
-  Divider,
-  Rate,
-  Input,
-  Result,
-  Tooltip,
-} from "antd";
+import { Modal, Descriptions, Rate, Input, Result } from "antd";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../styles/MyRentals.css";
-import { FrownOutlined, MehOutlined, SmileOutlined, CarOutlined, EnvironmentOutlined, CalendarOutlined, CreditCardOutlined, DeleteOutlined, InfoCircleOutlined } from "@ant-design/icons";
-import { CgArrowsExchange } from "react-icons/cg";
+import { FrownOutlined, MehOutlined, SmileOutlined } from "@ant-design/icons";
+import {
+  FiInfo,
+  FiCreditCard,
+  FiRepeat,
+  FiXOctagon,
+  FiStar,
+  FiCalendar,
+  FiMapPin,
+  FiFileText,
+  FiAlertCircle,
+  FiInbox,
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 import { API_URL } from '../../api/configApi';
 import { showSuccessToast, showErrorToast } from '../notification/notification';
-const { Title, Text } = Typography;
+
+const TABS = [
+  { key: "all", label: "Tất cả" },
+  { key: "pending", label: "Chờ duyệt" },
+  { key: "ongoing", label: "Đang thuê" },
+  { key: "completed", label: "Hoàn thành" },
+  { key: "cancelled", label: "Đã huỷ" },
+];
 
 const MyRentals = () => {
   const [rentals, setRentals] = useState([]);
@@ -52,11 +56,48 @@ const MyRentals = () => {
   const [refundBankAccount, setRefundBankAccount] = useState("");
   const [refundBankName, setRefundBankName] = useState("");
 
-  // PHÂN TRANG
+  // TAB + PHÂN TRANG
+  const [activeTab, setActiveTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const rentalsPerPage = 6;
-  const totalPages = Math.ceil(rentals.length / rentalsPerPage);
-  const paginatedRentals = rentals.slice((currentPage - 1) * rentalsPerPage, currentPage * rentalsPerPage);
+
+  const getBookingStatus = (rental) =>
+    (rental.bookingStatus || rental.booking_status || rental.booking_status_text || "").toLowerCase();
+
+  const matchesTab = (rental, tab) => {
+    if (tab === "all") return true;
+    const bookingStatus = getBookingStatus(rental);
+    const paymentStatus = (rental.status || "").toLowerCase();
+    switch (tab) {
+      case "pending":
+        return bookingStatus === "pending" || (!bookingStatus && paymentStatus === "pending");
+      case "ongoing":
+        return bookingStatus === "ongoing";
+      case "completed":
+        return bookingStatus === "completed";
+      case "cancelled":
+        return bookingStatus === "cancelled" || bookingStatus === "cancel_requested";
+      default:
+        return true;
+    }
+  };
+
+  const filteredRentals = rentals.filter((rental) => matchesTab(rental, activeTab));
+  const totalPages = Math.ceil(filteredRentals.length / rentalsPerPage);
+  const paginatedRentals = filteredRentals.slice(
+    (currentPage - 1) * rentalsPerPage,
+    currentPage * rentalsPerPage
+  );
+
+  const tabCounts = TABS.reduce((acc, tab) => {
+    acc[tab.key] = rentals.filter((rental) => matchesTab(rental, tab.key)).length;
+    return acc;
+  }, {});
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab]);
+
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
@@ -115,8 +156,8 @@ const MyRentals = () => {
         })
       );
 
-      // Lọc bỏ đơn CANCELLED và đơn không có thời gian thuê/trả
-      const filteredRentals = paymentsWithBookingStatus.filter(rental => {
+      // Lọc bỏ đơn không có thời gian thuê/trả
+      const filteredRentalsData = paymentsWithBookingStatus.filter(rental => {
         // Ẩn đơn không có thời gian thuê hoặc thời gian trả
         const hasRentalDates = rental.rentalStartDate && rental.rentalEndDate;
         // Debug log để kiểm tra dữ liệu
@@ -125,8 +166,8 @@ const MyRentals = () => {
         }
         return hasRentalDates;
       });
-      
-      setRentals(filteredRentals);
+
+      setRentals(filteredRentalsData);
     } catch (error) {
       console.error("Error fetching rentals:", error);
       showErrorToast("Unable to load rental history");
@@ -159,37 +200,37 @@ const MyRentals = () => {
     // eslint-disable-next-line
   }, [rentals]);
 
-  const getStatusColor = (status) => {
+  const getStatusTone = (status) => {
     switch (status?.toUpperCase()) {
       case "PAID":
-        return "success";
+        return "ok";
       case "PENDING":
-        return "warning";
+        return "warn";
       case "REFUNDED":
-        return "error";
+        return "danger";
       case "CANCELLED":
-        return "default"; // hoặc "error" nếu muốn nổi bật
+        return "muted";
       default:
-        return "default";
+        return "muted";
     }
   };
 
-  const getBookingStatusColor = (bookingStatus) => {
+  const getBookingStatusTone = (bookingStatus) => {
     switch (bookingStatus?.toLowerCase()) {
       case "pending":
-        return "default";
+        return "muted";
       case "approved":
-        return "processing";
+        return "info";
       case "cancelled":
-        return "error";
+        return "danger";
       case "ongoing":
-        return "warning";
+        return "warn";
       case "completed":
-        return "success";
-      case "CANCEL_REQUESTED":
-        return "warning";
+        return "ok";
+      case "cancel_requested":
+        return "warn";
       default:
-        return "default";
+        return "muted";
     }
   };
 
@@ -204,6 +245,9 @@ const MyRentals = () => {
       minute: "2-digit",
     });
   };
+
+  const formatMoney = (amount) =>
+    amount != null ? `${Number(amount).toLocaleString("vi-VN")} VND` : "N/A";
 
   const handleViewDetails = (rental) => {
     setSelectedRental(rental);
@@ -235,7 +279,7 @@ const MyRentals = () => {
     }
     try {
       await axios.post(
-        `${API_URL}/reviews/car/${ratingRental.carId}`, //rate car     
+        `${API_URL}/reviews/car/${ratingRental.carId}`, //rate car
         {
           rating: rating,
           comment: comment,
@@ -290,13 +334,13 @@ const MyRentals = () => {
 
   const handleConfirmDelete = async () => {
     if (!rentalToDelete) return;
-    
+
     try {
       console.log('User confirmed deletion, proceeding...');
       const paymentId = rentalToDelete.paymentId || rentalToDelete.id || rentalToDelete.payment_id;
       console.log('Payment ID:', paymentId);
       console.log('Booking ID:', rentalToDelete.bookingId);
-      
+
       if (!paymentId && !rentalToDelete.bookingId) {
         showErrorToast('Unable to find ID to delete.');
         return;
@@ -343,11 +387,11 @@ const MyRentals = () => {
 
   const handleConfirmSwitchToBank = async () => {
     if (!rentalToSwitchToBank) return;
-    
+
     try {
       console.log('User confirmed switch to bank');
       console.log('Updating payment method for payment:', rentalToSwitchToBank.paymentId);
-      
+
       // Chỉ update payment method và status, không tạo paymentId mới
       const updateRequest = {
         paymentMethod: 'bank',
@@ -358,7 +402,7 @@ const MyRentals = () => {
 
       const response = await axios.put(`${API_URL}/payments/update/${rentalToSwitchToBank.paymentId}`, updateRequest);
       console.log('Update payment response:', response.data);
-      
+
       if (response.data || response.status === 200) {
         showSuccessToast('Successfully switched to bank payment! You can pay later.');
         fetchRentalsWithCleanup(user.userId);
@@ -384,7 +428,7 @@ const MyRentals = () => {
       console.log('Starting cleanup of invalid payments...');
       const response = await axios.get(`${API_URL}/payments/user/${user.userId}`);
       const payments = response.data;
-      
+
       // Tìm các payments không có ngày thuê/trả
       const invalidPayments = payments.filter(payment => {
         const hasInvalidDates = !payment.rentalStartDate || !payment.rentalEndDate;
@@ -427,11 +471,11 @@ const MyRentals = () => {
 
   const handleConfirmSwitch = async () => {
     if (!rentalToSwitch) return;
-    
+
     try {
       console.log('User confirmed switch to cash');
       console.log('Updating payment method for payment:', rentalToSwitch.paymentId);
-      
+
       // Chỉ update payment method và status, không tạo paymentId mới
       const updateRequest = {
         paymentMethod: 'cash',
@@ -442,7 +486,7 @@ const MyRentals = () => {
 
       const response = await axios.put(`${API_URL}/payments/update/${rentalToSwitch.paymentId}`, updateRequest);
       console.log('Update payment response:', response.data);
-      
+
       if (response.data || response.status === 200) {
         showSuccessToast('Successfully switched to cash payment!');
         fetchRentalsWithCleanup(user.userId);
@@ -544,169 +588,181 @@ const MyRentals = () => {
   const renderRentalCard = (rental) => {
     // A user can rate a car if the booking is completed and chưa đánh giá
     const bookingStatus = rental.bookingStatus || rental.booking_status || rental.booking_status_text;
-    // Debug log trạng thái
-    console.log('Rental:', rental.orderCode, 'status:', rental.status, 'bookingStatus:', bookingStatus);
     const canRate = bookingStatus?.toLowerCase() === "completed" && !reviewedRentals.includes(rental.bookingId);
     const isPending = rental.status?.toUpperCase() === "PENDING";
     const isCash = rental.paymentMethod?.toLowerCase() === "cash";
     const isBank = rental.paymentMethod?.toLowerCase() === "bank";
     const car = carsInfo[rental.carId];
     const isCancelled = bookingStatus?.toLowerCase() === "cancelled";
+    const carImage =
+      car?.image ||
+      car?.imageUrl ||
+      (Array.isArray(car?.images) ? car.images[0] : null);
+
     return (
-      <Col xs={24} sm={24} md={12} lg={8} xl={8} key={rental.paymentId}>
-        <Card className="rental-card">
-          <div className="rental-card-header">
-            <div className="rental-card-title">
-              <span className="rental-card-icon"><CarOutlined /></span>
-              <span>Car Booking Successful</span>
+      <article className="mr-card" key={rental.paymentId}>
+        <div className="mr-card-media">
+          {carImage ? (
+            <img className="mr-card-img" src={carImage} alt={rental.carId} />
+          ) : (
+            <div className="mr-card-media-fallback">
+              <FiMapPin />
             </div>
-            <div className="rental-card-status">
-              <Tag color={getStatusColor(rental.status)}>
-                {`Payment: ${rental.status}`}
-              </Tag>
-              {bookingStatus && (
-                <Tag color={getBookingStatusColor(bookingStatus)} style={{ marginLeft: 4 }}>
-                  {`Booking: ${bookingStatus}`}
-                </Tag>
-              )}
-            </div>
-            <div className="rental-card-order">Order: #{rental.orderCode}</div>
+          )}
+          <span className="mr-card-plate">{rental.carId}</span>
+          <div className="mr-card-badges">
+            <span className={`mr-badge mr-badge--${getStatusTone(rental.status)}`}>
+              {`Thanh toán: ${rental.status || "N/A"}`}
+            </span>
+            {bookingStatus && (
+              <span className={`mr-badge mr-badge--${getBookingStatusTone(bookingStatus)}`}>
+                {`Đặt xe: ${bookingStatus}`}
+              </span>
+            )}
           </div>
-          <div className="rental-card-section">
-            <span className="rental-card-section-icon"><EnvironmentOutlined /></span>
-            <div className="rental-card-section-content">
-              {car && (
-                <span className="rental-card-carinfo">{car.brand} {car.model} {car.year}</span>
-              )}
-              <span className="rental-card-section-label">License Plate: {rental.carId}</span>
-            </div>
+        </div>
+
+        <div className="mr-card-body">
+          <div>
+            <h3 className="mr-card-name">
+              {car ? `${car.brand} ${car.model} ${car.year || ""}`.trim() : "Xe đã thuê"}
+            </h3>
+            <p className="mr-card-order">Mã đơn: #{rental.orderCode}</p>
           </div>
-          <div className="rental-card-section rental-card-time-section">
-            <span className="rental-card-section-icon rental-card-time-icon"><CalendarOutlined /></span>
-            <div className="rental-card-time-content">
-              <div className="rental-card-section-label">Rental Period</div>
-              <div className="rental-card-time-value">{formatDate(rental.rentalStartDate).replace('at ', '')}</div>
-              <div className="rental-card-time-between">to</div>
-              <div className="rental-card-time-value">{formatDate(rental.rentalEndDate).replace('at ', '')}</div>
-            </div>
-          </div>
-          <div className="rental-card-section">
-            <span className="rental-card-section-icon"><CreditCardOutlined /></span>
-            <span className="rental-card-section-label">Payment Method</span>
-            <span className="rental-card-section-value">{rental.paymentMethod}</span>
-          </div>
-          <div className="rental-card-special">
-            <div>
-              <span className="special-label">Special Requirements</span>
-              <span className="special-value">{rental.additionalRequirements || "None"}</span>
-            </div>
-            <div>
-              <span className="voucher-label">Voucher:</span>
-              <span className="voucher-value">{rental.discountPercent|| "0"}%</span>
-            </div>
-          </div>
-          <div className="rental-card-footer">
-            <div className="rental-card-date">
-              Booked at: {formatDate(rental.paymentDate).replace('at ', '')}
+
+          <div className="mr-meta">
+            <div className="mr-meta-row">
+              <FiCalendar />
+              <div>
+                <span className="mr-meta-label">Thời gian thuê</span>
+                <div className="mr-time-range">
+                  <span className="mr-meta-value">
+                    {formatDate(rental.rentalStartDate).replace('at ', '')}
+                  </span>
+                  <span className="mr-time-arrow">→</span>
+                  <span className="mr-meta-value">
+                    {formatDate(rental.rentalEndDate).replace('at ', '')}
+                  </span>
+                </div>
+              </div>
             </div>
 
-            {/* ===== THÊM ĐOẠN MÃ MỚI TẠI ĐÂY ===== */}
-            {bookingStatus?.toLowerCase() === 'cancel_requested' && (
-              <div 
-                className="cancel-request-status" 
-                style={{ 
-                  color: '#faad14', // Màu vàng cam để chỉ trạng thái chờ
-                  fontSize: '12px', 
-                  marginTop: '5px', 
-                  fontStyle: 'italic',
-                  width: '100%' // Đảm bảo nó chiếm đủ chiều rộng
-                }}
-              >
-                <InfoCircleOutlined style={{ marginRight: '5px' }} />
-                A cancellation request has been sent and is awaiting owner approval.
+            <div className="mr-meta-row">
+              <FiCreditCard />
+              <div>
+                <span className="mr-meta-label">Phương thức thanh toán</span>
+                <span className="mr-meta-value">{rental.paymentMethod || "N/A"}</span>
               </div>
-            )}
-            {/* ===== KẾT THÚC ĐOẠN MÃ MỚI ===== */}
-            
-            <div className="rental-card-actions" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {/* Nếu là cancelled chỉ hiển thị nút info */}
-              {isCancelled ? (
-                <Tooltip title="Details">
-                  <Button className="detail-btn" type="primary" onClick={() => handleViewDetails(rental)}>
-                    <i className="bi bi-info-circle"></i>
-                  </Button>
-                </Tooltip>
-              ) : (
+            </div>
+
+            <div className="mr-meta-row">
+              <FiMapPin />
+              <div>
+                <span className="mr-meta-label">Yêu cầu đặc biệt</span>
+                <span className="mr-meta-value--muted">
+                  {rental.additionalRequirements || "Không có"}
+                </span>
+                <span className="mr-meta-value--muted">
+                  {` · Voucher ${rental.discountPercent || "0"}%`}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {bookingStatus?.toLowerCase() === 'cancel_requested' && (
+            <div className="mr-note">
+              <FiAlertCircle />
+              <span>
+                Yêu cầu huỷ đã được gửi và đang chờ chủ xe phê duyệt.
+              </span>
+            </div>
+          )}
+
+          <div className="mr-card-foot">
+            <div>
+              <span className="mr-total-label">Tổng tiền</span>
+              <div className="mr-total-value">{formatMoney(rental.amount)}</div>
+            </div>
+
+            <div className="mr-actions">
+              <button
+                type="button"
+                className="mr-btn mr-btn--primary"
+                onClick={() => handleViewDetails(rental)}
+              >
+                <FiInfo />
+                Xem chi tiết
+              </button>
+
+              <button
+                type="button"
+                className="mr-btn mr-btn--ghost"
+                onClick={() => navigate("/contracts")}
+                title="Hợp đồng thuê xe"
+              >
+                <FiFileText />
+                Hợp đồng
+              </button>
+
+              {!isCancelled && isPending && (
                 <>
-                  <Tooltip title="Details">
-                    <Button className="detail-btn" type="primary" onClick={() => handleViewDetails(rental)}>
-                      <i className="bi bi-info-circle"></i>
-                    </Button>
-                  </Tooltip>
-                  {/* Buttons for PENDING payments */}
-                  {isPending && (
-                    <>
-                      <Tooltip title="Payment">
-                        <Button 
-                          className="payment-btn" 
-                          type="primary" 
-                          style={{ backgroundColor: '#52c41a', borderColor: '#52c41a' }}
-                          onClick={() => handlePayment(rental)}
-                        >
-                          <i className="bi bi-credit-card"></i>
-                        </Button>
-                      </Tooltip>
-                      {/* Button for bank payments with PENDING status to switch to cash */}
-                      {isBank && (
-                        <Tooltip title="Switch to cash payment">
-                          <Button 
-                            className="switch-payment-btn"
-                            style={{ backgroundColor: '#fa8c16', borderColor: '#fa8c16', color: 'white', border: 'none', boxShadow: 'none' }}
-                            icon={<CgArrowsExchange />}
-                            onClick={() => handleSwitchToCash(rental)}
-                          />
-                        </Tooltip>
-                      )}
-                    </>
-                  )}
-                  {/* Button for cash payments with pending booking to switch to bank */}
-                  {isCash && bookingStatus?.toLowerCase() === "pending" && (
-                    <Tooltip title="Switch to bank payment">
-                      <Button 
-                        className="switch-payment-btn"
-                        style={{ backgroundColor: '#fa8c16', borderColor: '#fa8c16', color: 'white', border: 'none', boxShadow: 'none' }}
-                        icon={<CgArrowsExchange />}
-                        onClick={() => handleSwitchToBank(rental)}
-                      />
-                    </Tooltip>
-                  )}
-                  {/* Nút hủy đặt xe chỉ hiển thị nếu bookingStatus là pending */}
-                  {bookingStatus?.toLowerCase() === 'pending' && bookingStatus?.toLowerCase() !== 'cancel_requested' && (
-                    <Tooltip title="Cancel booking">
-                      <Button
-                        className="cancel-booking-btn"
-                        danger
-                        style={{ backgroundColor: '#ff4d4f', borderColor: '#ff4d4f', color: 'white', border: 'none', boxShadow: 'none' }}
-                        onClick={() => handleCancelBooking(rental)}
-                      >
-                        <i className="bi bi-x-octagon"></i>
-                      </Button>
-                    </Tooltip>
-                  )}
-                  {/* Rating button for completed bookings */}
-                  {canRate && (
-                    <Tooltip title="Rate car">
-                      <Button className="rate-btn" onClick={() => handleRateCar(rental)}>
-                        <i className="bi bi-star"></i>
-                      </Button>
-                    </Tooltip>
+                  <button
+                    type="button"
+                    className="mr-btn mr-btn--icon mr-btn--success"
+                    title="Thanh toán"
+                    onClick={() => handlePayment(rental)}
+                  >
+                    <FiCreditCard />
+                  </button>
+                  {isBank && (
+                    <button
+                      type="button"
+                      className="mr-btn mr-btn--icon mr-btn--warn"
+                      title="Chuyển sang thanh toán tiền mặt"
+                      onClick={() => handleSwitchToCash(rental)}
+                    >
+                      <FiRepeat />
+                    </button>
                   )}
                 </>
               )}
+
+              {!isCancelled && isCash && bookingStatus?.toLowerCase() === "pending" && (
+                <button
+                  type="button"
+                  className="mr-btn mr-btn--icon mr-btn--warn"
+                  title="Chuyển sang chuyển khoản"
+                  onClick={() => handleSwitchToBank(rental)}
+                >
+                  <FiRepeat />
+                </button>
+              )}
+
+              {!isCancelled && bookingStatus?.toLowerCase() === 'pending' && (
+                <button
+                  type="button"
+                  className="mr-btn mr-btn--icon mr-btn--danger"
+                  title="Huỷ đặt xe"
+                  onClick={() => handleCancelBooking(rental)}
+                >
+                  <FiXOctagon />
+                </button>
+              )}
+
+              {!isCancelled && canRate && (
+                <button
+                  type="button"
+                  className="mr-btn mr-btn--icon mr-btn--ghost"
+                  title="Đánh giá xe"
+                  onClick={() => handleRateCar(rental)}
+                >
+                  <FiStar />
+                </button>
+              )}
             </div>
           </div>
-        </Card>
-      </Col>
+        </div>
+      </article>
     );
   };
 
@@ -715,39 +771,42 @@ const MyRentals = () => {
     const bookingStatus = selectedRental.bookingStatus || selectedRental.booking_status || selectedRental.booking_status_text;
     return (
       <Descriptions bordered column={1} className="rental-details">
-        <Descriptions.Item label="Order Code">
-          <Text strong>{selectedRental.orderCode}</Text>
+        <Descriptions.Item label="Mã đơn">
+          <span className="mr-strong">{selectedRental.orderCode}</span>
         </Descriptions.Item>
-        <Descriptions.Item label="Payment & Booking Status">
-          <Tag color={getStatusColor(selectedRental.status)}>
+        <Descriptions.Item label="Trạng thái">
+          <span className={`mr-badge mr-badge--${getStatusTone(selectedRental.status)}`}>
             {selectedRental.status}
-          </Tag>
+          </span>
           {bookingStatus && (
-            <Tag color={getBookingStatusColor(bookingStatus)} style={{ marginLeft: 4 }}>
+            <span
+              className={`mr-badge mr-badge--${getBookingStatusTone(bookingStatus)}`}
+              style={{ marginLeft: 6 }}
+            >
               {bookingStatus}
-            </Tag>
+            </span>
           )}
         </Descriptions.Item>
-        <Descriptions.Item label="License Plate">
+        <Descriptions.Item label="Biển số">
           {selectedRental.carId}
         </Descriptions.Item>
-        <Descriptions.Item label="Rental Period">
+        <Descriptions.Item label="Thời gian thuê">
           {formatDate(selectedRental.rentalStartDate)} -{" "}
           {formatDate(selectedRental.rentalEndDate)}
         </Descriptions.Item>
-        <Descriptions.Item label="Payment Method">
+        <Descriptions.Item label="Phương thức thanh toán">
           {selectedRental.paymentMethod}
         </Descriptions.Item>
-        <Descriptions.Item label="Amount">
-          {selectedRental.amount?.toLocaleString("vi-VN")} VND
+        <Descriptions.Item label="Tổng tiền">
+          {formatMoney(selectedRental.amount)}
         </Descriptions.Item>
-        <Descriptions.Item label="Additional Requirements">
-          {selectedRental.additionalRequirements || "None"}
+        <Descriptions.Item label="Yêu cầu đặc biệt">
+          {selectedRental.additionalRequirements || "Không có"}
         </Descriptions.Item>
-        <Descriptions.Item label="Booking Date">
+        <Descriptions.Item label="Ngày đặt">
           {formatDate(selectedRental.paymentDate)}
         </Descriptions.Item>
-        <Descriptions.Item label="Last Updated">
+        <Descriptions.Item label="Cập nhật gần nhất">
           {formatDate(selectedRental.updatedAt)}
         </Descriptions.Item>
       </Descriptions>
@@ -759,52 +818,94 @@ const MyRentals = () => {
   }
 
   return (
-    <div className="my-rentals-container">
-      <div className="my-rentals-content">
-        <Title level={2} className="page-title">
-          My Rental History
-        </Title>
-        {loading ? (
-          <div className="loading-container">
-            <Spin size="large" />
-          </div>
-        ) : rentals.length === 0 ? (
-          <Empty
-            description="You don't have any rental history yet"
-            className="empty-state"
-          />
-        ) : (
-          <>
-            <Row gutter={[24, 24]} className="rentals-grid">
-              {paginatedRentals.map(renderRentalCard)}
-            </Row>
-            {totalPages > 1 && (
-              <div className="pagination-controls" style={{ marginTop: '2rem' }}>
-                <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>&lt;</button>
-                {Array.from({ length: totalPages }, (_, i) => (
-                  <button
-                    key={i + 1}
-                    className={currentPage === i + 1 ? 'active' : ''}
-                    onClick={() => handlePageChange(i + 1)}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
-                <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>&gt;</button>
-              </div>
-            )}
-          </>
-        )}
+    <div className="mr-page">
+      <div className="mr-head">
+        <div>
+          <h1 className="mr-title">Chuyến xe của tôi</h1>
+          <p className="mr-sub">
+            Theo dõi toàn bộ lịch sử thuê xe, trạng thái thanh toán và hợp đồng của bạn.
+          </p>
+        </div>
       </div>
 
+      <div className="mr-tabs" role="tablist">
+        {TABS.map((tab) => (
+          <button
+            key={tab.key}
+            type="button"
+            role="tab"
+            aria-selected={activeTab === tab.key}
+            className={`mr-tab ${activeTab === tab.key ? "mr-tab--active" : ""}`}
+            onClick={() => setActiveTab(tab.key)}
+          >
+            {tab.label}
+            <span className="mr-tab-count">{tabCounts[tab.key]}</span>
+          </button>
+        ))}
+      </div>
+
+      {loading ? (
+        <div className="mr-loading">
+          <span className="mr-loader" />
+        </div>
+      ) : filteredRentals.length === 0 ? (
+        <div className="mr-empty">
+          <FiInbox />
+          <p className="mr-empty-title">Chưa có chuyến xe nào</p>
+          <p className="mr-empty-text">
+            {activeTab === "all"
+              ? "Bạn chưa có lịch sử thuê xe. Hãy khám phá các mẫu xe đang có trên Drivon."
+              : "Không có chuyến xe nào ở trạng thái này."}
+          </p>
+        </div>
+      ) : (
+        <>
+          <div className="mr-grid">{paginatedRentals.map(renderRentalCard)}</div>
+
+          {totalPages > 1 && (
+            <div className="mr-pagination">
+              <button
+                type="button"
+                className="mr-page-btn"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                aria-label="Trang trước"
+              >
+                <FiChevronLeft />
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  type="button"
+                  key={i + 1}
+                  className={`mr-page-btn ${currentPage === i + 1 ? "mr-page-btn--active" : ""}`}
+                  onClick={() => handlePageChange(i + 1)}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                type="button"
+                className="mr-page-btn"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                aria-label="Trang sau"
+              >
+                <FiChevronRight />
+              </button>
+            </div>
+          )}
+        </>
+      )}
+
       <Modal
-        title="Order Details"
+        title="Chi tiết đơn thuê"
         open={isModalVisible}
         onCancel={handleCloseModal}
+        wrapClassName="mr-modal"
         footer={[
-          <Button key="close" onClick={handleCloseModal}>
-            Close
-          </Button>,
+          <button key="close" type="button" className="mr-btn mr-btn--ghost" onClick={handleCloseModal}>
+            Đóng
+          </button>,
         ]}
         width={800}
       >
@@ -814,38 +915,37 @@ const MyRentals = () => {
       <Modal
         title={
           isReviewSubmitted
-            ? "Review Submitted Successfully"
-            : `Rate Car ${ratingRental?.carId}`
+            ? "Đánh giá đã được gửi"
+            : `Đánh giá xe ${ratingRental?.carId || ""}`
         }
         open={isRatingModalVisible}
         onCancel={handleRatingModalClose}
-        wrapClassName="rating-modal"
+        wrapClassName="mr-modal rating-modal"
         footer={
           isReviewSubmitted
             ? null
             : [
-                <Button key="back" onClick={handleRatingModalClose}>
-                  Cancel
-                </Button>,
-                <Button
+                <button key="back" type="button" className="mr-btn mr-btn--ghost" onClick={handleRatingModalClose}>
+                  Huỷ
+                </button>,
+                <button
                   key="submit"
-                  type="primary"
+                  type="button"
+                  className="mr-btn mr-btn--primary"
                   onClick={handleRatingSubmit}
                   disabled={rating === 0}
                 >
-                  Submit Review
-                </Button>,
+                  Gửi đánh giá
+                </button>,
               ]
         }
       >
         {isReviewSubmitted ? (
-          <Result status="success" title="Thank you for your review!" />
+          <Result status="success" title="Cảm ơn bạn đã đánh giá!" />
         ) : (
           <>
-            <div style={{ textAlign: "center", marginBottom: "16px" }}>
-              <Text>How many stars would you rate this car?</Text>
-            </div>
-            <div style={{ textAlign: "center" }}>
+            <div className="mr-modal-center">
+              <p className="mr-modal-text">Bạn chấm mấy sao cho chiếc xe này?</p>
               <Rate
                 tooltips={tooltips}
                 onChange={setRating}
@@ -859,7 +959,7 @@ const MyRentals = () => {
               rows={4}
               onChange={(e) => setComment(e.target.value)}
               value={comment}
-              placeholder="Share your experience with this car (optional)..."
+              placeholder="Chia sẻ trải nghiệm của bạn về chiếc xe này (không bắt buộc)..."
               style={{ marginTop: "24px" }}
             />
           </>
@@ -867,120 +967,126 @@ const MyRentals = () => {
       </Modal>
 
       <Modal
-        title="Confirm Delete Booking"
+        title="Xác nhận xoá đơn"
         open={isDeleteModalVisible}
         onCancel={handleCloseDeleteModal}
+        wrapClassName="mr-modal"
         footer={[
-          <Button key="cancel" onClick={handleCloseDeleteModal}>
-            Cancel
-          </Button>,
-          <Button key="delete" type="primary" danger onClick={handleConfirmDelete}>
-            Delete
-          </Button>,
+          <button key="cancel" type="button" className="mr-btn mr-btn--ghost" onClick={handleCloseDeleteModal}>
+            Huỷ
+          </button>,
+          <button key="delete" type="button" className="mr-btn mr-btn--danger" onClick={handleConfirmDelete}>
+            Xoá
+          </button>,
         ]}
         width={500}
       >
-        <div style={{ textAlign: 'center', padding: '20px 0' }}>
-          <div style={{ fontSize: '16px', marginBottom: '16px' }}>
-            Are you sure you want to delete this booking?
-          </div>
+        <div className="mr-modal-center">
+          <p className="mr-modal-text">Bạn có chắc muốn xoá đơn thuê này không?</p>
           {rentalToDelete && (
-            <div style={{ background: '#f5f5f5', padding: '12px', borderRadius: '6px', marginBottom: '16px' }}>
-              <Text strong>Order: #{rentalToDelete.orderCode}</Text>
+            <div className="mr-modal-summary">
+              <span className="mr-strong">Mã đơn: #{rentalToDelete.orderCode}</span>
               <br />
-              <Text>License Plate: {rentalToDelete.carId}</Text>
+              <span>Biển số: {rentalToDelete.carId}</span>
               <br />
-              <Text>Amount: {rentalToDelete.amount?.toLocaleString("vi-VN")} VND</Text>
+              <span>Tổng tiền: {formatMoney(rentalToDelete.amount)}</span>
             </div>
           )}
-          <div style={{ color: '#ff4d4f', fontSize: '14px' }}>
-            ⚠️ This action cannot be undone
-          </div>
+          <p className="mr-modal-hint mr-modal-hint--danger">
+            Hành động này không thể hoàn tác.
+          </p>
         </div>
       </Modal>
 
       <Modal
-        title="Switch to Cash Payment"
+        title="Chuyển sang thanh toán tiền mặt"
         open={isSwitchModalVisible}
         onCancel={handleCloseSwitchModal}
+        wrapClassName="mr-modal"
         footer={[
-          <Button key="cancel" onClick={handleCloseSwitchModal}>
-            Cancel
-          </Button>,
-          <Button key="switch" type="primary" style={{ backgroundColor: '#fa8c16', borderColor: '#fa8c16' }} onClick={handleConfirmSwitch}>
-            Switch
-          </Button>,
+          <button key="cancel" type="button" className="mr-btn mr-btn--ghost" onClick={handleCloseSwitchModal}>
+            Huỷ
+          </button>,
+          <button key="switch" type="button" className="mr-btn mr-btn--warn" onClick={handleConfirmSwitch}>
+            Chuyển
+          </button>,
         ]}
         width={500}
       >
-        <div style={{ textAlign: 'center', padding: '20px 0' }}>
-          <div style={{ fontSize: '16px', marginBottom: '16px' }}>
-            Do you want to switch to cash payment when receiving the car?
-          </div>
+        <div className="mr-modal-center">
+          <p className="mr-modal-text">
+            Bạn muốn chuyển sang thanh toán tiền mặt khi nhận xe?
+          </p>
           {rentalToSwitch && (
-            <div style={{ background: '#f5f5f5', padding: '12px', borderRadius: '6px', marginBottom: '16px' }}>
-              <Text strong>Order: #{rentalToSwitch.orderCode}</Text>
+            <div className="mr-modal-summary">
+              <span className="mr-strong">Mã đơn: #{rentalToSwitch.orderCode}</span>
               <br />
-              <Text>License Plate: {rentalToSwitch.carId}</Text>
+              <span>Biển số: {rentalToSwitch.carId}</span>
               <br />
-              <Text>Amount: {rentalToSwitch.amount?.toLocaleString("vi-VN")} VND</Text>
+              <span>Tổng tiền: {formatMoney(rentalToSwitch.amount)}</span>
               <br />
-              <Text>From: <strong>Bank Transfer</strong> → <strong>Cash</strong></Text>
+              <span>
+                Từ: <strong>Chuyển khoản</strong> → <strong>Tiền mặt</strong>
+              </span>
             </div>
           )}
-          <div style={{ color: '#fa8c16', fontSize: '14px' }}>
-            💡 You will pay cash when receiving the car
-          </div>
+          <p className="mr-modal-hint mr-modal-hint--warn">
+            Bạn sẽ thanh toán tiền mặt khi nhận xe.
+          </p>
         </div>
       </Modal>
 
       <Modal
-        title="Switch to Bank Payment"
+        title="Chuyển sang chuyển khoản"
         open={isSwitchToBankModalVisible}
         onCancel={handleCloseSwitchToBankModal}
+        wrapClassName="mr-modal"
         footer={[
-          <Button key="cancel" onClick={handleCloseSwitchToBankModal}>
-            Cancel
-          </Button>,
-          <Button key="switch" type="primary" style={{ backgroundColor: '#1890ff', borderColor: '#1890ff' }} onClick={handleConfirmSwitchToBank}>
-            Switch
-          </Button>,
+          <button key="cancel" type="button" className="mr-btn mr-btn--ghost" onClick={handleCloseSwitchToBankModal}>
+            Huỷ
+          </button>,
+          <button key="switch" type="button" className="mr-btn mr-btn--primary" onClick={handleConfirmSwitchToBank}>
+            Chuyển
+          </button>,
         ]}
         width={500}
       >
-        <div style={{ textAlign: 'center', padding: '20px 0' }}>
-          <div style={{ fontSize: '16px', marginBottom: '16px' }}>
-            Do you want to switch to bank transfer payment?
-          </div>
+        <div className="mr-modal-center">
+          <p className="mr-modal-text">
+            Bạn muốn chuyển sang thanh toán bằng chuyển khoản?
+          </p>
           {rentalToSwitchToBank && (
-            <div style={{ background: '#f5f5f5', padding: '12px', borderRadius: '6px', marginBottom: '16px' }}>
-              <Text strong>Order: #{rentalToSwitchToBank.orderCode}</Text>
+            <div className="mr-modal-summary">
+              <span className="mr-strong">Mã đơn: #{rentalToSwitchToBank.orderCode}</span>
               <br />
-              <Text>License Plate: {rentalToSwitchToBank.carId}</Text>
+              <span>Biển số: {rentalToSwitchToBank.carId}</span>
               <br />
-              <Text>Amount: {rentalToSwitchToBank.amount?.toLocaleString("vi-VN")} VND</Text>
+              <span>Tổng tiền: {formatMoney(rentalToSwitchToBank.amount)}</span>
               <br />
-              <Text>From: <strong>Cash</strong> → <strong>Bank Transfer</strong></Text>
+              <span>
+                Từ: <strong>Tiền mặt</strong> → <strong>Chuyển khoản</strong>
+              </span>
             </div>
           )}
-          <div style={{ color: '#1890ff', fontSize: '14px' }}>
-            🏦 You need to pay early to secure your booking
-          </div>
+          <p className="mr-modal-hint mr-modal-hint--info">
+            Bạn cần thanh toán sớm để giữ chỗ cho đơn thuê này.
+          </p>
         </div>
       </Modal>
 
       <Modal
-        title="Confirm Cancel Booking"
+        title="Xác nhận huỷ đặt xe"
         open={isCancelModalVisible}
         onCancel={handleCloseCancelModal}
+        wrapClassName="mr-modal"
         footer={[
-          <Button key="cancel" onClick={handleCloseCancelModal}>
-            Cancel
-          </Button>,
-          <Button 
-            key="delete" 
-            type="primary" 
-            danger 
+          <button key="cancel" type="button" className="mr-btn mr-btn--ghost" onClick={handleCloseCancelModal}>
+            Huỷ
+          </button>,
+          <button
+            key="confirm"
+            type="button"
+            className="mr-btn mr-btn--danger"
             onClick={handleConfirmCancelBooking}
             disabled={
               rentalToCancel &&
@@ -989,37 +1095,37 @@ const MyRentals = () => {
               (!refundBankAccount.trim() || !refundBankName.trim())
             }
           >
-            Confirm Cancellation
-          </Button>,
+            Xác nhận huỷ
+          </button>,
         ]}
         width={500}
       >
-        <div style={{ textAlign: 'center', padding: '20px 0' }}>
+        <div className="mr-modal-center">
           {/* Display refund percentage if bank payment */}
           {rentalToCancel && rentalToCancel.paymentMethod?.toLowerCase() === "bank" && (
             <>
-              <div style={{ color: '#1890ff', fontWeight: 500, marginBottom: 8 }}>
+              <p className="mr-modal-hint mr-modal-hint--info">
                 {rentalToCancel.status?.toUpperCase() === "PAID" ? (
                   rentalToCancel.bookingStatus?.toLowerCase() === "pending"
-                    ? "You will receive 100% refund of the amount paid."
+                    ? "Bạn sẽ được hoàn 100% số tiền đã thanh toán."
                     : rentalToCancel.bookingStatus?.toLowerCase() === "ongoing"
-                      ? "You will receive 95% refund of the amount paid."
+                      ? "Bạn sẽ được hoàn 95% số tiền đã thanh toán."
                       : null
                 ) : (
-                  "You haven't paid yet, no refund will be processed."
+                  "Bạn chưa thanh toán nên sẽ không có khoản hoàn tiền nào."
                 )}
-              </div>
+              </p>
               {/* Input for bank account and bank name if bank + PAID */}
               {rentalToCancel.status?.toUpperCase() === "PAID" && (
                 <div style={{ marginBottom: 12 }}>
                   <Input
-                    placeholder="Bank account number for refund"
+                    placeholder="Số tài khoản nhận hoàn tiền"
                     value={refundBankAccount}
                     onChange={e => setRefundBankAccount(e.target.value)}
                     style={{ marginBottom: 8 }}
                   />
                   <Input
-                    placeholder="Bank name for refund"
+                    placeholder="Tên ngân hàng nhận hoàn tiền"
                     value={refundBankName}
                     onChange={e => setRefundBankName(e.target.value)}
                   />
@@ -1027,21 +1133,21 @@ const MyRentals = () => {
               )}
             </>
           )}
-          <div style={{ fontSize: '16px', marginBottom: '16px' }}>
-            Are you sure you want to cancel this booking? This action cannot be undone.
-          </div>
+          <p className="mr-modal-text">
+            Bạn có chắc muốn huỷ đơn thuê này không? Hành động này không thể hoàn tác.
+          </p>
           {rentalToCancel && (
-            <div style={{ background: '#f5f5f5', padding: '12px', borderRadius: '6px', marginBottom: '16px' }}>
-              <Text strong>Order: #{rentalToCancel.orderCode}</Text>
+            <div className="mr-modal-summary">
+              <span className="mr-strong">Mã đơn: #{rentalToCancel.orderCode}</span>
               <br />
-              <Text>License Plate: {rentalToCancel.carId}</Text>
+              <span>Biển số: {rentalToCancel.carId}</span>
               <br />
-              <Text>Amount: {rentalToCancel.amount?.toLocaleString("vi-VN")} VND</Text>
+              <span>Tổng tiền: {formatMoney(rentalToCancel.amount)}</span>
             </div>
           )}
-          <div style={{ color: '#ff4d4f', fontSize: '14px' }}>
-            ⚠️ This action cannot be undone
-          </div>
+          <p className="mr-modal-hint mr-modal-hint--danger">
+            Hành động này không thể hoàn tác.
+          </p>
         </div>
       </Modal>
     </div>
@@ -1049,4 +1155,3 @@ const MyRentals = () => {
 };
 
 export default MyRentals;
-//bnmbzvxnmvxcmnbzxcnmbzc
