@@ -1,105 +1,230 @@
-# CARRENTAL - Dự án Thuê Xe
-## Giới thiệu
+<div align="center">
 
-Đây là dự án ứng dụng thuê xe (CARRENTAL), được phát triển với kiến trúc client-server sử dụng Spring Boot cho Backend và ReactJS cho Frontend.
+# ?? DRIVON
 
-Dự án bao gồm các chức năng cơ bản như đăng ký, đăng nhập, quản lý thông tin người dùng, và các tính năng quản trị (danh sách người dùng, cập nhật vai trò, xóa người dùng).
+### **Next-Gen Full-Stack Car Rental & Fleet Management Platform**
 
-## Công nghệ sử dụng
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=22&duration=2500&pause=650&color=7C3AED&center=true&vCenter=true&repeat=true&width=760&lines=Full-Stack+Car+Rental+Platform;Spring+Boot+3+%2B+MongoDB+%2B+React;Real-time+Chat+%26+Live+Notifications;Automated+PayOS+Payment+%26+PDF+Contracts;Multi-Role%3A+Customer+%2B+Owner+%2B+Admin)](https://git.io/typing-svg)
 
-**Backend:**
-- Spring Boot
-- Spring Security (cho xác thực và phân quyền)
-- JPA / Hibernate (quản lý cơ sở dữ liệu)
-- Maven (quản lý dependency)
-- Cơ sở dữ liệu (ví dụ: MySQL, PostgreSQL, H2, v.v. - cần cấu hình cụ thể)
+<p align="center">
+  <a href="https://youngltc.id.vn">
+    <img src="https://img.shields.io/badge/Live_Demo-youngltc.id.vn-7C3AED?style=for-the-badge&logo=caddy&logoColor=white" alt="Live Demo" />
+  </a>
+  <a href="https://github.com/ekancisme/drivon">
+    <img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repo" />
+  </a>
+  <a href="https://ltcuong24.id.vn">
+    <img src="https://img.shields.io/badge/Portfolio-ltcuong24.id.vn-06B6D4?style=for-the-badge&logo=vercel&logoColor=white" alt="Portfolio" />
+  </a>
+  <a href="mailto:lethecuong2k4@gmail.com">
+    <img src="https://img.shields.io/badge/Contact-Author-0EA5E9?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" />
+  </a>
+</p>
 
-**Frontend:**
-- ReactJS
-- React Router DOM (quản lý định tuyến)
-- Axios (gọi API backend)
-- CSS (styling)
-- npm / yarn (quản lý dependency)
-
-## Hướng dẫn chạy dự án
-
-Để chạy dự án này, bạn cần cài đặt các phần mềm sau trên máy tính của mình:
-
-- **Java Development Kit (JDK)** (phiên bản 8 trở lên)
-- **Maven** hoặc **Gradle** (tùy thuộc vào dự án Spring Boot được cấu hình sử dụng công cụ nào)
-- **Node.js** và **npm** (hoặc **yarn**)
-- Một hệ quản trị cơ sở dữ liệu và cấu hình kết nối trong file `application.properties` (hoặc `application.yml`) của backend.
-
-### 1. Thiết lập Backend
-
-1.  **Clone repository:**
-    ```bash
-    git clone <URL_cua_repository_backend>
-    cd <thu_muc_backend>
-    ```
-    *(Thay `<URL_cua_repository_backend>` và `<thu_muc_backend>` bằng thông tin thực tế)*
-
-2.  **Cấu hình cơ sở dữ liệu:**
-    Mở file cấu hình của Spring Boot (thường là `src/main/resources/application.properties` hoặc `application.yml`) và cập nhật thông tin kết nối đến cơ sở dữ liệu của bạn (URL, username, password).
-
-3.  **Build và chạy Backend:**
-    Sử dụng Maven:
-    ```bash
-    mvn clean install
-    mvn spring-boot:run
-    ```
-    Hoặc sử dụng Gradle (nếu dự án dùng Gradle):
-    ```bash
-    ./gradlew clean build
-    ./gradlew bootRun
-    ```
-    Backend sẽ chạy mặc định trên cổng `8080`.
-
-### 2. Thiết lập Frontend
-
-1.  **Clone repository (nếu riêng):**
-    ```bash
-    git clone <URL_cua_repository_frontend>
-    cd <thu_muc_frontend>
-    ```
-    *(Thay `<URL_cua_repository_frontend>` và `<thu_muc_frontend>` bằng thông tin thực tế)*
-    *Nếu frontend và backend chung một repository, bạn chỉ cần `cd` vào thư mục frontend.*
-
-2.  **Cài đặt Dependencies:**
-    Sử dụng npm:
-    ```bash
-    npm install
-    ```
-    Hoặc sử dụng yarn:
-    ```bash
-    yarn install
-    ```
-
-3.  **Chạy Frontend:**
-    Sử dụng npm:
-    ```bash
-    npm start
-    ```
-    Hoặc sử dụng yarn:
-    ```bash
-    yarn start
-    ```
-    Frontend sẽ chạy mặc định trên cổng `3000`.
-
-Sau khi cả backend và frontend đều đang chạy, bạn có thể truy cập ứng dụng tại `http://localhost:3000` trên trình duyệt của mình.
-
-## Cấu hình thêm
-
-- **CORS:** File `AdminController.java` và có thể các controller khác cần có `@CrossOrigin(origins = "http://localhost:3000")` để cho phép frontend truy cập từ cổng 3000.
-- **Bảo mật Admin:** Các endpoint admin (`/api/admin/**`) hiện đang tạm thời bỏ qua xác thực cho mục đích demo. Trong môi trường production, bạn cần bật lại `@PreAuthorize("hasRole('ADMIN')")` trong `AdminController.java` và cấu hình Spring Security để bảo vệ các endpoint này bằng token (JWT) và kiểm tra vai trò người dùng.
-- **Variables Môi trường:** Cân nhắc sử dụng biến môi trường cho các thông tin nhạy cảm như thông tin cơ sở dữ liệu, khóa API, v.v.
-
-## Đóng góp
-
-Nếu bạn muốn đóng góp cho dự án, vui lòng tạo một pull request hoặc mở một issue để thảo luận.
-
-## Giấy phép
-
-Dự án này được cấp phép theo Giấy phép MIT. Xem file `LICENSE` để biết thêm chi tiết.
+</div>
 
 ---
+
+## ?? Overview
+
+**Drivon** is a modern, full-stack vehicle rental and fleet management ecosystem built for seamless interactions across three core user roles: **Customers (Renters)**, **Car Owners (Partners)**, and **System Administrators**. 
+
+Engineered with high performance and enterprise-grade reliability, Drivon combines **Spring Boot 3** and **MongoDB** on the backend with a responsive **React** frontend, supporting real-time WebSocket communication, PayOS payment automation, KYC document verification, and dynamic contract generation.
+
+---
+
+## ? Tech Constellation
+
+<div align="center">
+
+[![Tech Stack](https://skillicons.dev/icons?i=java,spring,react,mongodb,nodejs,docker,nginx,tailwind,html,css,js,git,github,postman&perline=14&theme=dark)](https://skillicons.dev)
+
+</div>
+
+<div align="center">
+
+| Layer | Technologies & Frameworks |
+| :--- | :--- |
+| **Backend Core** | `Java 17` � `Spring Boot 3.1.5` � `Spring Data MongoDB` � `Maven` |
+| **Security & Auth** | `Spring Security 6` � `JWT (JSON Web Token)` � `Google OAuth 2.0` � `BCrypt` |
+| **Frontend UI** | `React 18` � `React Router v6` � `Tailwind CSS / Lucide Icons` � `Axios` |
+| **Real-time & Socket** | `Spring WebSocket` � `STOMP Protocol` � `SockJS` |
+| **Cloud & Storage** | `MongoDB Standalone / Replica` � `Cloudinary Media API` |
+| **Payments & Integrations**| `PayOS Payment Gateway` � `Gmail SMTP Mailer` � `Digital Signature` |
+| **DevOps & Infrastructure**| `Docker (Multi-stage build)` � `Nginx Reverse Proxy` � `Caddy SSL Proxy` |
+
+</div>
+
+---
+
+## ?? Key Features
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### ?? Customer Experience (Renter)
+- **Smart Vehicle Search:** Multi-criteria filtering by brand, fuel type, transmission, seating capacity, price range, and city location.
+- **Instant Booking Engine:** Interactive schedule picker, pricing calculation, discount coupon application, and PayOS QR banking checkout.
+- **Digital Rental Contracts:** Automated generation and viewing of rental contracts with legal terms.
+- **Review & Ratings:** Real-time feedback and star rating system for cars and rental experiences.
+
+</td>
+<td width="50%" valign="top">
+
+### ?? Car Owner Portal (Partner)
+- **Fleet Management:** Register new vehicles, upload multi-angle photos & cavet verification documents via Cloudinary.
+- **Revenue & Wallet Dashboard:** Live tracking of earnings, profit margins, rental history, and total debt.
+- **Withdrawal Requests:** Create cash-out requests with digital signature validation and bank account routing.
+- **Direct Communication:** Real-time STOMP messaging directly with renters for pickup arrangements.
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### ??? Admin Command Center
+- **Fleet Verification:** Review and approve/reject partner vehicle listings and KYC identity documents.
+- **System Revenue Analytics:** Real-time charts of gross revenue, platform commission fees, and active rentals.
+- **User Management:** Granular role assignment, account ban/active toggling, and partner verification.
+- **System Broadcasts:** Send targeted or platform-wide notifications and promotional announcements.
+
+</td>
+<td width="50%" valign="top">
+
+### ? Infrastructure & Architecture
+- **Document-based Persistence:** High-throughput MongoDB schema with sequence generators and sparse indexes.
+- **Enterprise Security:** JWT-based stateless authentication, Google OAuth 2.0 single sign-on, and email OTP verification.
+- **Unified Containerization:** Single-container deployment bundling React static build, Spring Boot API, and Nginx proxy.
+- **Automatic SSL & Reverse Proxy:** Zero-config HTTPS with Caddy reverse proxy integration.
+
+</td>
+</tr>
+</table>
+
+---
+
+## ??? System Architecture
+
+```mermaid
+graph TD
+    Client["Browser / Mobile Client (React)"]
+    Caddy["Caddy Reverse Proxy (HTTPS / SSL: youngltc.id.vn)"]
+    Nginx["Container Nginx Proxy (Port 80)"]
+    SpringBoot["Spring Boot Backend (:8080)"]
+    MongoDB[("MongoDB (drivon_db)")]
+    PayOS["PayOS Gateway"]
+    Cloudinary["Cloudinary Media API"]
+    Gmail["Gmail SMTP Server"]
+
+    Client -->|HTTPS / WSS| Caddy
+    Caddy -->|HTTP| Nginx
+    Nginx -->|Static HTML/JS| Client
+    Nginx -->|/api/* & /ws/*| SpringBoot
+    SpringBoot -->|CRUD / Aggregation| MongoDB
+    SpringBoot -->|Payment Webhooks| PayOS
+    SpringBoot -->|Image Storage| Cloudinary
+    SpringBoot -->|Email Verification / OTP| Gmail
+```
+
+---
+
+## ?? Project Structure
+
+```text
+drivon/
++-- backend/
+�   +-- src/main/java/Drivon/backend/
+�   �   +-- config/          # Security, JWT, MongoListener, MongoDataSeeder, WebSocket
+�   �   +-- controller/      # REST API Endpoints (Auth, Car, Booking, Payment, Admin, ...)
+�   �   +-- dto/             # Data Transfer Objects & PayOS request/response models
+�   �   +-- entity/          # Chat, Message, Notification MongoDB Documents
+�   �   +-- model/           # User, Car, Booking, Contract, Review Documents
+�   �   +-- repository/      # Spring Data MongoRepository Interfaces
+�   �   +-- service/         # Business logic, SequenceGenerator, EmailService, PayOS
+�   +-- src/main/resources/
+�       +-- application.properties
+�       +-- db.sql           # Initial relational reference schema
++-- frontend/
+�   +-- public/              # Index HTML, Favicons, Static Assets
+�   +-- src/
+�       +-- api/             # Dynamic API & WebSocket configuration
+�       +-- components/      # Modular UI components (Auth, Car, Admin, Partner, Profile)
+�       +-- contexts/        # React Contexts (User, Car, Partner, Booking, History)
+�       +-- services/        # WebSocket STOMP service
++-- Dockerfile               # Multi-stage production container build
++-- nginx.conf               # High-performance Nginx API & Static reverse proxy
++-- entrypoint.sh            # Container init runner for Java + Nginx
++-- deploy.ps1               # Automated VPS deployment script
++-- README.md
+```
+
+---
+
+## ??? Quick Start & Local Development
+
+### Prerequisites
+- **Java JDK 17+**
+- **Node.js 18+** & **npm**
+- **MongoDB 6+** (Running locally on `mongodb://localhost:27017` or MongoDB Atlas)
+
+### 1. Backend Setup
+```bash
+cd backend
+
+# Configure application.properties with your MongoDB URI, JWT Secret, and Gmail SMTP
+# Run Spring Boot backend (Starts at http://localhost:8080)
+./mvnw clean spring-boot:run
+```
+
+### 2. Frontend Setup
+```bash
+cd frontend
+
+# Install dependencies
+npm install --legacy-peer-deps
+
+# Start React development server (Starts at http://localhost:3000)
+npm start
+```
+
+---
+
+## ?? Production VPS Deployment
+
+Deploying Drivon to any Linux VPS using Docker and Caddy:
+
+```powershell
+# Run the automated deployment script
+.\deploy.ps1 -AppName "drivon-app" -Domain "youngltc.id.vn" -ContainerPort 80
+```
+
+The deployment pipeline automatically:
+1. Archives source code excluding dev cache.
+2. Transfers bundle to VPS over SSH.
+3. Builds the optimized multi-stage Docker image on the server.
+4. Spins up `drivon-app` on the `web-net` bridge network.
+5. Injects the domain reverse proxy configuration into Caddy and reloads SSL certificates.
+
+---
+
+## ?? Author
+
+<div align="center">
+
+**L� Th? Cu?ng**  
+*Full-stack Developer � Software Engineering @ FPT University �� N?ng*
+
+[![Portfolio](https://img.shields.io/badge/Portfolio-ltcuong24.id.vn-7C3AED?style=for-the-badge&logo=vercel&logoColor=white)](https://ltcuong24.id.vn)
+[![GitHub](https://img.shields.io/badge/GitHub-ekancisme-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ekancisme)
+[![Email](https://img.shields.io/badge/Email-lethecuong2k4%40gmail.com-06B6D4?style=for-the-badge&logo=gmail&logoColor=white)](mailto:lethecuong2k4@gmail.com)
+
+</div>
+
+---
+
+<div align="center">
+
+<sub>Built with curiosity, clean code, and passion for scalable engineering.</sub>
+
+</div>
