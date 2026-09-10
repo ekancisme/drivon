@@ -71,9 +71,9 @@ const Footer = () => {
           </h4>
           {(openSection.contactInfo || !isMobile()) && (
             <ul>
-              <li>Email: info@drivon.com</li>
-              <li>Phone: +84 123 456 789</li>
-              <li>Address: FPT University, District 9, Ho Chi Minh City</li>
+              <li>Email: lethecuong2k4@gmail.com</li>
+              <li>Phone: 0335247117</li>
+              <li>Address: 55 Lê Thiện Trị, Ngũ Hành Sơn, Đà Nẵng</li>
             </ul>
           )}
         </div>

@@ -226,13 +226,13 @@ public class ContractService {
             writer.write("Email: " + contract.getEmail() + "\n\n");
 
             writer.write("BÊN B\n");
-            writer.write("Tên: Cty TNHH Group2\n");
-            writer.write("Số điện thoại: 0394672210\n");
-            writer.write("Email: Binhvuong221004@gmail.com\n\n");
+            writer.write("Tên: Cty TNHH Drivon\n");
+            writer.write("Số điện thoại: 0335247117\n");
+            writer.write("Email: lethecuong2k4@gmail.com\n\n");
 
             writer.write("Đồng ý với điều khoản:\n");
             writer.write("BÊN A:                                                          BÊN B:\n");
-            writer.write("Tên: " + contract.getName() + "                                Group2\n");
+            writer.write("Tên: " + contract.getName() + "                                Drivon\n");
             writer.write("Mã xác nhận:                                                    Đã ký!\n");
 
             writer.close();
