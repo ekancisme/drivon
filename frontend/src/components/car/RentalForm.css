@@ -1,186 +1,305 @@
+/* ============================================================
+   RENTAL FORM — DRIVON DARK TECH
+   Modal đặt xe: form 2 cột, lịch thuê, mã giảm giá, tổng tiền
+   ============================================================ */
+
+/* ---------- Modal shell ---------- */
 .rental-form-modal .ant-modal-content {
-  border-radius: 8px;
+  position: relative;
+  padding: 0;
+  border-radius: var(--r-xl);
   overflow: visible;
+  background: linear-gradient(160deg, rgba(19, 27, 46, 0.97) 0%, rgba(11, 15, 25, 0.97) 100%);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 40px 90px -40px rgba(0, 0, 0, 0.9),
+    0 0 80px -44px var(--primary-glow);
 }
 
-.rental-form-modal .ant-modal-body {
-  overflow: visible;
+.rental-form-modal .ant-modal-content::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  background: var(--grad-primary);
+  opacity: 0.75;
 }
 
 .rental-form-modal .ant-modal-header {
-  background: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
-  padding: 16px 24px;
+  background: transparent;
+  border-bottom: 1px solid var(--border);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  padding: 22px 28px;
+  margin: 0;
 }
 
 .rental-form-modal .ant-modal-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #333;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
 }
 
-.rental-form {
-  padding: 20px;
+.rental-form-modal .ant-modal-close {
+  top: 18px;
+  inset-inline-end: 18px;
+  color: var(--text-dim);
+  border-radius: var(--r-sm);
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.rental-form-modal .ant-modal-close:hover {
+  color: var(--cyan);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.rental-form-modal .ant-modal-body {
+  padding: 26px 28px 6px;
+  overflow: visible;
+}
+
+.rental-form-modal .ant-modal-footer {
+  margin: 0;
+  padding: 18px 28px 24px;
+  border-top: 1px solid var(--border);
+}
+
+/* ---------- Layout 2 cột ---------- */
+.form-sections-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
 }
 
 .form-section {
+  min-width: 0;
   margin-bottom: 24px;
 }
 
 .form-section h3 {
-  margin-bottom: 16px;
-  color: #333;
-  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
 }
 
+.form-section h3::before {
+  content: '';
+  width: 3px;
+  height: 15px;
+  border-radius: 999px;
+  background: var(--grad-primary);
+  flex-shrink: 0;
+}
+
+/* ---------- Form controls ---------- */
 .form-section .ant-form-item {
   margin-bottom: 16px;
 }
 
 .form-section .ant-form-item-label {
-  padding-bottom: 4px;
+  padding-bottom: 6px;
 }
 
 .form-section .ant-form-item-label > label {
+  font-size: 0.84rem;
   font-weight: 500;
-  color: #555;
+  color: var(--text-muted);
+}
+
+.form-section .ant-form-item-label > label::after {
+  color: var(--danger);
+}
+
+.form-section .ant-form-item-explain-error {
+  font-size: 0.78rem;
+  color: var(--danger);
+  padding-top: 4px;
 }
 
 .form-section .ant-input,
-.form-section .ant-picker {
-  border-radius: 6px;
-  border: 1px solid #d9d9d9;
-  padding: 8px 12px;
-  transition: all 0.3s;
+.form-section .ant-input-affix-wrapper,
+.form-section .ant-picker,
+.form-section textarea.ant-input {
+  color: var(--text);
+  background: rgba(11, 15, 25, 0.66);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 10px 14px;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.form-section .ant-input::placeholder,
+.form-section textarea.ant-input::placeholder {
+  color: var(--text-dim);
 }
 
 .form-section .ant-input:hover,
 .form-section .ant-picker:hover {
-  border-color: #40a9ff;
+  border-color: var(--border-strong);
+  background: rgba(11, 15, 25, 0.8);
 }
 
 .form-section .ant-input:focus,
 .form-section .ant-picker-focused {
-  border-color: #40a9ff;
-  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  border-color: var(--primary);
+  background: rgba(11, 15, 25, 0.9);
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.16);
 }
 
 .form-section .ant-input[disabled] {
-  background-color: #f5f5f5;
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.03);
   cursor: not-allowed;
 }
 
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 12px;
-  margin-top: 24px;
-}
-
-.cancel-button,
-.submit-button {
-  height: 40px;
-  border-radius: 6px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.cancel-button {
-  min-width: 100px;
-  background: #f5f5f5;
-  border: 1px solid #d9d9d9;
-  color: #333;
-}
-
-.cancel-button:hover {
-  background: #e8e8e8;
-  border-color: #d9d9d9;
-  color: #333;
-}
-
-.submit-button {
-  min-width: 100px;
-  background: #1890ff;
-  border: none;
-  color: white;
-}
-
-.submit-button:hover {
-  background: #40a9ff;
-  color: white;
-}
-
+/* ---------- Date range ---------- */
 .date-range-container {
   position: relative;
   margin-bottom: 24px;
   z-index: 1;
 }
 
+.date-range-container > label,
+.coupon-section > label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
 .date-range-display {
   display: flex;
   align-items: center;
-  padding: 4px 8px;
-  border: 1px solid #d9d9d9;
-  border-radius: 6px;
+  gap: 10px;
+  height: 46px;
+  padding: 0 14px;
+  font-size: 0.9rem;
+  color: var(--text);
+  background: rgba(11, 15, 25, 0.66);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
   cursor: pointer;
-  transition: all 0.3s;
-  font-size: 13px;
-  box-sizing: border-box;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
-  gap: 0;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .date-range-display i {
-  font-size: 14px;
-  color: #666;
-  margin: 0;
-  padding: 0;
-  line-height: 1;
-  display: inline-block;
-  vertical-align: middle;
+  font-size: 1rem;
+  color: var(--text-dim);
+  transition: color 0.2s ease;
+}
+
+.date-range-display:hover {
+  border-color: var(--border-strong);
+  background: rgba(11, 15, 25, 0.8);
+}
+
+.date-range-display:hover i {
+  color: var(--cyan);
 }
 
 .date-range-display span {
   white-space: nowrap;
-  padding: 0;
-  margin: 0;
-  line-height: 1;
-  display: inline-block;
-  vertical-align: middle;
 }
 
-.date-range-display:hover {
-  border-color: #40a9ff;
-}
-
+/* ---------- Calendar popover ---------- */
 .calendar-container {
   position: absolute;
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   margin-bottom: 8px;
   max-width: calc(100% - 40px);
-  overflow-x: auto;
-  box-sizing: border-box;
   max-height: 400px;
-  overflow-y: auto;
+  overflow: auto;
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.95), 0 0 40px -24px var(--primary-glow);
+  animation: dv-rise 0.24s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Override react-date-range styles to ensure responsiveness */
+/* react-date-range — dark overrides */
 .rdrDateRangeWrapper,
 .rdrCalendarWrapper {
   width: 100% !important;
   min-width: unset !important;
+  background: transparent;
+  color: var(--text);
   box-sizing: border-box;
+}
+
+.rdrMonthAndYearWrapper,
+.rdrMonths,
+.rdrMonthName {
+  background: transparent;
+  color: var(--text);
+}
+
+.rdrMonthAndYearPickers select {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+.rdrMonthName,
+.rdrWeekDay {
+  color: var(--text-muted);
+}
+
+.rdrDayNumber span {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.rdrDayPassive .rdrDayNumber span {
+  color: var(--text-dim);
+  opacity: 0.45;
+}
+
+.rdrDayToday .rdrDayNumber span:after {
+  background: var(--cyan);
+}
+
+.rdrStartEdge,
+.rdrEndEdge,
+.rdrInRange {
+  background: var(--primary) !important;
+}
+
+.rdrInRange {
+  opacity: 0.55;
+}
+
+.rdrDayHovered {
+  border-color: var(--cyan) !important;
+}
+
+.rdrDayToday:not(.rdrDayPassive) .rdrInRange ~ .rdrDayNumber span:after,
+.rdrDayToday:not(.rdrDayPassive) .rdrStartEdge ~ .rdrDayNumber span:after,
+.rdrDayToday:not(.rdrDayPassive) .rdrEndEdge ~ .rdrDayNumber span:after {
+  background: var(--cyan);
+}
+
+.rdrNextPrevButton {
+  background: rgba(255, 255, 255, 0.06);
+}
+.rdrNextPrevButton:hover {
+  background: var(--primary);
+}
+.rdrPprevButton i,
+.rdrNextButton i {
+  border-color: transparent transparent transparent var(--text);
 }
 
 .rdrMonths {
@@ -188,7 +307,6 @@
   flex-wrap: nowrap;
   width: 100%;
   justify-content: center;
-  min-width: unset !important;
   box-sizing: border-box;
 }
 
@@ -197,11 +315,10 @@
   flex-basis: auto;
   width: 100%;
   min-width: unset !important;
-  box-sizing: border-box;
   padding: 12px;
+  box-sizing: border-box;
 }
 
-/* Adjust month navigation and names for better fit on small screens */
 .rdrMonthName,
 .rdrWeekDays,
 .rdrDays {
@@ -219,39 +336,266 @@
   box-sizing: border-box;
 }
 
-.rdrDayNumber span {
-  font-size: 13px;
+/* ---------- Coupon ---------- */
+.coupon-section {
+  margin-bottom: 24px;
 }
 
-.rdrDayToday .rdrDayNumber span:after {
-  background: #1890ff;
+.coupon-section .ant-btn {
+  height: 46px;
+  padding: 0 18px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.16s ease;
 }
 
-.rdrStartEdge,
-.rdrEndEdge,
-.rdrInRange {
-  background: #1890ff !important;
+.coupon-section .ant-btn:hover {
+  color: #fff;
+  background: rgba(34, 211, 238, 0.12);
+  border-color: rgba(34, 211, 238, 0.42);
+  transform: translateY(-1px);
 }
 
-.rdrDayHovered {
-  border-color: #1890ff !important;
+.coupon-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #BBF7D0;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.28);
+  border-radius: 999px;
 }
 
-.rdrDayToday:not(.rdrDayPassive) .rdrInRange ~ .rdrDayNumber span:after,
-.rdrDayToday:not(.rdrDayPassive) .rdrStartEdge ~ .rdrDayNumber span:after,
-.rdrDayToday:not(.rdrDayPassive) .rdrEndEdge ~ .rdrDayNumber span:after {
-  background: #1890ff;
+/* ---------- Total amount ---------- */
+.total-amount-section {
+  margin-bottom: 24px;
+  padding: 18px 20px;
+  border-radius: var(--r-lg);
+  background: var(--grad-surface);
+  border: 1px solid var(--border);
 }
 
-/* Responsive styles */
+.total-amount-section h3 {
+  margin: 0 0 10px;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.total-amount-section h3::before {
+  display: none;
+}
+
+.total-amount-section > p:first-of-type {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: var(--grad-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.total-amount-section .deposit-info {
+  margin: 6px 0 0;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+/* ---------- Payment method ---------- */
+.form-section h3 + .ant-form-item,
+.form-section .ant-form-item:has(.ant-radio-group) {
+  margin-bottom: 0;
+}
+
+.ant-radio-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ant-radio-wrapper {
+  flex: 1;
+  min-width: 150px;
+  margin-inline-end: 0 !important;
+  padding: 12px 14px;
+  color: var(--text);
+  font-size: 0.88rem;
+  background: rgba(11, 15, 25, 0.6);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.ant-radio-wrapper:hover {
+  border-color: var(--border-strong);
+  background: rgba(11, 15, 25, 0.8);
+}
+
+.ant-radio-wrapper-checked {
+  border-color: var(--primary);
+  background: rgba(124, 58, 237, 0.12);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+
+.ant-radio .ant-radio-inner {
+  background: transparent;
+  border-color: var(--border-strong);
+}
+.ant-radio-checked .ant-radio-inner {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+.ant-radio-checked .ant-radio-inner::after {
+  background: #fff;
+}
+
+/* ---------- Footer buttons ---------- */
+.rental-form-modal .ant-modal-footer .ant-btn {
+  height: 46px;
+  min-width: 120px;
+  padding: 0 22px;
+  font-weight: 600;
+  font-family: inherit;
+  border-radius: var(--r-md);
+  transition: transform 0.16s ease, box-shadow 0.24s ease, background 0.24s ease;
+}
+
+.rental-form-modal .ant-modal-footer .ant-btn-default {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+}
+.rental-form-modal .ant-modal-footer .ant-btn-default:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+}
+
+.rental-form-modal .ant-modal-footer .ant-btn-primary {
+  color: #fff;
+  border: none;
+  background: var(--grad-primary);
+  background-size: 180% 180%;
+  box-shadow: 0 14px 34px -14px var(--primary-glow);
+}
+.rental-form-modal .ant-modal-footer .ant-btn-primary:hover:not(:disabled) {
+  background-position: 100% 0;
+  transform: translateY(-1px);
+  box-shadow: 0 18px 44px -14px var(--primary-glow), 0 0 26px -6px var(--cyan-glow);
+}
+
+/* ---------- Coupon list modal ---------- */
+.coupon-modal .ant-modal-content {
+  padding: 0;
+  border-radius: var(--r-xl);
+  background: linear-gradient(160deg, rgba(19, 27, 46, 0.97) 0%, rgba(11, 15, 25, 0.97) 100%);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.9), 0 0 80px -44px var(--primary-glow);
+}
+
+.coupon-modal .ant-modal-header {
+  background: transparent;
+  border-bottom: 1px solid var(--border);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  padding: 20px 24px;
+  margin: 0;
+}
+
+.coupon-modal .ant-modal-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.coupon-modal .ant-modal-close {
+  top: 16px;
+  inset-inline-end: 16px;
+  color: var(--text-dim);
+}
+.coupon-modal .ant-modal-close:hover {
+  color: var(--cyan);
+}
+
+.coupon-modal .ant-modal-body {
+  padding: 12px 24px 20px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.coupon-modal .ant-list-item {
+  padding: 14px 0;
+  border-block-end: 1px solid var(--border);
+}
+
+.coupon-modal .ant-list-item-meta-title {
+  color: var(--text) !important;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.coupon-modal .ant-list-item-meta-description {
+  color: var(--text-muted) !important;
+  font-size: 0.82rem;
+}
+
+.coupon-modal .ant-list-item-action .ant-btn {
+  height: 34px;
+  padding: 0 16px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.coupon-modal .ant-list-item-action .ant-btn:hover {
+  color: #fff;
+  background: rgba(34, 211, 238, 0.12);
+  border-color: rgba(34, 211, 238, 0.42);
+}
+
+.coupon-modal .ant-list-empty-text {
+  color: var(--text-dim);
+  padding: 24px 0;
+}
+
+/* ---------- Responsive ---------- */
 @media (max-width: 768px) {
   .rental-form-modal {
     width: 95% !important;
     max-width: 95% !important;
+    margin: 0 auto;
   }
 
   .rental-form-modal .ant-modal-body {
-    padding: 10px;
+    padding: 20px 18px 4px;
+  }
+
+  .rental-form-modal .ant-modal-header,
+  .rental-form-modal .ant-modal-footer {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .form-sections-container {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 
   .calendar-container {
@@ -259,42 +603,60 @@
     transform: translateX(-50%);
     width: 100%;
     max-width: 100%;
-    bottom: 100%;
-    margin-bottom: 8px;
     max-height: 350px;
   }
-  
+
   .rdrMonths {
     flex-direction: column;
   }
-  
+
   .rdrMonth {
     width: 100%;
   }
-}
 
-/* Ensure calendar stays within modal bounds */
-@media (max-height: 600px) {
-  .calendar-container {
-    max-height: 300px;
-    bottom: 100%;
+  .ant-radio-wrapper {
+    min-width: 100%;
+  }
+
+  .rental-form-modal .ant-modal-footer .ant-btn {
+    min-width: 0;
+    flex: 1;
   }
 }
 
-.btn-discount {
-  background-color: #f0f0f0;
-  color: #333;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-  padding: 6px 8px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s;
+@media (max-height: 600px) {
+  .calendar-container {
+    max-height: 300px;
+  }
+}
+
+/* ---------- Legacy (giữ để không vỡ layout cũ) ---------- */
+.rental-form {
+  padding: 20px;
+}
+
+.form-actions {
   display: flex;
+  justify-content: flex-end;
   align-items: center;
-  gap: 4px;
-  max-width: 150px;
-  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btn-discount {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 160px;
+  padding: 7px 12px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .btn-discount span {
@@ -304,5 +666,6 @@
 }
 
 .btn-discount:hover {
-  background-color: #e0e0e0;
-} 
+  background: rgba(34, 211, 238, 0.12);
+  border-color: rgba(34, 211, 238, 0.42);
+}
