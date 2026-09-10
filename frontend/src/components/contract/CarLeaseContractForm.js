@@ -98,23 +98,23 @@ const CarLeaseContractForm = ({ user }) => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.contractNumber) {
-      newErrors.contractNumber = "Please enter contract number";
-    }
     if (!formData.carId) {
-      newErrors.carId = "Please enter car ID";
+      newErrors.carId = "Vui lòng nhập mã xe / biển số xe";
     }
     if (!formData.name) {
-      newErrors.name = "Please enter name";
+      newErrors.name = "Vui lòng nhập họ và tên";
     }
     if (!formData.phone) {
-      newErrors.phone = "Please enter phone number";
+      newErrors.phone = "Vui lòng nhập số điện thoại";
     }
     if (!formData.email) {
-      newErrors.email = "Please enter email";
+      newErrors.email = "Vui lòng nhập email";
+    }
+    if (!formData.pricePerDay || parseFloat(formData.pricePerDay) <= 0) {
+      newErrors.pricePerDay = "Vui lòng nhập giá thuê hợp lệ";
     }
     if (!acceptedTerms) {
-      newErrors.terms = "Please accept the terms";
+      newErrors.terms = "Vui lòng đồng ý với các điều khoản";
     }
 
     setErrors(newErrors);
@@ -706,16 +706,16 @@ const CarLeaseContractForm = ({ user }) => {
                     <h3>6. GIẢI QUYẾT TRANH CHẤP</h3>
                     <ul>
                       <li>Tất cả các tranh chấp giữa người thuê và chủ xe phải được giải quyết trực tiếp giữa hai bên.</li>
-                      <li>Drivon không tham gia trong phiên dịch, trọng tài hoặc hoạt động đại diện cho bất kỳ bên nào.</li>
-                      <li>Trong trường hợp có yêu cầu từ cơ quan công cộng, Drivon sẽ cung cấp dữ liệu liên quan như lịch sử giao dịch, sổ sách tài khoản… trong phạm vi được phép theo luật.</li>
+                      <li>Drivon không tham gia trong hòa giải, trọng tài hoặc hoạt động đại diện pháp lý cho bất kỳ bên nào.</li>
+                      <li>Trong trường hợp có yêu cầu từ cơ quan có thẩm quyền, Drivon sẽ cung cấp dữ liệu liên quan như lịch sử giao dịch, dữ liệu hệ thống trong phạm vi được phép theo luật.</li>
                     </ul>
                   </div>
                   
                   <div style={{marginBottom: '1.5rem'}}>
-                    <h3>7. CAM KẾT VÀ BĂNG HẠN</h3>
+                    <h3>7. CAM KẾT VÀ RÀNG BUỘC</h3>
                     <ul>
-                      <li>Đăng ký tài khoản, đăng tải xe hoặc thuê xe qua nền tảng được coi là đọc, hiểu, đồng ý và bị ràng buộc bởi tất cả các điều khoản của thỏa thuận này.</li>
-                      <li>Drivon cam kết cập nhật, sửa đổi và bổ sung các điều khoản và điều kiện của chính sách này mà không có thông báo trước.</li>
+                      <li>Đăng ký tài khoản, đăng tải xe hoặc thuê xe qua nền tảng được coi là đã đọc, hiểu, đồng ý và bị ràng buộc bởi tất cả các điều khoản của thỏa thuận này.</li>
+                      <li>Drivon có quyền cập nhật, sửa đổi và bổ sung các điều khoản và điều kiện của chính sách này.</li>
                       <li>Phiên bản mới sẽ được công bố công khai trên nền tảng và có hiệu lực từ ngày công bố.</li>
                     </ul>
                   </div>

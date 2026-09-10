@@ -1,24 +1,28 @@
 .contracts-page {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: var(--space-8) var(--space-4);
+  color: var(--text);
 }
 
 .contracts-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: var(--space-8);
 }
 
 .contracts-header h1 {
-  color: #2c3e50;
-  font-size: 2.5rem;
+  color: var(--text);
+  font-size: var(--text-3xl);
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--space-2);
+  background: var(--grad-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .contracts-header p {
-  color: #7f8c8d;
-  font-size: 1.1rem;
+  color: var(--text-muted);
+  font-size: var(--text-base);
 }
 
 /* Loading State */
@@ -31,13 +35,13 @@
 }
 
 .spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba(124, 58, 237, 0.2);
+  border-top: 3px solid var(--primary-light);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: var(--space-4);
 }
 
 @keyframes spin {
@@ -46,8 +50,8 @@
 }
 
 .contracts-loading p {
-  color: #7f8c8d;
-  font-size: 1.1rem;
+  color: var(--text-muted);
+  font-size: var(--text-base);
 }
 
 /* Error State */
@@ -60,36 +64,40 @@
 
 .error-message {
   text-align: center;
-  padding: 2rem;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: var(--space-8);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-lg);
+  max-width: 460px;
 }
 
 .error-message i {
   font-size: 3rem;
-  color: #e74c3c;
-  margin-bottom: 1rem;
+  color: #ef4444;
+  margin-bottom: var(--space-4);
+  display: block;
 }
 
 .error-message p {
-  color: #7f8c8d;
-  margin-bottom: 1rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-4);
 }
 
 .retry-btn {
-  background: #3498db;
+  background: var(--primary);
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
+  padding: var(--space-2-5) var(--space-6);
+  border-radius: var(--r-md);
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: background 0.2s;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transition: all var(--t-fast);
 }
 
 .retry-btn:hover {
-  background: #2980b9;
+  background: var(--primary-light);
 }
 
 /* No Contracts State */
@@ -102,22 +110,25 @@
 
 .no-contracts-content {
   text-align: center;
-  padding: 3rem;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  padding: var(--space-10);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2xl);
+  box-shadow: var(--shadow-lg);
   max-width: 500px;
 }
 
 .no-contracts-content i {
-  font-size: 4rem;
-  color: #bdc3c7;
-  margin-bottom: 1rem;
+  font-size: 3.5rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-4);
+  display: block;
 }
 
 .no-contracts-content h3 {
-  color: #2c3e50;
-  margin-bottom: 0.5rem;
+  color: var(--text);
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-2);
 }
 
 .no-contracts-content p {
