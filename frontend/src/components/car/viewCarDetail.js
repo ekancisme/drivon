@@ -15,37 +15,17 @@ import { TbAutomaticGearboxFilled } from "react-icons/tb";
 import { FaGasPump, FaCalendarAlt, FaUserFriends, FaCogs, FaRoad, FaMapMarkerAlt, FaInfoCircle, FaExclamationCircle } from "react-icons/fa";
 import { BsEvStationFill } from "react-icons/bs";
 import { BsFillFuelPumpDieselFill } from "react-icons/bs";
-import {
-  FaBluetoothB, FaCamera, FaParking, FaSnowflake, FaMapMarkedAlt,
-  FaShieldAlt, FaPhoneAlt, FaCommentDots, FaStar, FaChair,
-  FaIdCard, FaFileContract, FaBan, FaCheckCircle, FaSuitcase,
-  FaChevronLeft, FaChevronRight, FaBolt
-} from "react-icons/fa";
 import Loader from '../others/loader';
 import { useCarData } from '../../contexts/CarDataContext';
 import { API_URL } from '../../api/configApi';
-
-// Danh mục tiện nghi: key -> nhãn + icon
-const AMENITY_CATALOG = {
-  gps: { label: 'Bản đồ / GPS', icon: <FaMapMarkedAlt /> },
-  bluetooth: { label: 'Bluetooth', icon: <FaBluetoothB /> },
-  camera360: { label: 'Camera 360', icon: <FaCamera /> },
-  parking: { label: 'Cảm biến lùi', icon: <FaShieldAlt /> },
-  parking_sensor: { label: 'Cảm biến lùi', icon: <FaShieldAlt /> },
-  airbag: { label: 'Túi khí an toàn', icon: <FaShieldAlt /> },
-  ac: { label: 'Điều hòa', icon: <FaSnowflake /> },
-  usb: { label: 'Cổng sạc USB', icon: <FaBolt /> },
-  child_seat: { label: 'Ghế trẻ em', icon: <FaChair /> },
-  luggage: { label: 'Khoang hành lý rộng', icon: <FaSuitcase /> },
-};
-
-const DEFAULT_AMENITIES = ['gps', 'bluetooth', 'camera360', 'parking', 'airbag', 'ac', 'usb', 'child_seat'];
+import gsap from 'gsap';
 
 const ViewCarDetail = () => {
   const { licensePlate } = useParams();
   const navigate = useNavigate();
   const { carsData, getCarByLicensePlate, fetchCarsData } = useCarData();
-
+  const detailContainerRef = useRef(null);
+  
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -107,8 +87,8 @@ const ViewCarDetail = () => {
   })();
 
   // Lọc đánh giá cho modal
-  const allReviewsFiltered = allReviewsFilter === 0
-    ? reviewsData.reviews
+  const allReviewsFiltered = allReviewsFilter === 0 
+    ? reviewsData.reviews 
     : reviewsData.reviews.filter(review => review.rating === allReviewsFilter);
 
   // Tính toán phân trang cho modal
@@ -144,7 +124,7 @@ const ViewCarDetail = () => {
   useEffect(() => {
     // Try to get car from context first
     const carFromContext = getCarByLicensePlate(licensePlate);
-
+    
     if (carFromContext) {
       // Car found in context, use it
       setCar(carFromContext);
@@ -154,7 +134,7 @@ const ViewCarDetail = () => {
       setReviewsData(carFromContext.reviewStats);
       setReviewsLoading(false);
       setLoading(false);
-
+      
       // Set owner info from contract data
       if (carFromContext.contract) {
         setOwnerInfo({
@@ -181,7 +161,7 @@ const ViewCarDetail = () => {
           setMainImage(res.data.mainImage);
           setOtherImages(res.data.otherImages || []);
           setLoading(false);
-
+          
           // Set owner info from car data if available
           if (res.data.ownerId) {
             setOwnerInfo({
@@ -240,6 +220,19 @@ const ViewCarDetail = () => {
         });
     }
   }, [licensePlate, carsData, getCarByLicensePlate]);
+
+  useEffect(() => {
+    if (car && detailContainerRef.current) {
+      const elements = detailContainerRef.current.querySelectorAll('.car-detail-images, .car-detail-info, .features, .rental-policy, .car-reviews, .similar-cars');
+      if (elements.length > 0) {
+        gsap.fromTo(
+          elements,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.45, stagger: 0.08, ease: 'power2.out', clearProps: 'transform,opacity' }
+        );
+      }
+    }
+  }, [car]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -479,8 +472,8 @@ const ViewCarDetail = () => {
     });
 
     // Điều hướng đến trang messages với thông tin chủ xe
-    navigate('/messages', {
-      state: {
+    navigate('/messages', { 
+      state: { 
         selectedUser: {
           id: ownerInfo.userId,
           name: ownerInfo.fullName,
@@ -492,6 +485,7 @@ const ViewCarDetail = () => {
       }
     });
   };
+
 
   if (loading) return <div className="loading"><Loader /></div>;
 
@@ -505,233 +499,51 @@ const ViewCarDetail = () => {
     setShowAllReviewsModal(false);
   };
 
-  if (error) return <div className="error-state">{error}</div>;
-  if (!car) return <div className="error-state">No car data available</div>;
+  if (loading) return <div>Loading...</div>;
 
-  // ===== Dữ liệu dẫn xuất cho UI nâng cấp =====
-  const ownerAvatar = ownerInfo
-    ? `https://ui-avatars.com/api/?name=${encodeURIComponent(ownerInfo.fullName || 'Owner')}&background=0b1220&color=22d3ee&bold=true`
-    : '';
-
-  const galleryImages = [mainImage, ...(otherImages || [])].filter(Boolean);
-
-  const handleGalleryStep = (dir) => {
-    if (galleryImages.length < 2) return;
-    const idx = galleryImages.indexOf(mainImage);
-    const nextIdx = (idx + dir + galleryImages.length) % galleryImages.length;
-    const nextImg = galleryImages[nextIdx];
-    setMainImage(nextImg);
-    setOtherImages(galleryImages.filter((_, i) => i !== nextIdx));
-  };
-
-  const fuelLabel =
-    car.fuelType === 'gasoline' ? 'Xăng' :
-    car.fuelType === 'diesel' ? 'Dầu Diesel' :
-    car.fuelType === 'electric' ? 'Điện' :
-    car.fuelType === 'hybrid' ? 'Hybrid' : car.fuelType;
-
-  const consumptionLabel = car.fuelType === 'electric'
-    ? `${car.fuelConsumption} kWh`
-    : `${car.fuelConsumption} L/100km`;
-
-  const amenityKeys = Array.isArray(car.amenities) && car.amenities.length > 0
-    ? car.amenities.map(a => (typeof a === 'string' ? a : a?.key)).filter(Boolean)
-    : DEFAULT_AMENITIES;
-
-  const amenities = amenityKeys
-    .map(key => {
-      const entry = AMENITY_CATALOG[key];
-      if (entry) return { key, label: entry.label, icon: entry.icon };
-      return { key, label: String(key), icon: <FaCheckCircle /> };
-    });
-
-  // Tính số ngày & chi phí
-  const startDate = dateRange[0].startDate;
-  const endDate = dateRange[0].endDate;
-  const totalDays = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / 86400000));
-  const pricePerDay = contract?.pricePerDay || 0;
-  const depositAmount = contract?.deposit || 0;
-  const rentalTotal = pricePerDay * totalDays;
-  const insurancePerDay = Math.round(pricePerDay * 0.1);
-  const insuranceTotal = insurancePerDay * totalDays;
-  const grandTotal = rentalTotal + insuranceTotal + depositAmount;
-
-  const formatVND = (n) => (n || 0).toLocaleString('vi-VN');
+  if (error) return <div>{error}</div>;
+  if (!car) return <div>No car data available</div>;
 
   return (
-    <div className="car-detail-page">
+    <div className="car-detail-page" ref={detailContainerRef}>
       <div className="row car-detail-main container-fluid">
-        <div className="col-12 col-md-7 car-detail-images">
-
-          {/* ===== GALLERY ===== */}
-          <div className="gallery-card">
-            <div className="car-detail-main-image">
-              <img
-                src={mainImage}
-                alt="car"
-                onDoubleClick={handleMainImageDoubleClick}
-                style={{ cursor: 'pointer' }}
-              />
-              {galleryImages.length > 1 && (
-                <>
-                  <button className="gallery-nav left" onClick={() => handleGalleryStep(-1)} aria-label="Previous image">
-                    <FaChevronLeft />
-                  </button>
-                  <button className="gallery-nav right" onClick={() => handleGalleryStep(1)} aria-label="Next image">
-                    <FaChevronRight />
-                  </button>
-                </>
-              )}
-              <div className="gallery-hint">Nhấp đúp để xem chi tiết</div>
-            </div>
-            {otherImages && otherImages.length > 0 && (
-              <div className="car-detail-thumbnails">
-                {otherImages.slice(0, 3).map((img, idx) => (
-                  <img
-                    key={idx}
-                    src={img}
-                    alt={`car-thumb-${idx + 1}`}
-                    onClick={() => handleThumbnailClick(img, idx)}
-                    onDoubleClick={() => handleThumbnailDoubleClick(img)}
-                    style={{ cursor: 'pointer' }}
-                  />
-                ))}
-              </div>
-            )}
+        <div className="col-12 col-md-7 car-detail-images ">
+          <div className="car-detail-main-image">
+            <img
+              src={mainImage}
+              alt="car"
+              onDoubleClick={handleMainImageDoubleClick}
+              style={{ cursor: 'pointer' }}
+            />
           </div>
-
-          {/* ===== THÔNG SỐ CHI TIẾT ===== */}
-          <div className="section-card">
-            <h3 className="section-title">Thông số chi tiết</h3>
-            <div className="specs-grid">
-              <div className="spec-item">
-                <span className="spec-icon"><FaChair /></span>
-                <div className="spec-meta">
-                  <span className="spec-label">Số chỗ</span>
-                  <span className="spec-value">{car.seats} chỗ</span>
-                </div>
-              </div>
-              <div className="spec-item">
-                <span className="spec-icon">
-                  {car.transmission === 'manual' ? <GiGearStickPattern /> : <TbAutomaticGearboxFilled />}
-                </span>
-                <div className="spec-meta">
-                  <span className="spec-label">Hộp số</span>
-                  <span className="spec-value">{car.transmission === 'manual' ? 'Số sàn' : 'Số tự động'}</span>
-                </div>
-              </div>
-              <div className="spec-item">
-                <span className="spec-icon">
-                  {car.fuelType === 'electric' ? <BsEvStationFill /> :
-                    car.fuelType === 'diesel' ? <BsFillFuelPumpDieselFill /> : <FaGasPump />}
-                </span>
-                <div className="spec-meta">
-                  <span className="spec-label">Nhiên liệu</span>
-                  <span className="spec-value">{fuelLabel}</span>
-                </div>
-              </div>
-              <div className="spec-item">
-                <span className="spec-icon"><FaRoad /></span>
-                <div className="spec-meta">
-                  <span className="spec-label">Mức tiêu thụ</span>
-                  <span className="spec-value">{consumptionLabel}</span>
-                </div>
-              </div>
-              <div className="spec-item">
-                <span className="spec-icon"><FaCalendarAlt /></span>
-                <div className="spec-meta">
-                  <span className="spec-label">Năm sản xuất</span>
-                  <span className="spec-value">{car.year}</span>
-                </div>
-              </div>
-              <div className="spec-item">
-                <span className="spec-icon"><FaIdCard /></span>
-                <div className="spec-meta">
-                  <span className="spec-label">Biển số xe</span>
-                  <span className="spec-value spec-plate">{car.licensePlate}</span>
-                </div>
-              </div>
-              <div className="spec-item">
-                <span className="spec-icon"><FaMapMarkerAlt /></span>
-                <div className="spec-meta">
-                  <span className="spec-label">Khu vực</span>
-                  <span className="spec-value">{car.location}</span>
-                </div>
-              </div>
-              <div className="spec-item">
-                <span className="spec-icon"><FaCogs /></span>
-                <div className="spec-meta">
-                  <span className="spec-label">Dòng xe</span>
-                  <span className="spec-value">{car.type || 'Đang cập nhật'}</span>
-                </div>
-              </div>
-            </div>
-            {car.description && (
-              <div className="spec-desc">
-                <span className="spec-icon"><FaInfoCircle /></span>
-                <p>{car.description}</p>
-              </div>
-            )}
-          </div>
-
-          {/* ===== TIỆN NGHI ===== */}
-          <div className="section-card">
-            <h3 className="section-title">Tiện nghi trên xe</h3>
-            <div className="amenities-grid">
-              {amenities.map(item => (
-                <span className="amenity-tag" key={item.key}>
-                  <span className="amenity-icon">{item.icon}</span>
-                  {item.label}
-                </span>
+          {otherImages && otherImages.length > 0 && (
+            <div className="car-detail-thumbnails">
+              {otherImages.slice(0, 3).map((img, idx) => (
+                <img
+                  key={idx}
+                  src={img}
+                  alt={`car-thumb-${idx + 1}`}
+                  onClick={() => handleThumbnailClick(img, idx)}
+                  onDoubleClick={() => handleThumbnailDoubleClick(img)}
+                  style={{ cursor: 'pointer' }}
+                />
               ))}
             </div>
+          )}
+          <div className="rental-rules">
+            <h1>Car Rental Terms</h1>
+            <ol>
+              <li>Renter must have a valid and current driver's license.</li>
+              <li>Car can only be used for personal purposes, not for goods transportation or re-rental.</li>
+              <li>Renter is responsible for car maintenance and compensation for damages due to personal fault.</li>
+              <li>Rental and return times must comply with the signed contract. Late returns will incur additional fees.</li>
+            </ol>
           </div>
 
-          {/* ===== QUY ĐỊNH & ĐIỀU KHOẢN ===== */}
-          <div className="section-card">
-            <h3 className="section-title">Quy định &amp; Điều khoản thuê xe</h3>
-            <div className="terms-grid">
-              <div className="term-card">
-                <div className="term-head">
-                  <FaIdCard />
-                  <h4>Giấy tờ cần thiết</h4>
-                </div>
-                <ul>
-                  <li>CCCD/CMND hoặc Hộ chiếu còn hiệu lực.</li>
-                  <li>Giấy phép lái xe hạng B2 trở lên, còn hiệu lực.</li>
-                  <li>Bằng lái phải được xác minh trên hệ thống Drivon.</li>
-                </ul>
-              </div>
-              <div className="term-card">
-                <div className="term-head">
-                  <FaFileContract />
-                  <h4>Điều kiện lái xe</h4>
-                </div>
-                <ul>
-                  <li>Người thuê phải từ 21 tuổi trở lên.</li>
-                  <li>Chỉ sử dụng xe cho mục đích cá nhân, không vận chuyển hàng hóa hay cho thuê lại.</li>
-                  <li>Không sử dụng xe vào mục đích trái pháp luật.</li>
-                  <li>Tự chịu trách nhiệm bảo quản và đền bù hư hỏng do lỗi cá nhân.</li>
-                </ul>
-              </div>
-              <div className="term-card">
-                <div className="term-head">
-                  <FaBan />
-                  <h4>Chính sách hủy xe</h4>
-                </div>
-                <ul>
-                  <li>Hủy trước 24h nhận xe: hoàn 100% tiền cọc.</li>
-                  <li>Hủy trong vòng 24h: phí hủy 30% giá trị đơn thuê.</li>
-                  <li>Trả xe muộn so với hợp đồng sẽ phát sinh phụ phí.</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {/* ===== ĐÁNH GIÁ & BÌNH LUẬN ===== */}
+          {/* Reviews section */}
           <div className="car-reviews">
-            <h1>Đánh giá từ khách thuê</h1>
-
+            <h1>Customer Reviews</h1>
+            
             {/* Review overview */}
             <div className="reviews-overview">
               <div className="overview-left">
@@ -740,20 +552,20 @@ const ViewCarDetail = () => {
                   <div className="rating-stars">
                     <Rate disabled allowHalf value={reviewsData.averageRating} />
                   </div>
-                  <div className="total-reviews">{reviewsData.totalReviews} đánh giá</div>
+                  <div className="total-reviews">{reviewsData.totalReviews} reviews</div>
                 </div>
               </div>
-
+              
               <div className="overview-right">
                 <div className="rating-bars">
                   {[5, 4, 3, 2, 1].map(star => (
                     <div key={star} className="rating-bar-item">
-                      <span className="star-label">{star} sao</span>
+                      <span className="star-label">{star} star{star > 1 ? 's' : ''}</span>
                       <div className="rating-bar">
-                        <div
-                          className="rating-bar-fill"
-                          style={{
-                            width: `${reviewsData.totalReviews > 0 ? (reviewsData.ratingCounts[star] / reviewsData.totalReviews) * 100 : 0}%`
+                        <div 
+                          className="rating-bar-fill" 
+                          style={{ 
+                            width: `${reviewsData.totalReviews > 0 ? (reviewsData.ratingCounts[star] / reviewsData.totalReviews) * 100 : 0}%` 
                           }}
                         ></div>
                       </div>
@@ -769,10 +581,10 @@ const ViewCarDetail = () => {
             {/* Featured reviews list */}
             <div className="reviews-list">
               {reviewsLoading ? (
-                <p className="muted-text">Đang tải đánh giá...</p>
+                <p>Loading reviews...</p>
               ) : topHighlightReviews.length === 0 ? (
                 <div className="no-reviews">
-                  <p>Chưa có đánh giá nổi bật.</p>
+                  <p>No featured reviews yet.</p>
                 </div>
               ) : (
                 topHighlightReviews.map(review => (
@@ -783,7 +595,7 @@ const ViewCarDetail = () => {
                         <div className="reviewer-details">
                           <div className="reviewer-name-date">
                             <span className="reviewer-name">{review.userName}</span>
-                            <span className="review-date">{new Date(review.date).toLocaleDateString('vi-VN')}</span>
+                            <span className="review-date">{new Date(review.date).toLocaleDateString('en-US')}</span>
                           </div>
                         </div>
                       </div>
@@ -801,25 +613,24 @@ const ViewCarDetail = () => {
 
             {/* View more reviews button */}
             <div className="reviews-footer">
-              <Button type="primary" size="large" onClick={handleShowAllReviews} disabled={reviewsLoading}>
-                Xem tất cả đánh giá ({reviewsData.totalReviews})
+              <Button type="primary" size="large" style={{ marginTop: '20px' }} onClick={handleShowAllReviews} disabled={reviewsLoading}>
+                View All Reviews ({reviewsData.totalReviews})
               </Button>
             </div>
           </div>
 
-          {/* ===== XE TƯƠNG TỰ ===== */}
           <div className="same-car">
             <div className="same-car-filter">
-              <button onClick={() => setCarFilter('all')} className={carFilter === 'all' ? 'active' : ''}>Tất cả</button>
-              <button onClick={() => setCarFilter('brand')} className={carFilter === 'brand' ? 'active' : ''}>Cùng hãng</button>
-              <button onClick={() => setCarFilter('type')} className={carFilter === 'type' ? 'active' : ''}>Cùng dòng</button>
+              <button onClick={() => setCarFilter('all')} className={carFilter==='all' ? 'active' : ''}>All</button>
+              <button onClick={() => setCarFilter('brand')} className={carFilter==='brand' ? 'active' : ''}>Same Brand</button>
+              <button onClick={() => setCarFilter('type')} className={carFilter==='type' ? 'active' : ''}>Same Type</button>
             </div>
             <div className="same-car-slider-wrapper">
               {filteredCars.length > carsPerPage && (
                 <button className="same-car-arrow left" onClick={handlePrev} disabled={currentIndex === 0}>&lt;</button>
               )}
               <div className="same-car-list slide" style={{ transform: `translateX(${translateX}px)` }}>
-                {filteredCars.length === 0 && <div className="muted-text">Không có xe tương tự</div>}
+                {filteredCars.length === 0 && <div>No similar cars available</div>}
                 {filteredCars.map(item => (
                   <div className="same-car-card" key={item.licensePlate} onClick={() => handleSelectCar(item)} style={{ cursor: 'pointer' }}>
                     <div className="same-car-image-wrapper">
@@ -827,26 +638,26 @@ const ViewCarDetail = () => {
                       <div className="same-car-info-overlay">
                         <div className="same-car-title">{item.brand} {item.model}</div>
                         <div className="same-car-specs">
-                          <span>{item.seats} chỗ</span>
-                          <span className="spec-sep">|</span>
+                          <span>{item.seats} seats</span>
+                          <span style={{margin: '0 6px', color: '#fff'}}>|</span>
                           <span>
-                            {item.transmission === 'manual' ? <GiGearStickPattern className="same-car-icon" /> : <TbAutomaticGearboxFilled className="same-car-icon" />}
+                            {item.transmission === 'manual' ? <GiGearStickPattern className="same-car-icon"/> : <TbAutomaticGearboxFilled className="same-car-icon"/>}
                           </span>
-                          <span className="spec-sep">|</span>
+                          <span style={{margin: '0 6px', color: '#fff'}}>|</span>
                           <span>
-                            {item.fuelType === 'gasoline' || item.fuelType === 'hybrid' ? <FaGasPump className="same-car-icon" /> :
-                              item.fuelType === 'diesel' ? <BsFillFuelPumpDieselFill className="same-car-icon" /> :
-                              item.fuelType === 'electric' ? <BsEvStationFill className="same-car-icon" /> : null}
+                            {item.fuelType === 'gasoline' || item.fuelType === 'hybrid' ? <FaGasPump className="same-car-icon"/> :
+                              item.fuelType === 'diesel' ? <BsFillFuelPumpDieselFill className="same-car-icon"/> :
+                              item.fuelType === 'electric' ? <BsEvStationFill className="same-car-icon"/> : null}
                           </span>
-                          <span className="spec-sep">|</span>
+                          <span style={{margin: '0 6px', color: '#fff'}}>|</span>
                           <span>
                             {item.fuelType === 'electric' ? ` ${item.fuelConsumption}kWh` : ` ${item.fuelConsumption}L`}
                           </span>
                         </div>
                         <div className="same-car-specs">
-                          <span className="same-car-price">
+                          <span style={{color: '#ffd700'}}>
                             {carContracts[item.licensePlate]?.pricePerDay
-                              ? `${carContracts[item.licensePlate].pricePerDay.toLocaleString()} VND/ngày`
+                              ? `${carContracts[item.licensePlate].pricePerDay.toLocaleString()} VND/day`
                               : ''}
                           </span>
                         </div>
@@ -861,109 +672,80 @@ const ViewCarDetail = () => {
             </div>
           </div>
         </div>
-
-        {/* ===== STICKY BOOKING SIDEBAR ===== */}
         <div className="col-12 col-md-4 car-detail-info">
-          <div className="booking-card">
-            <div className="booking-header">
-              <h2>{car.brand} {car.model}</h2>
-              <div className="booking-rating">
-                <FaStar className="star-icon" />
-                <span>{reviewsData.averageRating || '—'}</span>
-                <span className="muted-text">({reviewsData.totalReviews} đánh giá)</span>
-              </div>
+          <div className="car-detail-info-header">
+            <h2>{car.brand} {car.model}</h2>
+            <div className="car-info-row">
+              <span className="car-info-icon"><FaCalendarAlt /></span>
+              <span className="car-info-label">Year</span>
+              <span className="car-info-value car-info-badge">{car.year}</span>
             </div>
-
-            <div className="booking-price">
-              <span className="price-amount">{pricePerDay ? formatVND(pricePerDay) : '—'}</span>
-              <span className="price-unit">VND/ngày</span>
+            <div className="car-info-row">
+              <span className="car-info-icon"><FaUserFriends /></span>
+              <span className="car-info-label">Seats</span>
+              <span className="car-info-value">{car.seats} seats</span>
             </div>
-
-            {/* Chọn ngày nhận - trả xe */}
-            <div className="booking-dates" ref={calendarRef}>
-              <div className="date-display" onClick={() => setShowCalendar(v => !v)}>
-                <div className="date-field">
-                  <span className="date-label">Nhận xe</span>
-                  <span className="date-value">{startDate.toLocaleDateString('vi-VN')}</span>
-                </div>
-                <span className="date-divider">→</span>
-                <div className="date-field">
-                  <span className="date-label">Trả xe</span>
-                  <span className="date-value">{endDate.toLocaleDateString('vi-VN')}</span>
-                </div>
-              </div>
-              {showCalendar && (
-                <div className="calendar-popover">
-                  <DateRange
-                    editableDateInputs={true}
-                    onChange={item => setDateRange([item.selection])}
-                    moveRangeOnFirstSelection={false}
-                    ranges={dateRange}
-                    minDate={new Date()}
-                    months={1}
-                    direction="horizontal"
-                  />
-                </div>
-              )}
+            <div className="car-info-row">
+              <span className="car-info-icon"><FaCogs /></span>
+              <span className="car-info-label">Transmission</span>
+              <span className="car-info-value">{car.transmission === 'manual' ? 'Manual' : 'Automatic'}</span>
             </div>
-
-            {/* Bảng tính chi phí */}
-            <div className="booking-summary">
-              <div className="summary-row">
-                <span>Đơn giá</span>
-                <span>{formatVND(pricePerDay)} VND × {totalDays} ngày</span>
-              </div>
-              <div className="summary-row">
-                <span>Tiền thuê xe</span>
-                <span>{formatVND(rentalTotal)} VND</span>
-              </div>
-              <div className="summary-row">
-                <span>Bảo hiểm ({formatVND(insurancePerDay)}/ngày)</span>
-                <span>{formatVND(insuranceTotal)} VND</span>
-              </div>
-              <div className="summary-row">
-                <span>Tiền cọc (hoàn lại)</span>
-                <span>{formatVND(depositAmount)} VND</span>
-              </div>
-              <div className="summary-row total">
-                <span>Tổng cộng</span>
-                <span>{formatVND(grandTotal)} VND</span>
-              </div>
+            <div className="car-info-row">
+              <span className="car-info-icon"><FaGasPump /></span>
+              <span className="car-info-label">Fuel</span>
+              <span className="car-info-value">{
+                car.fuelType === 'gasoline' ? 'Gasoline' :
+                car.fuelType === 'diesel' ? 'Diesel' :
+                car.fuelType === 'electric' ? 'Electric' :
+                car.fuelType === 'hybrid' ? 'Hybrid' : car.fuelType
+              }</span>
             </div>
-
-            {/* Thông tin chủ xe */}
-            {ownerInfo && (
-              <div className="owner-card">
-                <img className="owner-avatar" src={ownerAvatar} alt={ownerInfo.fullName} />
-                <div className="owner-meta">
-                  <span className="owner-name">{ownerInfo.fullName}</span>
-                  <span className="owner-sub">
-                    <FaStar className="star-icon" /> {reviewsData.averageRating || '—'} · Chủ xe
-                  </span>
+            <div className="car-info-row">
+              <span className="car-info-icon"><FaRoad /></span>
+              <span className="car-info-label">Consumption</span>
+              <span className="car-info-value car-info-badge car-info-badge-red">{car.fuelConsumption} L/100km</span>
+            </div>
+            <div className="car-info-row">
+              <span className="car-info-icon"><FaMapMarkerAlt /></span>
+              <span className="car-info-label">Location</span>
+              <span className="car-info-value">{car.location}</span>
+            </div>
+            <div className="car-info-row car-info-desc">
+              <span className="car-info-icon"><FaInfoCircle /></span>
+              <span className="car-info-label">Description:</span>
+              <span className="car-info-value">{car.description}</span>
+            </div>
+          </div>
+          <div className="car-detail-info-footer">
+            {contract && (
+              <>
+                <div className="car-price-row">
+                  <span className="car-price-label">Price: </span>
+                  <span className="car-price-value">{contract.pricePerDay?.toLocaleString()}</span>
+                  <span className="car-price-unit">VND/day</span>
                 </div>
-                <div className="owner-actions">
-                  <a
-                    className="btn-call"
-                    href={ownerInfo.phone ? `tel:${ownerInfo.phone}` : undefined}
-                    title="Gọi chủ xe"
-                  >
-                    <FaPhoneAlt />
-                  </a>
-                  <button className="btn-message" onClick={handleContactOwner} title="Nhắn tin">
-                    <FaCommentDots />
-                  </button>
+                <div className="car-price-row">
+                  <span className="car-price-label">Deposit: </span>
+                  <span className="car-price-value" style={{fontSize: '1.2rem'}}>{contract.deposit?.toLocaleString()}</span>
+                  <span className="car-price-unit">VND</span>
                 </div>
-              </div>
+              </>
             )}
-
-            <button className="btn-rent-car" onClick={handleRentClick}>Đặt xe ngay</button>
-            <button className="btn-contact-owner" onClick={handleContactOwner}>Liên hệ chủ xe</button>
-
-            <div className="booking-benefits">
-              <span><FaCheckCircle /> Nhận xe nhanh chóng</span>
-              <span><FaCheckCircle /> Thanh toán an toàn</span>
-              <span><FaCheckCircle /> Thủ tục đơn giản</span>
-              <span><FaCheckCircle /> Hỗ trợ 24/7</span>
+            <button 
+              className="btn-contact-owner" 
+              onClick={handleContactOwner}
+            >
+              Contact Car Owner
+            </button>
+            <button className="btn-rent-car" onClick={handleRentClick}>Rent Car</button>
+            <div className="car-detail-rental-papers">
+              <div className="car-rental-papers">
+                <h3>Rental Benefits</h3>
+                <p>Convenient car pickup</p>
+                <p>Quick payment</p>
+                <p>Simple procedures</p>
+                <p>24/7 support</p>
+              </div>
             </div>
           </div>
         </div>
@@ -982,7 +764,7 @@ const ViewCarDetail = () => {
       )}
 
       <Modal
-        title={<h2 className="modal-title-center">Đánh giá từ khách thuê</h2>}
+        title={<h2 style={{ textAlign: 'center', marginBottom: '0' }}>Customer Reviews</h2>}
         open={showAllReviewsModal}
         onCancel={handleCloseAllReviews}
         footer={null}
@@ -996,7 +778,7 @@ const ViewCarDetail = () => {
               className={`filter-btn ${allReviewsFilter === 0 ? 'active' : ''}`}
               onClick={() => { setAllReviewsFilter(0); setCurrentPage(1); }}
             >
-              Tất cả ({reviewsData.totalReviews})
+              All ({reviewsData.totalReviews})
             </button>
             {[5, 4, 3, 2, 1].map(star => (
               <button
@@ -1004,7 +786,7 @@ const ViewCarDetail = () => {
                 className={`filter-btn ${allReviewsFilter === star ? 'active' : ''}`}
                 onClick={() => { setAllReviewsFilter(star); setCurrentPage(1); }}
               >
-                {star} sao ({reviewsData.ratingCounts[star] || 0})
+                {star} star{star > 1 ? 's' : ''} ({reviewsData.ratingCounts[star] || 0})
               </button>
             ))}
           </div>
@@ -1013,7 +795,7 @@ const ViewCarDetail = () => {
         <div className="reviews-list">
           {currentReviews.length === 0 ? (
             <div className="no-reviews">
-              <p>Không có đánh giá cho {allReviewsFilter > 0 ? `${allReviewsFilter} sao` : 'bộ lọc này'}</p>
+                              <p>No reviews for {allReviewsFilter > 0 ? `${allReviewsFilter} star${allReviewsFilter > 1 ? 's' : ''}` : 'this filter'}</p>
             </div>
           ) : (
             currentReviews.map(review => (
@@ -1024,7 +806,7 @@ const ViewCarDetail = () => {
                     <div className="reviewer-details">
                       <div className="reviewer-name-date">
                         <span className="reviewer-name">{review.userName}</span>
-                        <span className="review-date">{new Date(review.date).toLocaleDateString('vi-VN')}</span>
+                        <span className="review-date">{new Date(review.date).toLocaleDateString('en-US')}</span>
                       </div>
                     </div>
                   </div>
@@ -1051,7 +833,7 @@ const ViewCarDetail = () => {
       </Modal>
 
       <Modal
-        title={<h2 className="modal-title-center">Xem ảnh xe</h2>}
+        title={<h2 style={{ textAlign: 'center', marginBottom: '0' }}>View Car Image</h2>}
         open={showImageModal}
         onCancel={handleCloseImageModal}
         footer={null}
@@ -1059,6 +841,7 @@ const ViewCarDetail = () => {
         centered
         destroyOnClose
         style={{ top: 20 }}
+        bodyStyle={{ padding: 0, background: '#fff' }}
       >
         <div
           className="image-modal-content"
@@ -1106,34 +889,36 @@ const ViewCarDetail = () => {
         destroyOnClose
         closable={false}
         className="license-warning-modal"
-        maskStyle={{ background: 'rgba(0,0,0,0.7)' }}
+        maskStyle={{ background: 'rgba(0,0,0,0.4)' }}
       >
-        <div className="license-modal-body">
+        <div style={{ position: 'relative', textAlign: 'center', padding: 24, minWidth: 320 }}>
+          {/* Nút X đóng modal */}
           <button
             className="license-modal-close-btn"
             onClick={() => setShowLicenseModal(false)}
+            style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#888' }}
             aria-label="Close"
           >
             ×
           </button>
-          <FaExclamationCircle size={64} className="license-warn-icon" />
+          <FaExclamationCircle size={64} color="#e74c3c" style={{ marginBottom: 16 }} />
           {licenseStatus === 'none' && (
             <>
-              <div className="license-modal-text">
-                Bạn cần <span className="strong">tải lên giấy phép lái xe</span> trước khi có thể thuê xe.
+              <div style={{ fontWeight: 400, fontSize: 18, marginBottom: 12, color: '#222' }}>
+                You need to <span style={{ fontWeight: 700 }}>upload your driver's license</span> before you can rent a car.
               </div>
               <button
                 className="license-modal-upload-btn"
                 onClick={() => { setShowLicenseModal(false); navigate('/profile'); }}
               >
-                Tải lên giấy phép
+                Upload License
               </button>
             </>
           )}
           {licenseStatus === 'pending' && (
-            <div className="license-modal-text">
-              Giấy phép lái xe của bạn đang <span className="strong">chờ xác minh</span>.<br />
-              Vui lòng chờ quản trị viên phê duyệt trước khi thuê xe.
+            <div style={{ fontWeight: 400, fontSize: 18, marginBottom: 12, color: '#222' }}>
+              Your driver's license is <span style={{ fontWeight: 700 }}>pending verification</span>.<br />
+              Please wait for admin approval before you can rent a car.
             </div>
           )}
         </div>

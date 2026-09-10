@@ -1,32 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import {
-  FiLock,
-  FiKey,
-  FiEye,
-  FiEyeOff,
-  FiAlertCircle,
-  FiCheck,
-  FiX,
-  FiShield,
-} from "react-icons/fi";
-import { API_URL } from "../../api/configApi";
-import { showErrorToast, showSuccessToast } from "../notification/notification";
-
-const MIN_LENGTH = 6;
+import { API_URL } from '../../api/configApi';
+import { showErrorToast, showSuccessToast } from '../notification/notification';
 
 const ChangePasswordPage = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [visible, setVisible] = useState({ current: false, next: false, confirm: false });
-  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [hasPassword, setHasPassword] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Check if the user already has a password
     const checkPasswordStatus = async () => {
       try {
         const user = JSON.parse(localStorage.getItem("user"));
@@ -34,6 +21,7 @@ const ChangePasswordPage = () => {
           navigate("/auth");
           return;
         }
+
         const response = await axios.get(
           `${API_URL}/profile/check-password-status/${user.email}`
         );
@@ -47,54 +35,44 @@ const ChangePasswordPage = () => {
     checkPasswordStatus();
   }, [navigate]);
 
-  const toggleVisible = (field) =>
-    setVisible((prev) => ({ ...prev, [field]: !prev[field] }));
-
-  const clearError = (field) =>
-    setErrors((prev) => {
-      if (!prev[field] && !prev.form) return prev;
-      return { ...prev, [field]: "", form: "" };
-    });
-
-  const rules = [
-    {
-      key: "length",
-      label: `Tối thiểu ${MIN_LENGTH} ký tự`,
-      ok: newPassword.length >= MIN_LENGTH,
-    },
-    {
-      key: "match",
-      label: "Mật khẩu xác nhận trùng khớp",
-      ok: confirmPassword.length > 0 && newPassword === confirmPassword,
-    },
-  ];
-
-  const validate = () => {
-    const next = {};
-
-    if (hasPassword && !currentPassword) {
-      next.currentPassword = "Vui lòng nhập mật khẩu hiện tại";
+  const validatePassword = (password) => {
+    if (password.length < 8) {
+      return "Password must be at least 8 characters";
     }
-    if (!newPassword) {
-      next.newPassword = "Vui lòng nhập mật khẩu mới";
-    } else if (newPassword.length < MIN_LENGTH) {
-      next.newPassword = `Mật khẩu tối thiểu ${MIN_LENGTH} ký tự`;
+    if (!/[A-Z]/.test(password)) {
+      return "Password must contain at least 1 uppercase letter";
     }
-    if (!confirmPassword) {
-      next.confirmPassword = "Vui lòng xác nhận mật khẩu mới";
-    } else if (newPassword !== confirmPassword) {
-      next.confirmPassword = "Mật khẩu xác nhận không trùng khớp";
+    if (!/[a-z]/.test(password)) {
+      return "Password must contain at least 1 lowercase letter";
     }
-
-    setErrors(next);
-    return Object.keys(next).length === 0;
+    if (!/[0-9]/.test(password)) {
+      return "Password must contain at least 1 number";
+    }
+    if (!/[!@#$%^&*]/.test(password)) {
+      return "Password must contain at least 1 special character (!@#$%^&*)";
+    }
+    return null;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) return;
-
     setLoading(true);
+
+    // Validate new password
+    const passwordError = validatePassword(newPassword);
+    if (passwordError) {
+      showErrorToast(passwordError);
+      setLoading(false);
+      return;
+    }
+
+    // Check confirm password
+    if (newPassword !== confirmPassword) {
+      showErrorToast("Confirm password does not match");
+      setLoading(false);
+      return;
+    }
+
     try {
       const user = JSON.parse(localStorage.getItem("user"));
       if (!user || !user.email) {
@@ -108,190 +86,125 @@ const ChangePasswordPage = () => {
         ? { email: user.email, currentPassword, newPassword }
         : { email: user.email, newPassword };
 
-      const response = await axios.post(`${API_URL}${endpoint}`, payload);
+      const response = await axios.post(
+        `${API_URL}${endpoint}`, 
+        payload
+      );
 
       if (response.data.success) {
-        showSuccessToast(
-          hasPassword
-            ? "Password changed successfully!"
-            : "Password created successfully!"
-        );
+        showSuccessToast(hasPassword ? "Password changed successfully!" : "Password created successfully!");
         setNewPassword("");
         setConfirmPassword("");
         setCurrentPassword("");
 
+        // Redirect after 2 seconds
         setTimeout(() => {
           navigate("/profile");
-        }, 1500);
+        }, 2000);
       }
     } catch (err) {
       console.error("Error changing password:", err);
-      const message =
-        err.response?.data?.error ||
-        "An error occurred while changing the password";
-      setErrors({ form: message });
-      showErrorToast(message);
+      showErrorToast(
+        err.response?.data?.error || "An error occurred while changing the password"
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="dv-auth-shell" style={{ minHeight: "calc(100vh - 72px)" }}>
-      <div className="dv-auth-card">
-        <div className="dv-auth-head">
-          <div className="dv-auth-logo">
-            DRI<span>VON</span>
-          </div>
-          <h1 className="dv-auth-title">
-            {hasPassword ? "Đổi mật khẩu" : "Tạo mật khẩu mới"}
-          </h1>
-          <p className="dv-auth-sub">
-            {hasPassword
-              ? "Cập nhật mật khẩu đăng nhập để bảo vệ tài khoản của bạn."
-              : "Thiết lập mật khẩu đăng nhập để bảo vệ tài khoản của bạn."}
-          </p>
+    <div className="container mt-4">
+      <div className="card shadow">
+        <div className="card-header bg-primary text-white">
+          <h2 className="h5 mb-0">
+            <i className="bi bi-key me-2"></i>
+            {hasPassword ? "Change Password" : "Create New Password"}
+          </h2>
         </div>
-
-        {errors.form && (
-          <div className="dv-alert dv-alert--error" role="alert">
-            <FiAlertCircle />
-            <span>{errors.form}</span>
-          </div>
-        )}
-
-        <form className="dv-form" onSubmit={handleSubmit} noValidate>
-          {hasPassword && (
-            <div className="dv-field">
-              <div className="dv-input-wrap">
-                <span className="dv-input-icon">
-                  <FiLock />
-                </span>
+        <div className="card-body">
+          <form onSubmit={handleSubmit}>
+            {hasPassword && (
+              <div className="mb-3">
+                <label htmlFor="currentPassword" className="form-label password-label">
+                  Current Password
+                </label>
                 <input
-                  type={visible.current ? "text" : "password"}
-                  className={`dv-input ${errors.currentPassword ? "dv-input--error" : ""}`}
-                  placeholder="Mật khẩu hiện tại"
+                  type="password"
+                  className="form-control"
+                  id="currentPassword"
                   value={currentPassword}
-                  onChange={(e) => {
-                    setCurrentPassword(e.target.value);
-                    clearError("currentPassword");
-                  }}
-                  autoComplete="current-password"
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  required
                 />
-                <button
-                  type="button"
-                  className="dv-input-toggle"
-                  onClick={() => toggleVisible("current")}
-                  aria-label={visible.current ? "Ẩn mật khẩu hiện tại" : "Hiện mật khẩu hiện tại"}
-                  tabIndex={-1}
-                >
-                  {visible.current ? <FiEyeOff /> : <FiEye />}
-                </button>
               </div>
-              {errors.currentPassword && (
-                <span className="dv-field-error">
-                  <FiAlertCircle size={12} /> {errors.currentPassword}
-                </span>
-              )}
-            </div>
-          )}
+            )}
 
-          <div className="dv-field">
-            <div className="dv-input-wrap">
-              <span className="dv-input-icon">
-                <FiKey />
-              </span>
+            <div className="mb-3">
+              <label htmlFor="newPassword" className="form-label password-label">
+                New Password
+              </label>
               <input
-                type={visible.next ? "text" : "password"}
-                className={`dv-input ${errors.newPassword ? "dv-input--error" : ""}`}
-                placeholder="Mật khẩu mới"
+                type="password"
+                className="form-control"
+                id="newPassword"
                 value={newPassword}
-                onChange={(e) => {
-                  setNewPassword(e.target.value);
-                  clearError("newPassword");
-                }}
-                autoComplete="new-password"
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
               />
-              <button
-                type="button"
-                className="dv-input-toggle"
-                onClick={() => toggleVisible("next")}
-                aria-label={visible.next ? "Ẩn mật khẩu mới" : "Hiện mật khẩu mới"}
-                tabIndex={-1}
-              >
-                {visible.next ? <FiEyeOff /> : <FiEye />}
-              </button>
+              <div className="form-text">
+                Password must be at least 8 characters, including uppercase, lowercase, number, and special character
+              </div>
             </div>
-            {errors.newPassword && (
-              <span className="dv-field-error">
-                <FiAlertCircle size={12} /> {errors.newPassword}
-              </span>
-            )}
-            <ul className="dv-rules">
-              {rules.map((rule) => (
-                <li
-                  key={rule.key}
-                  className={`dv-rule ${rule.ok ? "dv-rule--ok" : ""}`}
-                >
-                  {rule.ok ? <FiCheck size={13} /> : <FiX size={13} />}
-                  {rule.label}
-                </li>
-              ))}
-            </ul>
-          </div>
 
-          <div className="dv-field">
-            <div className="dv-input-wrap">
-              <span className="dv-input-icon">
-                <FiLock />
-              </span>
+            <div className="mb-4">
+              <label htmlFor="confirmPassword" className="form-label password-label">
+                Confirm New Password
+              </label>
               <input
-                type={visible.confirm ? "text" : "password"}
-                className={`dv-input ${errors.confirmPassword ? "dv-input--error" : ""}`}
-                placeholder="Xác nhận mật khẩu mới"
+                type="password"
+                className="form-control"
+                id="confirmPassword"
                 value={confirmPassword}
-                onChange={(e) => {
-                  setConfirmPassword(e.target.value);
-                  clearError("confirmPassword");
-                }}
-                autoComplete="new-password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
               />
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                className="btn btn-primary me-2"
+                disabled={loading}
+                style={{marginTop: "0 !important"}}
+              >
+                {loading ? (
+                  <>
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <i className="bi bi-check-circle me-2"></i>
+                    {hasPassword ? "Change Password" : "Create Password"}
+                  </>
+                )}
+              </button>
               <button
                 type="button"
-                className="dv-input-toggle"
-                onClick={() => toggleVisible("confirm")}
-                aria-label={visible.confirm ? "Ẩn mật khẩu xác nhận" : "Hiện mật khẩu xác nhận"}
-                tabIndex={-1}
+                className="btn btn-secondary"
+                onClick={() => navigate("/profile")}
+                disabled={loading}
               >
-                {visible.confirm ? <FiEyeOff /> : <FiEye />}
+                <i className="bi bi-x-circle me-2"></i>
+                Cancel
               </button>
             </div>
-            {errors.confirmPassword && (
-              <span className="dv-field-error">
-                <FiAlertCircle size={12} /> {errors.confirmPassword}
-              </span>
-            )}
-          </div>
-
-          <button type="submit" className="dv-btn dv-btn-primary" disabled={loading}>
-            {loading ? <span className="dv-spinner" /> : <FiShield />}
-            {loading
-              ? "Đang xử lý..."
-              : hasPassword
-                ? "Đổi mật khẩu"
-                : "Tạo mật khẩu"}
-          </button>
-
-          <button
-            type="button"
-            className="dv-btn dv-btn-ghost"
-            onClick={() => navigate("/profile")}
-            disabled={loading}
-          >
-            <FiX />
-            Huỷ
-          </button>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

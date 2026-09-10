@@ -14,6 +14,7 @@ import pdfMake from "pdfmake/build/pdfmake";
 import "pdfmake/build/vfs_fonts";
 import { showErrorToast, showSuccessToast } from "../notification/notification";
 import axios from "axios";
+import gsap from "gsap";
 
 pdfMake.vfs = pdfMake.vfs || {};
 
@@ -23,50 +24,74 @@ const statusOptions = [
   { value: "completed", label: "Completed" },
   { value: "cancelled", label: "Cancel" },
 ];
-const RentalStats = ({ stats }) => (
-  <div className="statsGrid">
-    <div className="statCard">
-      <div className="statIcon">
-        <FaCar />
-      </div>
-      <div>
-        <div className="statValue">{stats.totalRentals}</div>
-        <div className="statLabel">Total Rentals</div>
-      </div>
-    </div>
-    <div className="statCard">
-      <div className="statIcon">
-        <FaClipboardCheck />
-      </div>
-      <div>
-        <div className="statValue" style={{ color: "#27ae60" }}>
-          {stats.completed}
+const RentalStats = ({ stats }) => {
+  const statsRef = useRef(null);
+
+  useEffect(() => {
+    if (statsRef.current) {
+      const cards = statsRef.current.querySelectorAll(".statCard");
+      if (cards.length > 0) {
+        gsap.fromTo(
+          cards,
+          { opacity: 0, y: 15 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.45,
+            stagger: 0.08,
+            ease: "power2.out",
+            clearProps: "transform,opacity",
+          }
+        );
+      }
+    }
+  }, [stats]);
+
+  return (
+    <div className="statsGrid" ref={statsRef}>
+      <div className="statCard">
+        <div className="statIcon">
+          <FaCar />
         </div>
-        <div className="statLabel">Completed</div>
-      </div>
-    </div>
-    <div className="statCard">
-      <div className="statIcon">
-        <FaMoneyBillWave />
-      </div>
-      <div>
-        <div className="statValue" style={{ color: "#f1c40f" }}>
-          {stats.totalRevenue?.toLocaleString("en-US")} ₫
+        <div>
+          <div className="statValue">{stats.totalRentals}</div>
+          <div className="statLabel">Total Rentals</div>
         </div>
-        <div className="statLabel">Total Revenue</div>
+      </div>
+      <div className="statCard">
+        <div className="statIcon">
+          <FaClipboardCheck />
+        </div>
+        <div>
+          <div className="statValue" style={{ color: "#27ae60" }}>
+            {stats.completed}
+          </div>
+          <div className="statLabel">Completed</div>
+        </div>
+      </div>
+      <div className="statCard">
+        <div className="statIcon">
+          <FaMoneyBillWave />
+        </div>
+        <div>
+          <div className="statValue" style={{ color: "#f1c40f" }}>
+            {stats.totalRevenue?.toLocaleString("en-US")} ₫
+          </div>
+          <div className="statLabel">Total Revenue</div>
+        </div>
+      </div>
+      <div className="statCard">
+        <div className="statIcon">
+          <FaCalendarAlt />
+        </div>
+        <div>
+          <div className="statValue">{stats.thisMonth}</div>
+          <div className="statLabel">This Month</div>
+        </div>
       </div>
     </div>
-    <div className="statCard">
-      <div className="statIcon">
-        <FaCalendarAlt />
-      </div>
-      <div>
-        <div className="statValue">{stats.thisMonth}</div>
-        <div className="statLabel">This Month</div>
-      </div>
-    </div>
-  </div>
-);
+  );
+};
 
 const RentalFilters = ({
   statusFilter,

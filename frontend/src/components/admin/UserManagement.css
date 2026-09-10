@@ -1,123 +1,105 @@
 .user-management-container {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-xl);
-    box-shadow: var(--shadow-md);
-    padding: var(--space-6);
-    margin: var(--space-4) 0;
-    color: var(--text);
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px 0;
 }
 
 .user-management-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--space-5);
-    padding-bottom: var(--space-4);
-    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
 }
 
 .search-box {
     flex: 1;
-    max-width: 320px;
+    max-width: 300px;
+    background: linear-gradient(135deg, #b3b7c7 0%, #2c2731 100%);
 }
 
 .search-input {
     width: 100%;
-    padding: var(--space-2) var(--space-3);
-    background: var(--surface-card);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    font-size: var(--text-sm);
-    color: var(--text);
-    transition: all var(--t-fast);
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s;
 }
 
 .search-input:focus {
     outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.25);
+    border-color: #4a90e2;
 }
 
 .user-stats {
     display: flex;
-    gap: var(--space-3);
+    gap: 20px;
 }
 
 .user-stats span {
-    background: var(--surface-card);
-    border: 1px solid var(--border);
-    padding: var(--space-2) var(--space-3-5);
-    border-radius: var(--r-md);
-    font-size: var(--text-xs);
-    color: var(--text-muted);
-    font-weight: 500;
+    background: #f5f7fa;
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #666;
 }
 
 .user-table {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 var(--space-2);
-    margin-top: var(--space-4);
+    border-collapse: collapse;
+    margin-top: 20px;
 }
 
 .user-table th,
 .user-table td {
-    padding: var(--space-3) var(--space-4);
+    padding: 12px 15px;
     text-align: left;
+    border-bottom: 1px solid #eee;
 }
 
 .user-table th {
-    background-color: var(--surface-card);
+    background-color: #f8f9fa;
     font-weight: 600;
-    color: var(--text-muted);
-    font-size: var(--text-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-radius: var(--r-md);
+    color: #333;
 }
 
-.user-table td {
-    background-color: var(--surface-card);
-    border-radius: var(--r-md);
-    color: var(--text);
-    font-size: var(--text-sm);
-}
-
-.user-table tr:hover td {
-    background-color: var(--surface-hover);
+.user-table tr:hover {
+    background-color: #f8f9fa;
 }
 
 .role-select {
-    padding: 4px 8px;
-    border: 1px solid var(--border);
-    border-radius: var(--r-sm);
-    background-color: var(--surface);
-    color: var(--text);
-    font-size: var(--text-xs);
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 14px;
     cursor: pointer;
 }
 
 .role-select:focus {
     outline: none;
-    border-color: var(--primary);
+    border-color: #4a90e2;
 }
 
 .status-badge {
-    padding: 3px 8px;
-    border-radius: var(--r-full);
-    font-size: var(--text-xs);
-    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
 }
 
 .status-badge.active {
-    background-color: rgba(34, 197, 94, 0.15);
-    color: #22c55e;
+    background-color: #e3fcef;
+    color: #00a854;
 }
 
 .status-badge.inactive {
-    background-color: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
+    background-color: #fff1f0;
+    color: #f5222d;
 }
 
 .action-buttons {
@@ -126,20 +108,18 @@
 }
 
 .delete-button {
-    padding: 4px 10px;
-    background-color: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.4);
-    border-radius: var(--r-md);
+    padding: 6px 12px;
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: var(--text-xs);
-    font-weight: 600;
-    transition: all var(--t-fast);
+    font-size: 14px;
+    transition: background-color 0.3s;
 }
 
 .delete-button:hover {
-    background-color: #ef4444;
-    color: white;
+    background-color: #ff7875;
 }
 
 /* Responsive Design */
