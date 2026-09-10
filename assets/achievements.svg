@@ -5,24 +5,24 @@
     <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
   </defs>
   <rect x="2" y="2" width="896" height="186" rx="18" fill="url(#bg)" stroke="url(#line)" stroke-width="2" stroke-dasharray="120 20"><animate attributeName="stroke-dashoffset" values="0;-280" dur="10s" repeatCount="indefinite"/></rect>
-  <g font-family="Segoe UI,Arial" text-anchor="middle">
+  <g font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" text-anchor="middle">
     <g transform="translate(150 0)">
       <circle cx="0" cy="65" r="35" fill="#8B5CF6" opacity=".14"><animate attributeName="r" values="31;38;31" dur="4s" repeatCount="indefinite"/></circle>
-      <text x="0" y="76" font-size="35">??</text>
-      <text x="0" y="126" fill="#C4B5FD" font-size="17" font-weight="700">Real-time STOMP</text>
-      <text x="0" y="150" fill="#94A3B8" font-size="13">Peer Chat &amp; Live Alerts</text>
+      <text x="0" y="74" font-size="28" fill="#A78BFA">&#128172;</text>
+      <text x="0" y="124" fill="#C4B5FD" font-size="16" font-weight="700">Real-time STOMP</text>
+      <text x="0" y="148" fill="#94A3B8" font-size="13">Peer Chat &amp; Live Alerts</text>
     </g>
     <g transform="translate(450 0)">
       <circle cx="0" cy="65" r="35" fill="#22D3EE" opacity=".13"><animate attributeName="r" values="38;31;38" dur="4.5s" repeatCount="indefinite"/></circle>
-      <text x="0" y="76" font-size="35">??</text>
-      <text x="0" y="126" fill="#67E8F9" font-size="17" font-weight="700">PayOS Automation</text>
-      <text x="0" y="150" fill="#94A3B8" font-size="13">QR Banking &amp; Contracts</text>
+      <text x="0" y="74" font-size="28" fill="#22D3EE">&#128179;</text>
+      <text x="0" y="124" fill="#67E8F9" font-size="16" font-weight="700">PayOS Automation</text>
+      <text x="0" y="148" fill="#94A3B8" font-size="13">QR Banking &amp; Contracts</text>
     </g>
     <g transform="translate(750 0)">
       <circle cx="0" cy="65" r="35" fill="#F472B6" opacity=".12"><animate attributeName="r" values="31;38;31" dur="5s" repeatCount="indefinite"/></circle>
-      <text x="0" y="76" font-size="35">??</text>
-      <text x="0" y="126" fill="#F9A8D4" font-size="17" font-weight="700">MongoDB Engine</text>
-      <text x="0" y="150" fill="#94A3B8" font-size="13">20+ Documents &amp; Seeder</text>
+      <text x="0" y="74" font-size="28" fill="#F472B6">&#127811;</text>
+      <text x="0" y="124" fill="#F9A8D4" font-size="16" font-weight="700">MongoDB Engine</text>
+      <text x="0" y="148" fill="#94A3B8" font-size="13">20+ Documents &amp; Seeder</text>
     </g>
   </g>
   <circle cx="27" cy="25" r="3" fill="#22D3EE" filter="url(#glow)"><animate attributeName="opacity" values="1;.2;1" dur="1.4s" repeatCount="indefinite"/></circle>
