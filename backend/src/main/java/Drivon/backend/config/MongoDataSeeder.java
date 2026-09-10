@@ -75,12 +75,12 @@ public class MongoDataSeeder implements CommandLineRunner {
         // 1. Users
         User u1 = new User();
         u1.setUserId(1L);
-        u1.setEmail("warmhouse.charity.contact@gmail.com");
-        u1.setPhone("0394672210");
+        u1.setEmail("lethecuong2k4@gmail.com");
+        u1.setPhone("0335247117");
         u1.setPassword(defaultPassHash);
-        u1.setFullName("Trần Bình Vương");
-        u1.setAvatarUrl("https://res.cloudinary.com/dxhcqas4b/image/upload/v1749170969/wqyfz0uopurvoxiphx8z.jpg");
-        u1.setAddress("xóm 4, nghi lâm, nghi lộc");
+        u1.setFullName("Lê Thế Cường");
+        u1.setAvatarUrl("https://res.cloudinary.com/dxhcqas4b/image/upload/v1749884082/cokt9korpzgng9oqpdxm.jpg");
+        u1.setAddress("55 Lê Thiện Trị, Ngũ Hành Sơn, Đà Nẵng");
         u1.setRole(UserRole.admin);
         u1.setStatus(UserStatus.active);
         u1.setEmailVerified(true);
@@ -187,7 +187,7 @@ public class MongoDataSeeder implements CommandLineRunner {
             w.setBalance(5000000.0);
             w.setTotalProfit(5000000.0);
             w.setTotalDebt(0.0);
-            w.setAccountNumber("0394672210");
+            w.setAccountNumber("0335247117");
             w.setBankName("MB Bank");
             ownerWalletRepository.save(w);
         }
@@ -240,17 +240,17 @@ public class MongoDataSeeder implements CommandLineRunner {
         saveCarImg(32L, "43A99999", "https://res.cloudinary.com/dxhcqas4b/image/upload/v1750038234/k82gfputzkzdaxwrfajl.jpg");
 
         // 4. Contract Partners
-        saveContract(1L, "HD202506140049", "37A40262", "1", 0.0, "ACTIVE_LEASE", "VƯƠNG TRẦN BÌNH", "0394672210", "binhvuong221004@gmail.com", 500000.0);
-        saveContract(2L, "HD202506146073", "38A1234", "1", 500000.0, "ACTIVE_LEASE", "VƯƠNG TRẦN BÌNH", "0394672210", "binhvuong221004@gmail.com", 1000000.0);
-        saveContract(3L, "HD202506149104", "38A1235", "1", 500000.0, "ACTIVE_LEASE", "VƯƠNG TRẦN BÌNH", "0394672210", "binhvuong221004@gmail.com", 1000000.0);
-        saveContract(4L, "HD202506144270", "38A14204", "1", 900000.0, "ACTIVE_LEASE", "VƯƠNG TRẦN BÌNH", "0394672210", "binhvuong221004@gmail.com", 1500000.0);
-        saveContract(5L, "HD202506147038", "43A99900", "1", 800000.0, "ACTIVE_LEASE", "VƯƠNG TRẦN BÌNH", "0394672210", "binhvuong221004@gmail.com", 199999.0);
-        saveContract(6L, "HD202506146676", "43A99995", "1", 1000000.0, "ACTIVE_LEASE", "VƯƠNG TRẦN BÌNH", "0394672210", "binhvuong221004@gmail.com", 2000000.0);
-        saveContract(7L, "HD202506146865", "43A99997", "1", 900000.0, "ACTIVE_LEASE", "VƯƠNG TRẦN BÌNH", "0394672210", "binhvuong221004@gmail.com", 500000.0);
-        saveContract(8L, "HD202506147807", "43A99998", "1", 350000.0, "ACTIVE_LEASE", "VƯƠNG TRẦN BÌNH", "0394672210", "binhvuong221004@gmail.com", 499999.0);
-        saveContract(9L, "HD202506157594", "43A99999", "1", 300000.0, "ACTIVE_LEASE", "VƯƠNG TRẦN BÌNH", "0394672210", "binhvuong221004@gmail.com", 600000.0);
-        saveContract(10L, "HD202506152933", "79A13334", "1", 400000.0, "ACTIVE_LEASE", "VƯƠNG TRẦN BÌNH", "0394672210", "binhvuong221004@gmail.com", 699999.0);
-        saveContract(11L, "HD202506151517", "79A13337", "1", 800000.0, "ACTIVE_LEASE", "Vương Trần Bình", "0394672210", "tranbinhvuong123456@gmail.com", 1500000.0);
+        saveContract(1L, "HD202506140049", "37A40262", "1", 0.0, "ACTIVE_LEASE", "LÊ THẾ CƯỜNG", "0335247117", "lethecuong2k4@gmail.com", 500000.0);
+        saveContract(2L, "HD202506146073", "38A1234", "1", 500000.0, "ACTIVE_LEASE", "LÊ THẾ CƯỜNG", "0335247117", "lethecuong2k4@gmail.com", 1000000.0);
+        saveContract(3L, "HD202506149104", "38A1235", "1", 500000.0, "ACTIVE_LEASE", "LÊ THẾ CƯỜNG", "0335247117", "lethecuong2k4@gmail.com", 1000000.0);
+        saveContract(4L, "HD202506144270", "38A14204", "1", 900000.0, "ACTIVE_LEASE", "LÊ THẾ CƯỜNG", "0335247117", "lethecuong2k4@gmail.com", 1500000.0);
+        saveContract(5L, "HD202506147038", "43A99900", "1", 800000.0, "ACTIVE_LEASE", "LÊ THẾ CƯỜNG", "0335247117", "lethecuong2k4@gmail.com", 199999.0);
+        saveContract(6L, "HD202506146676", "43A99995", "1", 1000000.0, "ACTIVE_LEASE", "LÊ THẾ CƯỜNG", "0335247117", "lethecuong2k4@gmail.com", 2000000.0);
+        saveContract(7L, "HD202506146865", "43A99997", "1", 900000.0, "ACTIVE_LEASE", "LÊ THẾ CƯỜNG", "0335247117", "lethecuong2k4@gmail.com", 500000.0);
+        saveContract(8L, "HD202506147807", "43A99998", "1", 350000.0, "ACTIVE_LEASE", "LÊ THẾ CƯỜNG", "0335247117", "lethecuong2k4@gmail.com", 499999.0);
+        saveContract(9L, "HD202506157594", "43A99999", "1", 300000.0, "ACTIVE_LEASE", "LÊ THẾ CƯỜNG", "0335247117", "lethecuong2k4@gmail.com", 600000.0);
+        saveContract(10L, "HD202506152933", "79A13334", "1", 400000.0, "ACTIVE_LEASE", "LÊ THẾ CƯỜNG", "0335247117", "lethecuong2k4@gmail.com", 699999.0);
+        saveContract(11L, "HD202506151517", "79A13337", "1", 800000.0, "ACTIVE_LEASE", "Lê Thế Cường", "0335247117", "lethecuong2k4@gmail.com", 1500000.0);
 
         // 5. Promotions
         savePromo(1L, "SUMMER25", 25, 100);

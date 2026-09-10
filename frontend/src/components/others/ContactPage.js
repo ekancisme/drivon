@@ -77,8 +77,7 @@ const ContactPage = () => {
               </div>
               <div className="contact-details">
                 <h3>Phone</h3>
-                <p>+84 123 456 789</p>
-                <p>+84 987 654 321</p>
+                <p>0335247117</p>
               </div>
             </div>
 
@@ -88,8 +87,7 @@ const ContactPage = () => {
               </div>
               <div className="contact-details">
                 <h3>Email</h3>
-                <p>info@drivon.com</p>
-                <p>support@drivon.com</p>
+                <p>lethecuong2k4@gmail.com</p>
               </div>
             </div>
 
@@ -99,8 +97,7 @@ const ContactPage = () => {
               </div>
               <div className="contact-details">
                 <h3>Address</h3>
-                <p>FPT University</p>
-                <p>District 9, Ho Chi Minh City</p>
+                <p>55 Lê Thiện Trị, Ngũ Hành Sơn, Đà Nẵng</p>
               </div>
             </div>
 
@@ -228,10 +225,10 @@ const ContactPage = () => {
             <p>Car rental consultation and booking</p>
             <div className="department-contact">
               <div>
-                <span role="img" aria-label="phone">📞</span> 039 467 2210
+                <span role="img" aria-label="phone">📞</span> 0335247117
               </div>
               <div>
-                <span role="img" aria-label="email">✉️</span> booking@carrental.vn
+                <span role="img" aria-label="email">✉️</span> lethecuong2k4@gmail.com
               </div>
             </div>
           </div>
@@ -241,10 +238,10 @@ const ContactPage = () => {
             <p>Support and answer questions</p>
             <div className="department-contact">
               <div>
-                <span role="img" aria-label="phone">📞</span> 039 467 2210
+                <span role="img" aria-label="phone">📞</span> 0335247117
               </div>
               <div>
-                <span role="img" aria-label="email">✉️</span> support@carrental.vn
+                <span role="img" aria-label="email">✉️</span> lethecuong2k4@gmail.com
               </div>
             </div>
           </div>
@@ -254,10 +251,10 @@ const ContactPage = () => {
             <p>Handle insurance and complaints</p>
             <div className="department-contact">
               <div>
-                <span role="img" aria-label="phone">📞</span> 039 467 2210
+                <span role="img" aria-label="phone">📞</span> 0335247117
               </div>
               <div>
-                <span role="img" aria-label="email">✉️</span> claims@carrental.vn
+                <span role="img" aria-label="email">✉️</span> lethecuong2k4@gmail.com
               </div>
             </div>
           </div>
@@ -268,14 +265,14 @@ const ContactPage = () => {
         <h2>Our Location</h2>
         <div className="map-container">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.484123456789!2d106.8064!3d10.8417!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDUwJzMwLjEiTiAxMDbCsDQ4JzIzLjAiRQ!5e0!3m2!1sen!2s!4v1234567890"
+            src="https://maps.google.com/maps?q=55%20L%C3%AA%20Thi%E1%BB%87n%20Tr%E1%BB%8B,%20Ng%C5%A9%20H%C3%A0nh%20S%C6%A1n,%20%C4%90%C3%A0%20N%E1%BA%B5ng&t=&z=15&ie=UTF8&iwloc=&output=embed"
             width="100%"
             height="450"
             style={{ border: 0 }}
             allowFullScreen=""
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            title="FPT University Location"
+            title="Drivon Office Location"
           ></iframe>
         </div>
       </div>
