@@ -2,7 +2,7 @@
 
 ![Animated introduction](./assets/hero.svg)
 
-[![Typing SVG](https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=24&duration=2500&pause=650&color=7C3AED&center=true&vCenter=true&repeat=true&width=760&lines=??+DRIVON+-+Next-Gen+Car+Rental+Platform;Java+17+%2B+Spring+Boot+3+%2B+MongoDB+%2B+React;Real-time+STOMP+Chat+%26+Live+Notifications;Automated+PayOS+Payment+%26+Digital+Contracts;Multi-Role%3A+Customer+%2B+Owner+%2B+Admin)](https://git.io/typing-svg)
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=24&duration=2500&pause=650&color=7C3AED&center=true&vCenter=true&repeat=true&width=760&lines=DRIVON+-+Next-Gen+Car+Rental+Platform;Java+17+%2B+Spring+Boot+3+%2B+MongoDB+%2B+React;Real-time+STOMP+Chat+%26+Live+Notifications;Automated+PayOS+Payment+%26+Digital+Contracts;Multi-Role%3A+Customer+%2B+Owner+%2B+Admin)](https://git.io/typing-svg)
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-youngltc.id.vn-7C3AED?style=for-the-badge&logo=caddy&logoColor=white)](https://youngltc.id.vn)
 [![Portfolio](https://img.shields.io/badge/Portfolio-ltcuong24.id.vn-06B6D4?style=for-the-badge&logo=vercel&logoColor=white)](https://ltcuong24.id.vn)
@@ -17,10 +17,10 @@
 
 ```yaml
 project: Drivon (Car Rental & Fleet Management Ecosystem)
-author: L� Th? Cu?ng
+author: Lê Thế Cường
 role: Full-stack Developer
-education: Software Engineering @ FPT University �� N?ng
-location: �� N?ng, Vi?t Nam
+education: Software Engineering @ FPT University Đà Nẵng
+location: Đà Nẵng, Việt Nam
 stack:
   backend: Java 17, Spring Boot 3, Spring Security, MongoDB
   frontend: React 18, Tailwind CSS, Lucide Icons, WebSocket STOMP
@@ -38,7 +38,7 @@ live_demo: https://youngltc.id.vn
 
 ![Animated divider](./assets/divider.svg)
 
-## ? Tech constellation
+## ⚡ Tech constellation
 
 <div align="center">
 
@@ -54,13 +54,13 @@ live_demo: https://youngltc.id.vn
 
 </div>
 
-## ?? Featured modules
+## 🚀 Featured modules
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-### ?? [Customer Rental Experience](https://youngltc.id.vn)
+### 🚗 [Customer Rental Experience](https://youngltc.id.vn)
 
 Smart vehicle search with multi-criteria filters.<br />
 Interactive booking engine with instant price estimation.<br />
@@ -74,7 +74,7 @@ Seamless PayOS QR banking checkout and digital contracts.
 </td>
 <td width="50%" valign="top">
 
-### ?? [Owner Partner & Fleet Portal](https://youngltc.id.vn)
+### 💼 [Owner Partner & Fleet Portal](https://youngltc.id.vn)
 
 Complete vehicle management and photo uploads.<br />
 Live revenue dashboard, profit tracking, and debt calculation.<br />
@@ -89,7 +89,7 @@ Withdrawal requests with digital signature validation.
 </tr>
 </table>
 
-## ?? System Highlights & Metrics
+## 🏆 System Highlights & Capabilities
 
 <div align="center">
 
@@ -98,7 +98,7 @@ Withdrawal requests with digital signature validation.
 </div>
 
 <details>
-<summary><b>?? Core Architecture & Flow Diagram</b></summary>
+<summary><b>🎯 Core Architecture & Flow Diagram</b></summary>
 <br />
 
 ```mermaid
@@ -131,7 +131,7 @@ graph TD
 </details>
 
 <details>
-<summary><b>??? Quick Start & Local Development</b></summary>
+<summary><b>🛠️ Quick Start & Local Development</b></summary>
 <br />
 
 ### Prerequisites
@@ -162,7 +162,7 @@ npm start
 </details>
 
 <details>
-<summary><b>?? Production VPS Deployment</b></summary>
+<summary><b>🚢 Production VPS Deployment</b></summary>
 <br />
 
 Deploying Drivon to any Linux VPS using Docker and Caddy:
@@ -182,15 +182,15 @@ The automated pipeline executes:
 </details>
 
 <details>
-<summary><b>?? A Tiny Developer Quest</b></summary>
+<summary><b>🎮 A Tiny Developer Quest</b></summary>
 <br />
 
 ```text
 MISSION       Deliver robust, scalable, high-performance web experiences
 PROJECT       Drivon Car Rental & Fleet Ecosystem
-DEVELOPER     L� Th? Cu?ng (@ekancisme)
-TECH POWER    Java 17 � Spring Boot 3 � MongoDB � React � Docker
-PARTY MODE    Teamwork � Agile/Scrum � Clean Code � Code Review
+DEVELOPER     Lê Thế Cường (@ekancisme)
+TECH POWER    Java 17 · Spring Boot 3 · MongoDB · React · Docker
+PARTY MODE    Teamwork · Agile/Scrum · Clean Code · Code Review
 NEXT LEVEL    Scalable Distributed Systems & AI Integration
 ```
 
@@ -198,7 +198,7 @@ NEXT LEVEL    Scalable Distributed Systems & AI Integration
 
 <div align="center">
 
-### ?? Let's build something memorable
+### 💬 Let's build something memorable
 
 [![Explore Drivon](https://img.shields.io/badge/Explore_Live_Demo-7C3AED?style=for-the-badge&logo=caddy&logoColor=white)](https://youngltc.id.vn)
 [![Portfolio](https://img.shields.io/badge/Portfolio-ltcuong24.id.vn-06B6D4?style=for-the-badge&logo=vercel&logoColor=white)](https://ltcuong24.id.vn)

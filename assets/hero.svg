@@ -24,11 +24,11 @@
       <circle cx="180" cy="45" r="2"><animate attributeName="cx" values="180;55;180" dur="8s" repeatCount="indefinite"/></circle>
     </g>
     <path d="M65 245C180 190 210 290 330 238S530 178 650 230 820 270 940 205" stroke="url(#neon)" stroke-width="2" opacity=".35" stroke-dasharray="8 12"><animate attributeName="stroke-dashoffset" values="0;-200" dur="10s" repeatCount="indefinite"/></path>
-    <g font-family="'Segoe UI',Arial,sans-serif" text-anchor="middle">
-      <text x="500" y="104" fill="#94A3B8" font-size="14" letter-spacing="6">NEXT-GENERATION CAR RENTAL &amp; FLEET MANAGEMENT</text>
-      <text x="500" y="170" fill="url(#neon)" font-size="54" font-weight="800" filter="url(#glow)">?? DRIVON</text>
-      <text x="500" y="214" fill="#E2E8F0" font-size="19" letter-spacing="2">SPRING BOOT 3  •  MONGODB  •  REACT 18  •  PAYOS  •  WEBSOCKET</text>
-      <text x="500" y="259" fill="#67E8F9" font-family="monospace" font-size="15">&lt;code&gt; search ? instant booking ? automated payment ? digital contract &lt;/code&gt;<animate attributeName="opacity" values="1;.35;1" dur="1.8s" repeatCount="indefinite"/></text>
+    <g font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" text-anchor="middle">
+      <text x="500" y="104" fill="#94A3B8" font-size="13" font-weight="600" letter-spacing="5">NEXT-GENERATION VEHICLE RENTAL PLATFORM</text>
+      <text x="500" y="172" fill="url(#neon)" font-size="56" font-weight="800" filter="url(#glow)">DRIVON</text>
+      <text x="500" y="214" fill="#E2E8F0" font-size="18" font-weight="500" letter-spacing="2">SPRING BOOT 3 &bull; MONGODB &bull; REACT 18 &bull; PAYOS &bull; WEBSOCKET</text>
+      <text x="500" y="259" fill="#67E8F9" font-family="'JetBrains Mono', Consolas, Monaco, monospace" font-size="14">&lt;code&gt; search &#8594; instant booking &#8594; automated payment &#8594; digital contract &lt;/code&gt;<animate attributeName="opacity" values="1;.35;1" dur="1.8s" repeatCount="indefinite"/></text>
     </g>
     <rect x="14" y="14" width="972" height="292" rx="18" stroke="url(#neon)" stroke-opacity=".55" stroke-width="2" stroke-dasharray="120 28"><animate attributeName="stroke-dashoffset" values="0;-296" dur="8s" repeatCount="indefinite"/></rect>
   </g>
