@@ -1,32 +1,41 @@
 package Drivon.backend.repository;
 
 import Drivon.backend.entity.Notification;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
-public interface NotificationRepository extends JpaRepository<Notification, Long> {
+public interface NotificationRepository extends MongoRepository<Notification, Long> {
     
     // Lấy tất cả thông báo
     List<Notification> findAllByOrderByCreatedAtDesc();
     
     // Lấy thông báo cho user cụ thể (dựa trên target_type và role của user)
-    @Query("SELECT n FROM Notification n WHERE " +
-           "n.targetType = 'ALL_USERS' OR " +
-           "(n.targetType = 'OWNER_ONLY' AND :userRole = 'owner') OR " +
-           "(n.targetType = 'USER_SPECIFIC' AND n.targetUserId = :userId) OR " +
-           "(n.targetType = 'ADMIN_ONLY' AND :userRole = 'admin') " +
-           "ORDER BY n.createdAt DESC")
-    List<Notification> findNotificationsForUser(@Param("userId") Long userId, @Param("userRole") String userRole);
+    default List<Notification> findNotificationsForUser(Long userId, String userRole) {
+        return findAllByOrderByCreatedAtDesc().stream()
+                .filter(n -> {
+                    if (n.getTargetType() == null || n.getTargetType() == Notification.TargetType.ALL_USERS) {
+                        return true;
+                    }
+                    if (n.getTargetType() == Notification.TargetType.OWNER_ONLY && "owner".equalsIgnoreCase(userRole)) {
+                        return true;
+                    }
+                    if (n.getTargetType() == Notification.TargetType.ADMIN_ONLY && "admin".equalsIgnoreCase(userRole)) {
+                        return true;
+                    }
+                    if (n.getTargetType() == Notification.TargetType.USER_SPECIFIC && userId != null && userId.equals(n.getTargetUserId())) {
+                        return true;
+                    }
+                    return false;
+                })
+                .collect(Collectors.toList());
+    }
     
     // Lấy tất cả thông báo cho user (không phân biệt target_type hay role)
-    @Query("SELECT n FROM Notification n ORDER BY n.createdAt DESC")
-    List<Notification> findAllNotificationsForUser();
-
-    // Xoá thông báo theo ID
-    void deleteById(Long notificationId);
+    default List<Notification> findAllNotificationsForUser() {
+        return findAllByOrderByCreatedAtDesc();
+    }
 } 

@@ -1,9 +1,11 @@
 package Drivon.backend.repository;
 
 import Drivon.backend.model.OwnerWithdrawRequest;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 import java.util.List;
- 
-public interface OwnerWithdrawRequestRepository extends JpaRepository<OwnerWithdrawRequest, Long> {
+
+@Repository
+public interface OwnerWithdrawRequestRepository extends MongoRepository<OwnerWithdrawRequest, Long> {
     List<OwnerWithdrawRequest> findByOwnerIdOrderByRequestedAtDesc(Long ownerId);
 } 

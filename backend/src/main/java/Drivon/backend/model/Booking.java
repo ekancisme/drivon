@@ -1,62 +1,37 @@
 package Drivon.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Entity
+@Document(collection = "bookings")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "bookings")
 public class Booking {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "booking_id")
     private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "renter_id", nullable = false)
-    @JsonManagedReference(value = "booking-renter")
     private User renter;
-
-    @ManyToOne
-    @JoinColumn(name = "car_id", nullable = false)
-    @JsonManagedReference(value = "booking-car")
     private Car car;
 
-    @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
-
-    @Column(name = "end_time", nullable = false)
     private LocalDateTime endTime;
-
-    @Column(name = "pickup_location", columnDefinition = "TEXT")
     private String pickupLocation;
-
-    @Column(name = "dropoff_location", columnDefinition = "TEXT")
     private String dropoffLocation;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private BookingStatus status;
-
-    @Column(name = "total_price")
     private double totalPrice;
-
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Transient
     @JsonIgnore

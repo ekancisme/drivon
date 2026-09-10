@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.transaction.annotation.Transactional;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,9 +23,6 @@ public class CarImageController {
 
     @Autowired
     private CarRepository carRepository;
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @PostMapping
     @Transactional
@@ -56,7 +51,6 @@ public class CarImageController {
             for (CarImage image : existingImages) {
                 carImageRepository.delete(image);
             }
-            entityManager.flush();
 
             // Save new other images
             if (otherImageUrls != null && !otherImageUrls.isEmpty()) {
@@ -101,7 +95,6 @@ public class CarImageController {
             for (CarImage image : existingCavetImages) {
                 carImageRepository.delete(image);
             }
-            entityManager.flush();
             // Save new cavet images
             if (cavetImageUrls != null && !cavetImageUrls.isEmpty()) {
                 for (String imageUrl : cavetImageUrls) {
@@ -143,7 +136,6 @@ public class CarImageController {
             for (CarImage image : existingOtherDocImages) {
                 carImageRepository.delete(image);
             }
-            entityManager.flush();
             // Save new other document images
             if (otherDocImageUrls != null && !otherDocImageUrls.isEmpty()) {
                 for (String imageUrl : otherDocImageUrls) {
@@ -242,7 +234,6 @@ public class CarImageController {
             for (CarImage image : existingImages) {
                 carImageRepository.delete(image);
             }
-            entityManager.flush();
             
             response.put("success", true);
             response.put("message", "Car images deleted successfully");

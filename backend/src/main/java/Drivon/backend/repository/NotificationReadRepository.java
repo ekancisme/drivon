@@ -1,33 +1,31 @@
 package Drivon.backend.repository;
 
 import Drivon.backend.entity.NotificationRead;
-import Drivon.backend.entity.NotificationReadId;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
-public interface NotificationReadRepository extends JpaRepository<NotificationRead, NotificationReadId> {
+public interface NotificationReadRepository extends MongoRepository<NotificationRead, String> {
     
-    // Kiểm tra xem notification đã được đọc bởi user chưa
-    @Query("SELECT nr FROM NotificationRead nr WHERE nr.notificationId = :notificationId AND nr.userId = :userId")
-    Optional<NotificationRead> findByNotificationIdAndUserId(@Param("notificationId") Long notificationId, @Param("userId") Long userId);
+    Optional<NotificationRead> findByNotificationIdAndUserId(Long notificationId, Long userId);
     
-    // Lấy tất cả notification đã đọc của user
-    @Query("SELECT nr.notificationId FROM NotificationRead nr WHERE nr.userId = :userId")
-    List<Long> findReadNotificationIdsByUserId(@Param("userId") Long userId);
+    List<NotificationRead> findByUserId(Long userId);
     
-    // Đếm số notification đã đọc của user
-    @Query("SELECT COUNT(nr) FROM NotificationRead nr WHERE nr.userId = :userId")
-    Long countReadNotificationsByUserId(@Param("userId") Long userId);
+    default List<Long> findReadNotificationIdsByUserId(Long userId) {
+        return findByUserId(userId).stream()
+                .map(NotificationRead::getNotificationId)
+                .collect(Collectors.toList());
+    }
     
-    // Xóa tất cả notification reads của user
+    default Long countReadNotificationsByUserId(Long userId) {
+        return (long) findByUserId(userId).size();
+    }
+    
     void deleteByUserId(Long userId);
     
-    // Xóa notification reads của notification cụ thể
     void deleteByNotificationId(Long notificationId);
 } 

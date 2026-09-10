@@ -2,32 +2,36 @@ package Drivon.backend.repository;
 
 import Drivon.backend.entity.UserConversation;
 import Drivon.backend.entity.UserConversationId;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface UserConversationRepository extends JpaRepository<UserConversation, UserConversationId> {
+@Repository
+public interface UserConversationRepository extends MongoRepository<UserConversation, UserConversationId> {
 
-        @Query("SELECT uc FROM UserConversation uc WHERE uc.id.user_id = :userId AND uc.is_deleted = false")
-        List<UserConversation> findActiveConversationsByUserId(@Param("userId") Long userId);
+    @Query("{ 'id.user_id': ?0, 'is_deleted': false }")
+    List<UserConversation> findActiveConversationsByUserId(Long userId);
 
-        @Query("SELECT uc FROM UserConversation uc WHERE uc.id.conversation_id = :conversationId AND uc.is_deleted = false")
-        List<UserConversation> findActiveUsersByConversationId(@Param("conversationId") Long conversationId);
+    @Query("{ 'id.conversation_id': ?0, 'is_deleted': false }")
+    List<UserConversation> findActiveUsersByConversationId(Long conversationId);
 
-        @Query("SELECT uc FROM UserConversation uc WHERE uc.id.user_id = :userId AND uc.id.conversation_id = :conversationId")
-        Optional<UserConversation> findByUserIdAndConversationId(@Param("userId") Long userId,
-                        @Param("conversationId") Long conversationId);
+    @Query("{ 'id.user_id': ?0, 'id.conversation_id': ?1 }")
+    Optional<UserConversation> findByUserIdAndConversationId(Long userId, Long conversationId);
 
-        @Modifying
-        @Query("UPDATE UserConversation uc SET uc.last_seen_message_id = :messageId WHERE uc.id.user_id = :userId AND uc.id.conversation_id = :conversationId")
-        void updateLastSeenMessage(@Param("userId") Long userId, @Param("conversationId") Long conversationId,
-                        @Param("messageId") Long messageId);
+    default void updateLastSeenMessage(Long userId, Long conversationId, Long messageId) {
+        findByUserIdAndConversationId(userId, conversationId).ifPresent(uc -> {
+            uc.setLast_seen_message_id(messageId);
+            save(uc);
+        });
+    }
 
-        @Modifying
-        @Query("UPDATE UserConversation uc SET uc.is_deleted = true WHERE uc.id.user_id = :userId AND uc.id.conversation_id = :conversationId")
-        void markAsDeleted(@Param("userId") Long userId, @Param("conversationId") Long conversationId);
+    default void markAsDeleted(Long userId, Long conversationId) {
+        findByUserIdAndConversationId(userId, conversationId).ifPresent(uc -> {
+            uc.setIs_deleted(true);
+            save(uc);
+        });
+    }
 }

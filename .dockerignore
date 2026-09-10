@@ -1,0 +1,13 @@
+.git
+.github
+**/.git
+**/node_modules
+**/target
+**/dist
+**/build
+*.tar.gz
+*.zip
+.agents
+.claude
+.codex
+graft
