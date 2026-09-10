@@ -18,13 +18,15 @@ public class User {
     @Indexed(unique = true)
     private String email;
 
-    @Indexed(unique = true)
+    @Indexed(unique = true, sparse = true)
     private String phone;
 
     private String password;
     private String fullName;
     private String avatarUrl;
     private String address;
+
+    @Indexed(unique = true, sparse = true)
     private String googleId;
     private boolean enabled = true;
 
