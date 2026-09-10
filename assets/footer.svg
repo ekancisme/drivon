@@ -1,0 +1,8 @@
+<svg width="1000" height="150" viewBox="0 0 1000 150" xmlns="http://www.w3.org/2000/svg">
+  <defs><linearGradient id="f" x1="0" x2="1"><stop stop-color="#7C3AED"/><stop offset=".5" stop-color="#06B6D4"/><stop offset="1" stop-color="#EC4899"/></linearGradient></defs>
+  <path d="M0 75 Q125 15 250 75 T500 75 T750 75 T1000 75 V150 H0Z" fill="url(#f)" opacity=".18">
+    <animate attributeName="d" values="M0 75 Q125 15 250 75 T500 75 T750 75 T1000 75 V150 H0Z;M0 75 Q125 135 250 75 T500 75 T750 75 T1000 75 V150 H0Z;M0 75 Q125 15 250 75 T500 75 T750 75 T1000 75 V150 H0Z" dur="8s" repeatCount="indefinite"/>
+  </path>
+  <path d="M0 80 Q125 30 250 80 T500 80 T750 80 T1000 80" fill="none" stroke="url(#f)" stroke-width="3" stroke-dasharray="12 8"><animate attributeName="stroke-dashoffset" values="0;-80" dur="3s" repeatCount="indefinite"/></path>
+  <g fill="#22D3EE"><circle cx="180" cy="70" r="3"><animate attributeName="cy" values="70;25;70" dur="4s" repeatCount="indefinite"/></circle><circle cx="820" cy="92" r="3"><animate attributeName="cy" values="92;45;92" dur="5s" repeatCount="indefinite"/></circle></g>
+</svg>

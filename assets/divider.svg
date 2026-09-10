@@ -1,0 +1,7 @@
+<svg width="1000" height="50" viewBox="0 0 1000 50" xmlns="http://www.w3.org/2000/svg">
+  <defs><linearGradient id="g"><stop stop-color="#7C3AED"/><stop offset=".5" stop-color="#22D3EE"/><stop offset="1" stop-color="#F472B6"/></linearGradient></defs>
+  <path d="M0 25 Q125 2 250 25 T500 25 T750 25 T1000 25" fill="none" stroke="url(#g)" stroke-width="3" stroke-linecap="round" stroke-dasharray="12 10">
+    <animate attributeName="stroke-dashoffset" values="0;-44" dur="1.4s" repeatCount="indefinite"/>
+    <animate attributeName="d" values="M0 25 Q125 2 250 25 T500 25 T750 25 T1000 25;M0 25 Q125 48 250 25 T500 25 T750 25 T1000 25;M0 25 Q125 2 250 25 T500 25 T750 25 T1000 25" dur="5s" repeatCount="indefinite"/>
+  </path>
+</svg>
