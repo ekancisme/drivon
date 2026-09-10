@@ -5,9 +5,34 @@ import '../css/ProfilePage.css';
 import { API_URL } from '../../api/configApi';
 import { showErrorToast, showSuccessToast } from '../notification/notification';
 import cloudinaryConfig from '../../config/cloudinary';
-import { FiUpload, FiTrash2 } from 'react-icons/fi';
+import {
+  FiUpload,
+  FiTrash2,
+  FiUser,
+  FiMail,
+  FiPhone,
+  FiMapPin,
+  FiCamera,
+  FiEdit2,
+  FiShield,
+  FiKey,
+  FiChevronRight,
+  FiAlertCircle,
+  FiImage,
+  FiX,
+  FiInfo,
+  FiCheckCircle,
+  FiXCircle,
+  FiDollarSign,
+} from 'react-icons/fi';
 import { Table } from "antd";
-import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+
+const DOC_TYPE_LABELS = {
+  cccd: 'CCCD / CMND',
+  license: 'Giấy phép lái xe (GPLX)',
+  passport: 'Hộ chiếu',
+  other: 'Giấy tờ khác',
+};
 
 const ProfilePage = ({ user, onUpdateUser }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -101,7 +126,7 @@ const ProfilePage = ({ user, onUpdateUser }) => {
     try {
       setError(null);
       setSuccessMessage(null);
-      
+
       const validationErrors = validateForm();
       if (Object.keys(validationErrors).length > 0) {
         setError(validationErrors);
@@ -109,7 +134,7 @@ const ProfilePage = ({ user, onUpdateUser }) => {
       }
 
       const response = await axios.put(`${API_URL}/profile/update`, editedUser);
-      
+
       if (response.data) {
         onUpdateUser(response.data);
         setSuccessMessage('Profile updated successfully!');
@@ -310,359 +335,503 @@ const ProfilePage = ({ user, onUpdateUser }) => {
   if (loading) {
     return (
       <div className="profile-loading">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
+        <div className="pf-loader" role="status" aria-label="Đang tải" />
       </div>
     );
   }
 
+  const dropzoneLocked = !docEditMode || docUploading || isDocTypeVerified(pendingDocType);
+
   return (
-    <div className="profile-container">
+    <div className="profile-page">
       {successMessage && (
-        <div className="alert alert-success alert-dismissible fade show" role="alert">
-          <i className="bi bi-check-circle-fill me-2"></i>
-          {successMessage}
-          <button type="button" className="btn-close" onClick={() => setSuccessMessage(null)}></button>
+        <div className="pf-alert pf-alert--success" role="alert">
+          <FiCheckCircle />
+          <span>{successMessage}</span>
+          <button
+            type="button"
+            className="pf-alert__close"
+            onClick={() => setSuccessMessage(null)}
+            aria-label="Đóng thông báo"
+          >
+            <FiX />
+          </button>
         </div>
       )}
 
       {error && typeof error === 'string' && (
-        <div className="alert alert-danger alert-dismissible fade show" role="alert">
-          <i className="bi bi-exclamation-triangle-fill me-2"></i>
-          {error}
-          <button type="button" className="btn-close" onClick={() => setError(null)}></button>
+        <div className="pf-alert pf-alert--error" role="alert">
+          <FiAlertCircle />
+          <span>{error}</span>
+          <button
+            type="button"
+            className="pf-alert__close"
+            onClick={() => setError(null)}
+            aria-label="Đóng thông báo"
+          >
+            <FiX />
+          </button>
         </div>
       )}
 
-      <div className="profile-header">
-        <div className="profile-avatar-section">
-          <div className="profile-avatar-wrapper">
-            <img
-              src={user.avatarUrl || getDefaultAvatarUrl(user.fullName)}
-              alt="Avatar"
-              className="profile-avatar"
-            />
-            <Link to="/change-avatar" className="change-avatar-button">
-              <i className="bi bi-camera-fill"></i>
-            </Link>
-          </div>
-          <h2 className="profile-name">{user.fullName || 'Not updated yet'}</h2>
-          <p className="profile-email">{user.email}</p>
-        </div>
-      </div>
+      <div className="pf-grid">
+        {/* ================= LEFT COLUMN ================= */}
+        <div className="pf-col">
+          <div className="pf-card pf-card--glow">
+            <div className="pf-identity">
+              <div className="pf-avatar-wrap">
+                <img
+                  src={user.avatarUrl || getDefaultAvatarUrl(user.fullName)}
+                  alt="Avatar"
+                  className="pf-avatar"
+                />
+                <Link to="/change-avatar" className="pf-avatar-btn" title="Đổi ảnh đại diện">
+                  <FiCamera />
+                </Link>
+              </div>
+              <h2 className="pf-name">{user.fullName || 'Chưa cập nhật'}</h2>
+              <p className="pf-email">{user.email}</p>
+            </div>
 
-      <div className="profile-content">
-        <div className="profile-section">
-          <div className="section-header">
-            <h3>
-              <i className="bi bi-person-lines-fill me-2"></i>
-              Personal Information
-            </h3>
-            {!isEditing && (
-              <button onClick={handleEditToggle} className="btn btn-outline-primary btn-sm">
-                <i className="bi bi-pencil-square me-2"></i>
-                Edit
-              </button>
-            )}
-          </div>
-
-          {!isEditing ? (
-            <div>
-            <div className="info-grid">
-              <div className="info-item">
-                <label>Full Name</label>
-                <p>{user.fullName || 'Not updated yet'}</p>
+            <div className="pf-info-list">
+              <div className="pf-info-row">
+                <FiUser />
+                <div>
+                  <span className="pf-info-label">Họ và tên</span>
+                  <div className={`pf-info-value ${!user.fullName ? 'pf-info-value--empty' : ''}`}>
+                    {user.fullName || 'Chưa cập nhật'}
+                  </div>
+                </div>
               </div>
-              <div className="info-item">
-                <label>Email</label>
-                <p>{user.email}</p>
+              <div className="pf-info-row">
+                <FiMail />
+                <div>
+                  <span className="pf-info-label">Email</span>
+                  <div className="pf-info-value">{user.email}</div>
+                </div>
               </div>
+              <div className="pf-info-row">
+                <FiPhone />
+                <div>
+                  <span className="pf-info-label">Số điện thoại</span>
+                  <div className={`pf-info-value ${!user.phone ? 'pf-info-value--empty' : ''}`}>
+                    {user.phone || 'Chưa cập nhật'}
+                  </div>
+                </div>
               </div>
-              <div className="info-grid">
-              <div className="info-item">
-                <label>Phone Number</label>
-                <p>{user.phone || 'Not updated yet'}</p>
-              </div>
-              <div className="info-item">
-                <label>Address</label>
-                <p>{user.address || 'Not updated yet'}</p>
+              <div className="pf-info-row">
+                <FiMapPin />
+                <div>
+                  <span className="pf-info-label">Địa chỉ</span>
+                  <div className={`pf-info-value ${!user.address ? 'pf-info-value--empty' : ''}`}>
+                    {user.address || 'Chưa cập nhật'}
+                  </div>
                 </div>
               </div>
             </div>
-          ) : (
-            <form className="edit-form" onSubmit={(e) => e.preventDefault()}>
-              <div className="form-group">
-                <label htmlFor="fullName">Full Name</label>
-                <input
-                  type="text"
-                  className={`form-control ${error?.fullName ? 'is-invalid' : ''}`}
-                  id="fullName"
-                  name="fullName"
-                  value={editedUser.fullName || ''}
-                  onChange={handleInputChange}
-                  placeholder="Enter full name"
-                />
-                {error?.fullName && <div className="invalid-feedback">{error.fullName}</div>}
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  id="email"
-                  value={user.email}
-                  disabled
-                  title="Email cannot be changed"
-                />
-                <small className="form-text text-muted">
-                  <i className="bi bi-info-circle me-1"></i>
-                  Email cannot be changed
-                </small>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="phone">Phone Number</label>
-                <input
-                  type="tel"
-                  className={`form-control ${error?.phone ? 'is-invalid' : ''}`}
-                  id="phone"
-                  name="phone"
-                  value={editedUser.phone || ''}
-                  onChange={handleInputChange}
-                  placeholder="Enter phone number"
-                />
-                {error?.phone && <div className="invalid-feedback">{error.phone}</div>}
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="address">Address</label>
-                <textarea
-                  className="form-control"
-                  id="address"
-                  name="address"
-                  rows="3"
-                  value={editedUser.address || ''}
-                  onChange={handleInputChange}
-                  placeholder="Enter address"
-                ></textarea>
-              </div>
-
-              <div className="form-actions">
-                <button type="button" className="btn btn-primary" onClick={handleSave}>
-                  <i className="bi bi-check-lg me-2"></i>
-                  Save changes
-                </button>
-                <button type="button" className="btn btn-light" onClick={handleCancel}>
-                  <i className="bi bi-x-lg me-2"></i>
-                  Cancel
-                </button>
-              </div>
-            </form>
-          )}
-        </div>
-
-        <div className="profile-section">
-          <div className="section-header">
-            <h3>
-              <i className="bi bi-shield-lock-fill me-2"></i>
-              Security
-            </h3>
           </div>
-          <div className="security-actions">
-            <Link to="/change-password" className="security-action-item">
-              <i className="bi bi-key-fill"></i>
-              <div>
-                <h4>{hasPassword ? 'Change password' : 'Create password'}</h4>
-                <p>{hasPassword ? 'Change your login password' : 'Create a password to protect your account'}</p>
-              </div>
-              <i className="bi bi-chevron-right"></i>
-            </Link>
-            <Link to="/change-avatar" className="security-action-item">
-              <i className="bi bi-person-circle"></i>
-              <div>
-                <h4>Change avatar</h4>
-                <p>Update your avatar</p>
-              </div>
-              <i className="bi bi-chevron-right"></i>
-            </Link>
-          </div>
-        </div>
 
-        <div className="profile-section">
-          <div className="section-header">
-            <h3>
-              <i className="bi bi-card-image me-2"></i>
-              Identity Documents
-            </h3>
-            <button onClick={handleDocEditToggle} className="btn btn-outline-primary btn-sm">
-              <i className="bi bi-pencil-square me-2"></i>
-              {docEditMode ? 'Close' : 'Edit'}
-            </button>
-          </div>
-          <form className="doc-upload-form" onSubmit={handleDocSave}>
-            <div className="row g-2 align-items-end">
-              <div className="col-md-6">
-                <label>Image</label>
-                <div
-                  className="doc-dropzone"
-                  onDrop={docEditMode && !isDocTypeVerified(pendingDocType) ? handleDrop : undefined}
-                  onDragOver={docEditMode && !isDocTypeVerified(pendingDocType) ? handleDragOver : undefined}
-                  onClick={docEditMode && !isDocTypeVerified(pendingDocType) ? handleClickDropZone : undefined}
-                  style={{ cursor: docEditMode && !isDocTypeVerified(pendingDocType) ? 'pointer' : 'not-allowed', opacity: docEditMode && !isDocTypeVerified(pendingDocType) ? 1 : 0.6 }}
+          <div className="pf-card">
+            <div className="pf-card-head">
+              <h3 className="pf-card-title">
+                <FiEdit2 />
+                Thông tin cá nhân
+              </h3>
+              {!isEditing && (
+                <button
+                  type="button"
+                  onClick={handleEditToggle}
+                  className="pf-btn pf-btn--ghost pf-btn--sm"
                 >
-                  <div className="doc-dropzone-placeholder">
-                    <FiUpload size={48} color="#4fc3f7" />
-                    <p>Drag and drop images here or click to select</p>
+                  <FiEdit2 />
+                  Chỉnh sửa
+                </button>
+              )}
+            </div>
+
+            {!isEditing ? (
+              <div className="pf-info-list">
+                <div className="pf-info-row">
+                  <FiUser />
+                  <div>
+                    <span className="pf-info-label">Họ và tên</span>
+                    <div className={`pf-info-value ${!user.fullName ? 'pf-info-value--empty' : ''}`}>
+                      {user.fullName || 'Chưa cập nhật'}
+                    </div>
                   </div>
+                </div>
+                <div className="pf-info-row">
+                  <FiPhone />
+                  <div>
+                    <span className="pf-info-label">Số điện thoại</span>
+                    <div className={`pf-info-value ${!user.phone ? 'pf-info-value--empty' : ''}`}>
+                      {user.phone || 'Chưa cập nhật'}
+                    </div>
+                  </div>
+                </div>
+                <div className="pf-info-row">
+                  <FiMapPin />
+                  <div>
+                    <span className="pf-info-label">Địa chỉ</span>
+                    <div className={`pf-info-value ${!user.address ? 'pf-info-value--empty' : ''}`}>
+                      {user.address || 'Chưa cập nhật'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <form className="dv-form" onSubmit={(e) => e.preventDefault()}>
+                <div className="pf-field">
+                  <label className="pf-label" htmlFor="fullName">Họ và tên</label>
                   <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    style={{ display: 'none' }}
-                    ref={fileInputRef}
-                    onChange={handleDocFilesChange}
-                    disabled={!docEditMode || docUploading || isDocTypeVerified(pendingDocType)}
+                    type="text"
+                    className={`pf-input ${error?.fullName ? 'pf-input--error' : ''}`}
+                    id="fullName"
+                    name="fullName"
+                    value={editedUser.fullName || ''}
+                    onChange={handleInputChange}
+                    placeholder="Nhập họ và tên"
+                  />
+                  {error?.fullName && (
+                    <span className="pf-field-error">
+                      <FiAlertCircle size={12} /> {error.fullName}
+                    </span>
+                  )}
+                </div>
+
+                <div className="pf-field">
+                  <label className="pf-label" htmlFor="email">Email</label>
+                  <input
+                    type="email"
+                    className="pf-input"
+                    id="email"
+                    value={user.email}
+                    disabled
+                  />
+                  <span className="pf-hint">
+                    <FiInfo size={12} /> Email không thể thay đổi
+                  </span>
+                </div>
+
+                <div className="pf-field">
+                  <label className="pf-label" htmlFor="phone">Số điện thoại</label>
+                  <input
+                    type="tel"
+                    className={`pf-input ${error?.phone ? 'pf-input--error' : ''}`}
+                    id="phone"
+                    name="phone"
+                    value={editedUser.phone || ''}
+                    onChange={handleInputChange}
+                    placeholder="Nhập số điện thoại"
+                  />
+                  {error?.phone && (
+                    <span className="pf-field-error">
+                      <FiAlertCircle size={12} /> {error.phone}
+                    </span>
+                  )}
+                </div>
+
+                <div className="pf-field">
+                  <label className="pf-label" htmlFor="address">Địa chỉ</label>
+                  <textarea
+                    className="pf-textarea"
+                    id="address"
+                    name="address"
+                    rows="3"
+                    value={editedUser.address || ''}
+                    onChange={handleInputChange}
+                    placeholder="Nhập địa chỉ"
                   />
                 </div>
-                {pendingDocPreviews.length > 0 && (
-                  <div className="d-flex flex-wrap justify-content-center gap-2 mt-2">
-                    {pendingDocPreviews.map((url, idx) => (
-                      <div key={idx} style={{ position: 'relative', display: 'inline-block' }}>
-                        <img src={url} alt="Preview" style={{ maxHeight: 140, maxWidth: 140, border: '1px solid #eee', borderRadius: 4 }} />
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-danger"
-                          style={{ position: 'absolute', top: 4, right: 4, padding: '2px 6px', borderRadius: '50%', zIndex: 2 }}
-                          title="Delete this image"
-                          onClick={() => {
-                            setPendingDocFiles(files => files.filter((_, i) => i !== idx));
-                            setPendingDocPreviews(previews => previews.filter((_, i) => i !== idx));
-                          }}
-                          disabled={isDocTypeVerified(pendingDocType)}
-                        >
-                          <FiTrash2 size={16} />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {docUploading && <div className="text-info mt-2">Uploading...</div>}
-              </div>
-              <div className="col-md-6">
-                <label>Document Type</label>
-                <select className="form-select mb-2" value={pendingDocType} onChange={e => setPendingDocType(e.target.value)} disabled={!docEditMode}>
-                  <option value="cccd">Citizen ID</option>
-                  <option value="license">Driver's License</option>
-                  <option value="passport">Passport</option>
-                  <option value="other">Other</option>
-                </select>
-                <label>Description</label>
-                <input type="text" className="form-control" value={pendingDocDesc} onChange={e => setPendingDocDesc(e.target.value)} placeholder="Document description" disabled={!docEditMode} />
-              </div>
-            </div>
-            {docEditMode && (
-              <div className="form-actions mt-3">
-                <button type="submit" className="btn btn-primary me-2" disabled={docUploading || isDocTypeVerified(pendingDocType)}>Save changes</button>
-                <button type="button" className="btn btn-light" onClick={handleDocCancel} disabled={docUploading}>Cancel</button>
-              </div>
+
+                <div className="pf-actions">
+                  <button type="button" className="pf-btn pf-btn--primary" onClick={handleSave}>
+                    <FiCheckCircle />
+                    Lưu thay đổi
+                  </button>
+                  <button type="button" className="pf-btn pf-btn--ghost" onClick={handleCancel}>
+                    <FiX />
+                    Huỷ
+                  </button>
+                </div>
+              </form>
             )}
-            {docUploadError && <div className="text-danger mt-2">{docUploadError}</div>}
-          </form>
-          <div className="doc-list mt-3">
-            {userImages.length === 0 ? (
-              <div className="text-muted">No documents yet.</div>
-            ) : (
-              <div className="row g-3 justify-content-center">
-                {Object.entries(groupedImages).map(([docType, images]) => (
-                  <div className="col-md-12 d-flex justify-content-center" key={docType}>
-                    <div className="card h-100 mx-auto position-relative" style={{maxWidth:1200, width:'100%'}}>
-                      <div className="card-body text-center">
-                        <h5 className="card-title mb-3 text-center">{docType.toUpperCase()}</h5>
-                        <div className="d-flex flex-row flex-wrap justify-content-center align-items-start gap-4 mb-2">
-                          {images.map((img, idx) => (
-                            <div key={img.imageId} style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0 8px' }}>
-                              <img src={img.imageUrl} alt={img.documentType} 
-                                style={{ 
-                                  maxHeight: 240, 
-                                  maxWidth: 320, 
-                                  border: `2.5px solid ${img.verified === true || img.verified === 1 ? '#28a745' : '#dc3545'}`,
-                                  borderRadius: 8 
-                                }} 
+          </div>
+
+          <div className="pf-card">
+            <div className="pf-card-head">
+              <h3 className="pf-card-title">
+                <FiShield />
+                Bảo mật
+              </h3>
+            </div>
+            <div className="pf-links">
+              <Link to="/change-password" className="pf-link-item">
+                <FiKey />
+                <div>
+                  <h4 className="pf-link-title">
+                    {hasPassword ? 'Đổi mật khẩu' : 'Tạo mật khẩu'}
+                  </h4>
+                  <p className="pf-link-desc">
+                    {hasPassword
+                      ? 'Cập nhật mật khẩu đăng nhập của bạn'
+                      : 'Tạo mật khẩu để bảo vệ tài khoản'}
+                  </p>
+                </div>
+                <FiChevronRight />
+              </Link>
+              <Link to="/change-avatar" className="pf-link-item">
+                <FiUser />
+                <div>
+                  <h4 className="pf-link-title">Đổi ảnh đại diện</h4>
+                  <p className="pf-link-desc">Cập nhật ảnh đại diện của bạn</p>
+                </div>
+                <FiChevronRight />
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* ================= RIGHT COLUMN ================= */}
+        <div className="pf-col">
+          <div className="pf-card">
+            <div className="pf-card-head">
+              <h3 className="pf-card-title">
+                <FiImage />
+                Giấy tờ xác minh
+              </h3>
+              <button
+                type="button"
+                onClick={handleDocEditToggle}
+                className="pf-btn pf-btn--ghost pf-btn--sm"
+              >
+                {docEditMode ? <FiX /> : <FiEdit2 />}
+                {docEditMode ? 'Đóng' : 'Chỉnh sửa'}
+              </button>
+            </div>
+
+            <form className="dv-form" onSubmit={handleDocSave}>
+              <div className="pf-doc-upload">
+                <div>
+                  <div
+                    className={`pf-dropzone ${
+                      dropzoneLocked ? 'pf-dropzone--locked' : 'pf-dropzone--active'
+                    }`}
+                    onDrop={dropzoneLocked ? undefined : handleDrop}
+                    onDragOver={dropzoneLocked ? undefined : handleDragOver}
+                    onClick={dropzoneLocked ? undefined : handleClickDropZone}
+                  >
+                    <FiUpload size={40} />
+                    <p className="pf-dropzone-text">
+                      Kéo thả ảnh vào đây hoặc bấm để chọn tệp
+                    </p>
+                    <p className="pf-dropzone-hint">PNG, JPG · tối đa 5MB mỗi ảnh</p>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      style={{ display: 'none' }}
+                      ref={fileInputRef}
+                      onChange={handleDocFilesChange}
+                      disabled={dropzoneLocked}
+                    />
+                  </div>
+
+                  {pendingDocPreviews.length > 0 && (
+                    <div className="pf-preview-grid">
+                      {pendingDocPreviews.map((url, idx) => (
+                        <div className="pf-preview-item" key={idx}>
+                          <img src={url} alt="Preview" />
+                          <button
+                            type="button"
+                            className="pf-preview-remove"
+                            title="Xoá ảnh này"
+                            onClick={() => {
+                              setPendingDocFiles(files => files.filter((_, i) => i !== idx));
+                              setPendingDocPreviews(previews => previews.filter((_, i) => i !== idx));
+                            }}
+                            disabled={isDocTypeVerified(pendingDocType)}
+                          >
+                            <FiX />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {docUploading && (
+                    <p className="pf-hint" style={{ marginTop: 10 }}>
+                      <span className="pf-spinner" /> Đang tải lên...
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <div className="pf-field">
+                    <label className="pf-label" htmlFor="docType">Loại giấy tờ</label>
+                    <select
+                      id="docType"
+                      className="pf-select"
+                      value={pendingDocType}
+                      onChange={e => setPendingDocType(e.target.value)}
+                      disabled={!docEditMode}
+                    >
+                      <option value="cccd">CCCD / CMND</option>
+                      <option value="license">Giấy phép lái xe (GPLX)</option>
+                      <option value="passport">Hộ chiếu</option>
+                      <option value="other">Giấy tờ khác</option>
+                    </select>
+                  </div>
+
+                  <div className="pf-field">
+                    <label className="pf-label" htmlFor="docDesc">Mô tả</label>
+                    <input
+                      id="docDesc"
+                      type="text"
+                      className="pf-input"
+                      value={pendingDocDesc}
+                      onChange={e => setPendingDocDesc(e.target.value)}
+                      placeholder="Mô tả giấy tờ"
+                      disabled={!docEditMode}
+                    />
+                  </div>
+
+                  {isDocTypeVerified(pendingDocType) && (
+                    <p className="pf-hint">
+                      <FiCheckCircle size={12} /> Loại giấy tờ này đã được xác minh, không thể tải thêm.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {docEditMode && (
+                <div className="pf-actions" style={{ marginTop: 16 }}>
+                  <button
+                    type="submit"
+                    className="pf-btn pf-btn--primary"
+                    disabled={docUploading || isDocTypeVerified(pendingDocType)}
+                  >
+                    {docUploading ? <span className="pf-spinner" /> : <FiCheckCircle />}
+                    Lưu thay đổi
+                  </button>
+                  <button
+                    type="button"
+                    className="pf-btn pf-btn--ghost"
+                    onClick={handleDocCancel}
+                    disabled={docUploading}
+                  >
+                    <FiX />
+                    Huỷ
+                  </button>
+                </div>
+              )}
+
+              {docUploadError && (
+                <div className="pf-alert pf-alert--error" style={{ marginTop: 14, marginBottom: 0 }}>
+                  <FiAlertCircle />
+                  <span>{docUploadError}</span>
+                </div>
+              )}
+            </form>
+
+            <div style={{ marginTop: 22 }}>
+              {userImages.length === 0 ? (
+                <div className="pf-empty">Chưa có giấy tờ nào được tải lên.</div>
+              ) : (
+                Object.entries(groupedImages).map(([type, images]) => {
+                  const verified = isDocTypeVerified(type);
+                  return (
+                    <div className="pf-doc-group" key={type}>
+                      <div className="pf-doc-group-head">
+                        <h4 className="pf-doc-group-title">
+                          {DOC_TYPE_LABELS[type] || type.toUpperCase()}
+                        </h4>
+                        <span className={`pf-badge ${verified ? 'pf-badge--ok' : 'pf-badge--warn'}`}>
+                          {verified ? <FiCheckCircle size={12} /> : <FiAlertCircle size={12} />}
+                          {verified ? 'Đã xác minh' : 'Chờ xác minh'}
+                        </span>
+                      </div>
+
+                      <div className="pf-doc-items">
+                        {images.map((img) => {
+                          const imgVerified = img.verified === true || img.verified === 1;
+                          return (
+                            <div className="pf-doc-item" key={img.imageId}>
+                              <img
+                                src={img.imageUrl}
+                                alt={img.documentType}
+                                className={`pf-doc-img ${imgVerified ? 'pf-doc-img--ok' : 'pf-doc-img--fail'}`}
                               />
-                              {/* Chỉ hiển thị description nếu chưa verify */}
-                              <div className="mt-3 text-center" style={{minWidth:180}}>
-                                {(!img.verified || img.verified === 0) && img.description && <div className="text-muted small">{img.description}</div>}
-                                <small className="text-muted">Uploaded: {img.uploadedAt ? new Date(img.uploadedAt).toLocaleString() : ''}</small>
-                                <div className="mt-2">
-                                  {typeof img.verified !== 'undefined' && (
-                                    img.verified === true || img.verified === 1 ? (
-                                      <span style={{ color: 'green', fontWeight: 500 }}><FaCheckCircle style={{marginRight:4}}/>Verified</span>
-                                    ) : (
-                                      <span style={{ color: 'red', fontWeight: 500 }}><FaTimesCircle style={{marginRight:4}}/>Not Verified</span>
-                                    )
-                                  )}
-                                </div>
+                              <div className="pf-doc-meta">
+                                {!imgVerified && img.description && (
+                                  <span className="pf-doc-desc">{img.description}</span>
+                                )}
+                                <span className="pf-doc-time">
+                                  Tải lên: {img.uploadedAt ? new Date(img.uploadedAt).toLocaleString() : ''}
+                                </span>
+                                <span className={`pf-badge ${imgVerified ? 'pf-badge--ok' : 'pf-badge--danger'}`}>
+                                  {imgVerified ? <FiCheckCircle size={12} /> : <FiXCircle size={12} />}
+                                  {imgVerified ? 'Đã xác minh' : 'Chưa xác minh'}
+                                </span>
                               </div>
-                              {/* Ẩn nút xóa nếu đã verify */}
-                              {docEditMode && (!img.verified || img.verified === 0) && !isDocTypeVerified(docType) && (
+                              {docEditMode && !imgVerified && !verified && (
                                 <button
-                                  className="btn btn-sm btn-danger"
-                                  style={{ position: 'absolute', top: 8, right: 8, padding: '4px 10px', borderRadius: '50%', zIndex: 2 }}
-                                  title="Delete document"
+                                  type="button"
+                                  className="pf-doc-delete"
+                                  title="Xoá giấy tờ"
                                   onClick={() => handleDeleteUserImage(img.imageId)}
                                 >
-                                  <FiTrash2 size={20} />
+                                  <FiTrash2 size={15} />
                                 </button>
                               )}
                             </div>
-                          ))}
-                        </div>
+                          );
+                        })}
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  );
+                })
+              )}
+            </div>
           </div>
-        </div>
 
-        <div className="profile-section">
-          <div className="section-header">
-            <h3>
-              <i className="bi bi-cash-coin me-2"></i>
-              Withdrawal Requests
-            </h3>
-          </div>
-          <Table
-            dataSource={withdrawRequests}
-            rowKey="requestId"
-            columns={[
-              { title: "Amount", dataIndex: "amount" },
-              { title: "Status", dataIndex: "status" },
-              { title: "Note", dataIndex: "note" },
-              { title: "Request Date", dataIndex: "requestedAt" },
-              {
-                title: "Money Received",
-                dataIndex: "sign",
-                render: (sign, record) => {
-                  if (sign) {
-                    return <span style={{ color: 'green', fontWeight: 600 }}>Confirmed</span>;
+          <div className="pf-card">
+            <div className="pf-card-head">
+              <h3 className="pf-card-title">
+                <FiDollarSign />
+                Yêu cầu rút tiền
+              </h3>
+            </div>
+            <Table
+              className="pf-table"
+              dataSource={withdrawRequests}
+              rowKey="requestId"
+              pagination={false}
+              columns={[
+                { title: "Số tiền", dataIndex: "amount" },
+                { title: "Trạng thái", dataIndex: "status" },
+                { title: "Ghi chú", dataIndex: "note" },
+                { title: "Ngày yêu cầu", dataIndex: "requestedAt" },
+                {
+                  title: "Đã nhận tiền",
+                  dataIndex: "sign",
+                  render: (sign, record) => {
+                    if (sign) {
+                      return <span style={{ color: '#BBF7D0', fontWeight: 600 }}>Đã xác nhận</span>;
+                    }
+                    if (record.status === 'completed') {
+                      return <input type="checkbox" onChange={() => handleSign(record.requestId)} />;
+                    }
+                    return <span style={{ color: 'var(--text-dim)' }}>Chưa hoàn tất</span>;
                   }
-                  if (record.status === 'completed') {
-                    return <input type="checkbox" onChange={() => handleSign(record.requestId)} />;
-                  }
-                  return <span style={{ color: '#999' }}>Not completed</span>;
                 }
-              }
-            ]}
-            style={{ marginTop: 32 }}
-          />
+              ]}
+            />
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default ProfilePage; 
+export default ProfilePage;
