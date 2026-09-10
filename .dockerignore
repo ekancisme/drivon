@@ -4,7 +4,6 @@
 **/node_modules
 **/target
 **/dist
-**/build
 *.tar.gz
 *.zip
 .agents
