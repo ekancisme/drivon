@@ -1,32 +1,19 @@
 package Drivon.backend.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "notifications")
+@Document(collection = "notifications")
 public class Notification {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "notification_id")
     private Long notificationId;
 
-    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type")
     private NotificationType type;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "target_type")
     private TargetType targetType;
-
-    @Column(name = "target_user_id")
     private Long targetUserId;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public enum NotificationType {
         SYSTEM,     // Thông báo hệ thống

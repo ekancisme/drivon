@@ -1,9 +1,10 @@
 import axios from 'axios';
 
 export const getBackendUrl = () => {
-  const host = window.location.hostname;
-  const port = '8080';
-  return `http://${host}:${port}`;
+  if (process.env.NODE_ENV === 'development' && window.location.hostname === 'localhost' && window.location.port === '3000') {
+    return 'http://localhost:8080';
+  }
+  return '';
 };
 
 export const getAuthHeader = () => {

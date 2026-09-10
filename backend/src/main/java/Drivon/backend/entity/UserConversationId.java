@@ -1,15 +1,14 @@
 package Drivon.backend.entity;
 
-import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
-@Embeddable
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserConversationId implements Serializable {
-    @Column(name = "user_id")
     private Long user_id;
-
-    @Column(name = "conversation_id")
     private Long conversation_id;
 }

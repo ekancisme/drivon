@@ -1,19 +1,17 @@
 package Drivon.backend.model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 
-@Entity
-@Table(name = "promotions")
+@Document(collection = "promotions")
 public class Promotion {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long promo_id;
 
     private String code;
     private Integer discount_percent;
     private Date valid_until;
-    @Column(name = "max_uses")
     private Integer maxUses;
 
     public Long getPromo_id() {

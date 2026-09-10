@@ -1,7 +1,8 @@
 package Drivon.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,55 +11,25 @@ import java.util.List;
 @Data
 @Getter
 @Setter
-@Entity
-@Table(name = "cars")
+@Document(collection = "cars")
 public class Car {
     @Id
-    @Column(name = "license_plate", length = 15)
     private String licensePlate;
 
-    @Column(name = "owner_id")
     private Integer ownerId;
-
-    @Column(name = "brand")
     private String brand;
-
-    @Column(name = "model")
     private String model;
-
-    @Column(name = "year")
     private Integer year;
-
-    @Column(name = "seats")
     private Integer seats;
-
-    @Column(name = "description")
     private String description;
-
-    @Column(name = "type")
     private String type;
-
-    @Column(name = "transmission")
-    @Enumerated(EnumType.STRING)
     private Transmission transmission;
-
-    @Column(name = "fuel_type")
-    @Enumerated(EnumType.STRING)
     private FuelType fuelType;
-
-    @Column(name = "fuel_consumption")
     private Double fuelConsumption;
-
-    @Column(name = "status")
     private String status;
-
-    @Column(name = "location")
     private String location;
-
-    @Column(name = "main_image")
     private String mainImage;
 
-    @OneToMany(mappedBy = "car")
     @JsonIgnore
     private List<Booking> bookings;
 

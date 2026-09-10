@@ -1,44 +1,24 @@
 package Drivon.backend.model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "system_revenue")
+@Document(collection = "system_revenue")
 public class SystemRevenue {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "transaction_type", nullable = false, length = 50)
     private String transactionType; // REVENUE_IN, REVENUE_OUT, DEBT_CREATED, DEBT_COLLECTED
-    
-    @Column(name = "payment_method", length = 50)
     private String paymentMethod; // BANK, CASH
-    
-    @Column(name = "amount", nullable = false)
     private Double amount;
-    
-    @Column(name = "owner_id")
     private Long ownerId;
-    
-    @Column(name = "booking_id")
     private Integer bookingId;
-    
-    @Column(name = "payment_id", length = 255)
     private String paymentId;
-    
-    @Column(name = "description", length = 500)
     private String description;
-    
-    @Column(name = "transaction_date", nullable = false)
     private LocalDateTime transactionDate;
-    
-    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
-    
-    @Column(name = "status", length = 50)
     private String status; // CONFIRMED, PENDING, CANCELLED
     
     // Default constructor

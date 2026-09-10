@@ -62,8 +62,8 @@ public class BookingService {
         log.info("Attempting to save booking: {}", booking);
 
         try {
-            Booking savedBooking = bookingRepository.saveAndFlush(booking);
-            log.info("Saved and flushed booking successfully with ID: {}", savedBooking.getId());
+            Booking savedBooking = bookingRepository.save(booking);
+            log.info("Saved booking successfully with ID: {}", savedBooking.getId());
             // Gửi notification cho user khi đặt xe thành công
             String content = "Your car booking was successful. Booking ID: " + savedBooking.getId();
             notificationService.createNotificationForSpecificUser(content, Notification.NotificationType.SYSTEM,

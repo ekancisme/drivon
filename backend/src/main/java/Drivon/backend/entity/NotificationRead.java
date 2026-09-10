@@ -1,22 +1,17 @@
 package Drivon.backend.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "notification_reads")
-@IdClass(NotificationReadId.class)
+@Document(collection = "notification_reads")
 public class NotificationRead {
     
     @Id
-    @Column(name = "notification_id")
+    private String id;
+    
     private Long notificationId;
-    
-    @Id
-    @Column(name = "user_id")
     private Long userId;
-    
-    @Column(name = "read_at")
     private LocalDateTime readAt;
     
     // Constructors
@@ -25,10 +20,14 @@ public class NotificationRead {
     }
     
     public NotificationRead(Long notificationId, Long userId) {
+        this.id = notificationId + "_" + userId;
         this.notificationId = notificationId;
         this.userId = userId;
         this.readAt = LocalDateTime.now();
     }
+    
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
     
     // Getters and setters
     public Long getNotificationId() { return notificationId; }

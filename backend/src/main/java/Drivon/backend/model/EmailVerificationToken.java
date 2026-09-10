@@ -1,24 +1,17 @@
 package Drivon.backend.model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 
-@Entity
-@Table(name = "email_verification_tokens")
+@Document(collection = "email_verification_tokens")
 public class EmailVerificationToken {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String token;
-
-    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "user_id")
     private User user;
-
-    @Temporal(TemporalType.TIMESTAMP)
     private Date expiryDate;
-
     private boolean verified = false;
 
     public EmailVerificationToken() {

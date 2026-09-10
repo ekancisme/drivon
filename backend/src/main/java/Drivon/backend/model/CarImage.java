@@ -1,28 +1,21 @@
 package Drivon.backend.model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
-@Table(name = "car_images")
+@Document(collection = "car_images")
 @Data
 @Getter
 @Setter
 public class CarImage {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "image_id")
     private Long imageId;
 
-    @Column(name = "car_id")
     private String carId;
-
-    @Column(name = "image_url")
     private String imageUrl;
-
-    @Column(name = "type")
     private String type; // car_image, cavet
 
     public String getImageUrl() { return imageUrl; }

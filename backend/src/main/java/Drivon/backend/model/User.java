@@ -1,25 +1,24 @@
 package Drivon.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import lombok.Data;
 import java.util.Date;
 import java.util.List;
 
 @Data
-@Entity
-@Table(name = "users")
+@Document(collection = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(unique = true)
+    @Indexed(unique = true)
     private String email;
 
-    @Column(unique = true)
+    @Indexed(unique = true)
     private String phone;
 
     private String password;
@@ -29,10 +28,8 @@ public class User {
     private String googleId;
     private boolean enabled = true;
 
-    @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.renter;
 
-    @Enumerated(EnumType.STRING)
     private UserStatus status = UserStatus.active;
 
     private boolean emailVerified = false;
@@ -40,11 +37,8 @@ public class User {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private String resetPasswordToken;
-    
-    @Temporal(TemporalType.TIMESTAMP)
     private Date resetPasswordTokenExpiry;
 
-    @OneToMany(mappedBy = "renter")
     @JsonIgnore
     private List<Booking> bookings;
 
